@@ -6237,6 +6237,7 @@ hr.white {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: 20px;
+  position: relative;
 }
 
 .product-item-img-wrapper {
@@ -6260,7 +6261,27 @@ hr.white {
   max-width: 900px;   
   margin: 0 auto;    
   overflow-x: hidden;
+  position: relative;
 }
+
+.product-item-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background-color: #CFA567;
+  padding: 20px;
+  border-bottom-right-radius: 26px;
+}
+
+.product-item-badge p {
+  color: #F9F7F3;
+  text-transform: uppercase;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+}
+
 .swiper-main .swiper-slide {
   display: flex;
   align-items: center;
@@ -6320,6 +6341,14 @@ hr.white {
   overflow-y: visible;
   padding-right: 20px;
 }
+
+/* .product-item-left-side {
+  position: sticky;
+  top: 20px;
+  align-self: start; 
+  padding-right: 20px; 
+} */
+
 
 .swiper-pagination-bullet {
   width: 14px !important;
@@ -6500,10 +6529,6 @@ p.product-item-price {
 
 /* Выбрать комплектацию */
 
-.select-configuration {
-  margin-bottom: 500px;
-}
-
 .select-configuration-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -6604,11 +6629,21 @@ p.product-desc-card-title {
   margin-bottom: 0px;
 }
 
+
 .product-desc-card-info {
-  
   max-height: 0;             
   overflow: hidden;         
   transition: max-height 0.5s ease;
+  color: #000000;
+}
+
+.product-desc-card-info p {
+  color: #000000;
+}
+
+.product-desc-card-info > * + * {
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .product-desc-card-specifications {
@@ -6647,10 +6682,13 @@ p.product-desc-card-specification {
   transform: rotate(45deg);
 }
 
-
 .product-desc-card-info p {
   color: #000000;
   font-weight: 400;
+}
+
+.product-desc-card-info p {
+  margin-bottom: 0px;
 }
 
 .product-desc-card-open-btn {
@@ -6725,6 +6763,10 @@ p.product-desc-card-review-author {
   color: #939393;
 }
 
+.product-desc-card-info p strong {
+  margin-bottom: 0px;
+}
+
 .product-desc-card-review-stars {
   margin-top: 6px;
   margin-bottom: 10px;
@@ -6789,6 +6831,10 @@ p.product-desc-card-review-text,
 
 .send-review {
   margin-top: 20px;
+  background-color: #FFFFFF;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #E1E1E1;
 }
 
 p.send-review-title {
@@ -6850,6 +6896,11 @@ p.send-review-title {
   margin-bottom: 14px;
 }
 
+.send-review-form input::placeholder,
+.send-review-form textarea::placeholder {
+  color: #C0C0C0;
+}
+
 .accept-politics {
   display: flex;
   gap: 12px;  
@@ -6859,4 +6910,76 @@ p.send-review-title {
   margin-bottom: 0px;
   margin-top: 0px;
   font-size: 14px;
+}
+
+.send-photos-btn {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: #CFA567;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  margin-bottom: 14px;
+  display: flex;
+  gap: 6px;
+}
+
+.send-review-btn {
+  cursor: pointer;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 600; 
+  border-radius: 39px;
+  width: 100%;
+  border: none;
+  background-color: #CFA567;
+  color: #F9F7F3;   
+  text-transform: uppercase;
+  font-size: 20px;
+  padding: 21px 10px 21px 10px;
+  transition: background-color 0.3s ease;
+}
+
+.send-review-btn:hover {
+  background-color: #D4AD6C; 
+}
+
+.product-desc-card-info ul li::marker {
+  font-size: 12px; 
+}
+
+/* Advantages */
+
+.advantages {
+  padding: 120px 134px;
+}
+
+.advantages-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.advantages-card {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+
+.advantages-card img {
+  max-width: 80px;
+  max-height: 80px;
+  height: 100%;
+  width: 100%;
+}
+
+.advantages-card-title {
+  font-family: 'Prata', serif;
+  font-weight: 400;
+  font-size: 32px;
+  color: #000000;
+  margin-bottom: 0px;
+  max-width: 312px;
+  width: 100%;
 }
