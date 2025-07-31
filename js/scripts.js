@@ -86,44 +86,82 @@ if (productDescCard) {
   });
 }
 
-// Раскрытие отзывов побольеш
+// Раскрытие отзывов поболь
 
 const productDescCardReviewTexts = document.querySelectorAll('.product-desc-card-review-texts');
 
 if (productDescCardReviewTexts) {
   productDescCardReviewTexts.forEach(container => {
-    const textEl = container.querySelector('.product-desc-card-review-text');
-    const btn = container.querySelector('.product-desc-card-review-more-btn');
-    const label = btn.querySelector('.btn-label');
-    const transitionDuration = 500;
-    const fullHeight = textEl.scrollHeight;
-    const collapsedHeight = textEl.getBoundingClientRect().height;
+  const textEl = container.querySelector('.product-desc-card-review-text');
+  const btn = container.querySelector('.product-desc-card-review-more-btn');
+  const cardInfo = container.closest('.product-desc-card-info');
 
-    if (fullHeight <= collapsedHeight + 1) {
-      btn.style.display = 'none';
-      return;
+  const ro = new ResizeObserver(() => {
+    if (cardInfo) {
+      cardInfo.style.maxHeight = cardInfo.scrollHeight + 'px';
     }
-
-    btn.addEventListener('click', () => {
-      const isExpanded = !textEl.classList.contains('expanded');
-      btn.classList.toggle('open', isExpanded);
-      label.textContent = isExpanded ? 'Скрыть' : 'Читать весь отзыв';
-
-      if (isExpanded) {
-        textEl.classList.add('expanded');
-        textEl.style.maxHeight = fullHeight + 'px';
-        setTimeout(() => {
-          textEl.style.maxHeight = 'none';
-        }, transitionDuration);
-      } else {
-        textEl.style.maxHeight = fullHeight + 'px';
-        void textEl.offsetHeight;
-        textEl.style.maxHeight = collapsedHeight + 'px';
-
-        setTimeout(() => {
-          textEl.classList.remove('expanded');
-        }, transitionDuration);
-      }
-    });
   });
+  ro.observe(textEl);
+
+  btn.addEventListener('click', () => {
+    const isExpanding = !textEl.classList.contains('expanded');
+    btn.classList.toggle('open', isExpanding);
+
+    if (isExpanding) {
+      textEl.classList.add('expanded');
+      textEl.style.maxHeight = textEl.scrollHeight + 'px';
+      setTimeout(() => textEl.style.maxHeight = 'none', 0);
+    } else {
+      const fullH = textEl.scrollHeight;
+      const lineH = parseFloat(getComputedStyle(textEl).lineHeight);
+      const collapsedH = lineH * 3;
+      textEl.style.maxHeight = fullH + 'px';
+      void textEl.offsetHeight;
+      textEl.style.maxHeight = collapsedH + 'px';
+      setTimeout(() => textEl.classList.remove('expanded'), 0);
+    }
+  });
+});
 }
+
+
+// Оценка в блоке "Оставить отзыв"
+
+function sendStars() {
+  const stars = document.querySelectorAll('.send-review-stars svg');
+
+  if (stars) {
+    let currentRating = 0; 
+
+    const setFill = (rating) => {
+      stars.forEach(star => {
+        const val = parseInt(star.dataset.value, 10);
+        if (val <= rating) {
+          star.classList.add('filled');
+        } else {
+          star.classList.remove('filled');
+        }
+      });
+    };
+
+    stars.forEach(star => {
+      star.addEventListener('mouseover', () => {
+        const hoverValue = parseInt(star.dataset.value, 10);
+        setFill(hoverValue);
+      });
+
+      star.addEventListener('mouseout', () => {
+        setFill(currentRating);
+      });
+
+      star.addEventListener('click', () => {
+        currentRating = parseInt(star.dataset.value, 10);
+        console.log('Поставленный рейтинг:', currentRating);
+      });
+    });
+
+    setFill(currentRating);
+  }
+}
+
+sendStars();
