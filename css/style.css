@@ -6579,12 +6579,17 @@ p.product-item-price {
   margin-top: 28px;
 }
 
-.product-desc-card {
+.product-desc-card-head {
   display: grid;
   grid-template-columns: minmax(0, 313px) 1fr minmax(0, 71px);
   align-items: flex-start;
   border-top: 1px solid #C5C5C5;
   padding: 20px 0px;
+}
+
+.product-desc-card-content {
+  display: grid;
+  grid-template-columns: minmax(0, 313px) 1fr;
 }
 
 .product-desc-card:last-child {
@@ -6645,6 +6650,7 @@ p.product-desc-card-specification {
   transform: rotate(45deg);
 }
 
+
 .product-desc-card-info p {
   color: #000000;
   font-weight: 400;
@@ -6657,4 +6663,118 @@ p.product-desc-card-specification {
   margin: 0;
   padding: 0;
   justify-self: end;
+}
+
+/* Отзывы */
+
+.product-desc-card-rating-container {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+
+p.product-desc-card-rating-number {
+  margin-bottom: 0px;
+}
+
+.product-desc-card-rating-number {
+  font-family: 'Prata', serif;
+  font-size: 56px;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 0px;
+}
+
+.product-desc-card-rating-number span {
+  font-size: 24px;
+  color: #939393;
+}
+
+.product-desc-card-info p.product-desc-card-rating-text {
+  color: #939393;
+}
+
+.product-desc-card-reviews {
+  grid-column: 2 / 2;
+}
+
+.product-desc-card-review {
+  border-top: 1px solid #C5C5C5;
+  border-bottom: 1px solid #C5C5C5;
+  padding: 20px 0px;
+}
+
+.product-desc-card-review-head {
+  display: flex;
+  justify-content: space-between;
+}
+
+p.product-desc-card-review-date {
+  margin-top: 0px;
+  color: #939393;
+}
+
+p.product-desc-card-review-author {
+  margin-bottom: 0px;
+}
+
+.product-desc-card-review-author {
+  font-family: 'Prata', serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 0px;
+}
+
+.product-desc-card-info p.product-desc-card-review-date {
+  color: #939393;
+}
+
+.product-desc-card-review-stars {
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+
+p.product-desc-card-review-text,
+.product-desc-card-review-text {
+  margin-bottom: 10px;
+}
+
+.product-desc-card-review-text {
+  max-width: 516px;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  line-height: 1.6em;
+  max-height: calc(1.6em * 3);
+}
+
+.product-desc-card-review-text.expanded {
+  -webkit-line-clamp: unset;
+}
+
+.product-desc-card-review-more-btn {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #CFA567;
+}
+
+.review-arrow {
+  transition: transform 0.5s ease;
+}
+
+.product-desc-card-review-more-btn.open .review-arrow {
+  transform: rotate(180deg);
 }
