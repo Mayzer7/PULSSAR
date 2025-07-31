@@ -1,0 +1,130 @@
+<?xml version="1.0" ?>
+<!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+<svg enable-background="new 0 0 120 120" height="100px" id="Layer_1" version="1.1" viewBox="0 0 120 120" width="100px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" original="#48b1f7">
+	<style>
+	@-webkit-keyframes twirl-phone {
+	0% {
+
+	}
+	30% {
+	-webkit-transform: rotate(-6deg) translateY(-1px);
+	}
+	75% {
+	-webkit-transform: rotate(5deg) translateY(-1px);
+	}
+	100% {
+	-webkit-transform: rotate(0deg) translateY(-1px);
+	}
+
+	}
+	@-moz-keyframes twirl-phone {
+	0% {
+
+	}
+	30% {
+	-moz-transform: rotate(-6deg) translateY(-1px);
+	}
+	75% {
+	-moz-transform: rotate(5deg) translateY(-1px);
+	}
+	100% {
+	-moz-transform: rotate(0deg) translateY(-1px);
+	}
+
+	}
+	@-o-keyframes twirl-phone {
+	0% {
+
+	}
+	30% {
+	-o-transform: rotate(-6deg) translateY(-1px);
+	}
+	75% {
+	-o-transform: rotate(5deg) translateY(-1px);
+	}
+	100% {
+	-o-transform: rotate(0deg) translateY(-1px);
+	}
+
+	}
+	@keyframes twirl-phone {
+	0% {
+
+	}
+	30% {
+	transform: rotate(-6deg) translateY(-1px);
+	}
+	75% {
+	transform: rotate(5deg) translateY(-1px);
+	}
+	100% {
+	transform: rotate(0deg) translateY(-1px);
+	}
+
+	}
+
+	#lb_phone-head {
+	-webkit-transform-origin: 50% 50%;
+	-webkit-animation: twirl-phone 0.5s alternate infinite linear;
+
+	-moz-transform-origin: 50% 50%;
+	-moz-animation: twirl-phone 0.5s alternate infinite linear;
+
+	-o-transform-origin: 50% 50%;
+	-o-animation: twirl-phone 0.5s alternate infinite linear;
+
+	transform-origin: 50% 50%;
+	animation: twirl-phone 0.5s alternate infinite linear;
+
+	}
+
+	@-webkit-keyframes wave-stroke {
+	100% {
+	opacity: 0;
+	}
+	}
+	@-moz-keyframes wave-stroke {
+	100% {
+	opacity: 0;
+	}
+	}
+	@-o-keyframes wave-stroke {
+	100% {
+	opacity: 0;
+	}
+	}
+	@keyframes wave-stroke {
+	100% {
+	opacity: 0;
+	}
+	}
+
+	.lb_phone-wave {
+	-webkit-animation: wave-stroke 1s alternate infinite linear;
+	-moz-animation: wave-stroke 1s alternate infinite linear;
+	-o-animation: wave-stroke 1s alternate infinite linear;
+	animation: twirl-phone 1s alternate infinite linear;
+
+	}
+
+	.delay1 {
+	-webkit-animation-delay: 0.33s;
+	-moz-animation-delay: 0.33s;
+	-ms-animation-delay: 0.33s;
+	-o-animation-delay: 0.33s;
+	animation-delay: 0.33s;
+	}
+	.delay2 {
+	-webkit-animation-delay: 0.66s;
+	-moz-animation-delay: 0.66s;
+	-ms-animation-delay: 0.66s;
+	-o-animation-delay: 0.66s;
+	animation-delay: 0.66s;
+	}
+	</style>
+	<circle cx="60.001" cy="60" fill="#d0a567" r="55.993" id="fill-background"/>
+	<path d="M99.212,99.955L93.05,78.953l-30.678,2.443L33.993,59.006l16.478,56.162c3.098,0.531,6.278,0.824,9.53,0.824  C75.273,115.992,89.111,109.871,99.212,99.955z" fill="#000000" opacity="0.07" />
+	<g id="lb_phone-head">
+		<path d="M92.894,81.197c-0.557,2.543-3.447,8.708-6.199,9.343c-2.33,0.539-4.754,0.812-7.219,0.812   C66,91.332,51.311,83.297,41.109,70.346C32.158,58.959,28.537,46.07,31.213,34.99c0.692-2.87,7.699-6.338,10.762-6.338   c1.423,0,2.195,0.614,2.599,1.137c0.424,0.559,7.855,11.889,8.277,12.622c1.619,2.793-1.176,4.661-2.867,5.797   c-2.928,1.948-5.678,3.796-3.137,9.152c0.037,0.08,2.809,5.994,7.293,10.234c4.313,4.566,10.185,7.303,10.243,7.34   c1.369,0.637,2.541,0.965,3.545,0.965c2.25,0,3.426-1.584,4.982-4.01c1.135-1.771,2.311-3.582,4.43-3.582   c0.711,0,1.406,0.211,2.078,0.654c0.117,0.076,11.938,7.785,12.494,8.209C92.953,77.961,93.279,79.311,92.894,81.197z" fill="#FFFFFF"/>
+	</g>
+</svg>
