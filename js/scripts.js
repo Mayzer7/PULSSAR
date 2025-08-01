@@ -66,6 +66,28 @@ function initFavoriteButtons() {
 
 initFavoriteButtons();
 
+// Выбрать комплектацию
+
+function selectConfiguration() {
+  const cards = document.querySelectorAll('.select-configuration-card');
+
+  if (cards) {
+      cards.forEach((card, index) => {
+      card.dataset.id = index + 1;
+
+      card.addEventListener('click', () => {
+        cards.forEach(c => c.classList.remove('active'));
+
+        card.classList.add('active');
+
+        console.log('Выбрана карточка:', card.dataset.id);
+      });
+    });
+  }
+}
+
+selectConfiguration();
+
 // Раскрытие карточек "Описание товара"
 
 const productDescCard = document.querySelector('.product-desc-card');
@@ -120,23 +142,26 @@ if (productDescCardReviewTexts) {
   ro.observe(textEl);
 
   btn.addEventListener('click', () => {
-    const isExpanding = !textEl.classList.contains('expanded');
-    btn.classList.toggle('open', isExpanding);
+  const isExpanding = !textEl.classList.contains('expanded');
+  btn.classList.toggle('open', isExpanding);
 
-    if (isExpanding) {
-      textEl.classList.add('expanded');
-      textEl.style.maxHeight = textEl.scrollHeight + 'px';
-      setTimeout(() => textEl.style.maxHeight = 'none', 0);
-    } else {
-      const fullH = textEl.scrollHeight;
-      const lineH = parseFloat(getComputedStyle(textEl).lineHeight);
-      const collapsedH = lineH * 3;
-      textEl.style.maxHeight = fullH + 'px';
-      void textEl.offsetHeight;
-      textEl.style.maxHeight = collapsedH + 'px';
-      setTimeout(() => textEl.classList.remove('expanded'), 0);
-    }
-  });
+  const btnLabel = btn.querySelector('.btn-label');
+  btnLabel.textContent = isExpanding ? 'Скрыть' : 'Читать весь отзыв';
+
+  if (isExpanding) {
+    textEl.classList.add('expanded');
+    textEl.style.maxHeight = textEl.scrollHeight + 'px';
+    setTimeout(() => textEl.style.maxHeight = 'none', 0);
+  } else {
+    const fullH = textEl.scrollHeight;
+    const lineH = parseFloat(getComputedStyle(textEl).lineHeight);
+    const collapsedH = lineH * 3;
+    textEl.style.maxHeight = fullH + 'px';
+    void textEl.offsetHeight;
+    textEl.style.maxHeight = collapsedH + 'px';
+    setTimeout(() => textEl.classList.remove('expanded'), 0);
+  }
+});
 });
 }
 
