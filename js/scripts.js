@@ -34,21 +34,37 @@ if (swiperThumbs) {
 
 // Добавить в избранное
 
-const addToFavoritesBtn = document.querySelector('.add-to-favorites-btn');
-
-if (addToFavoritesBtn) {
-    const button = addToFavoritesBtn;
-
-    button.addEventListener('click', () => {
-      const isActive = button.classList.toggle('active');
-      
-      if (isActive) {
-        addToFavorite();
-      } else {
-        deleteFavorite();
-      }
-    });
+function addToFavorite(productId) {
+  console.log('Добавлен в избранное:', productId);
 }
+
+function deleteFavorite(productId) {
+  console.log('Удалён из избранного:', productId);
+}
+
+function initFavoriteButtons() {
+  const addToFavoritesBtn = document.querySelector('.add-to-favorites-btn');
+  const addToFavoriteRelatedProductsBtn = document.querySelector('.add-to-favorite-related-products-btn');
+  
+  if (addToFavoritesBtn || addToFavoriteRelatedProductsBtn) {
+    document.querySelectorAll('.add-to-favorite-related-products-btn, .add-to-favorites-btn')
+    .forEach(btn => {
+      const productId = btn.closest('[data-product-id]')?.dataset.productId;
+
+      btn.addEventListener('click', () => {
+        const isActive = btn.classList.toggle('active');
+
+        if (isActive) {
+          addToFavorite(productId);
+        } else {
+          deleteFavorite(productId);
+        }
+      });
+    }); 
+  }
+}
+
+initFavoriteButtons();
 
 // Раскрытие карточек "Описание товара"
 
@@ -165,3 +181,68 @@ function sendStars() {
 }
 
 sendStars();
+
+
+// Функция переключения картинок при наведении в секции "С этим товаром покупают"
+
+function initInteractiveCards() {
+  const imageHoverCard = document.querySelector('.image-hover-card');
+
+  if (imageHoverCard) {
+    document.querySelectorAll('.image-hover-card').forEach(card => {
+      const frames = Array.from(card.querySelectorAll('img'));
+      const segments = Array.from(card.querySelectorAll('.segment'));
+      const count = frames.length;
+
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const relX = (e.clientX - rect.left) / rect.width;
+        let idx = Math.floor(relX * count);
+        idx = Math.max(0, Math.min(count - 1, idx));
+
+        frames.forEach((img, i) => {
+          img.style.opacity = (i === idx ? '1' : '0');
+        });
+
+        segments.forEach((seg, i) => {
+          seg.classList.toggle('active', i === idx);
+        });
+      });
+
+      card.addEventListener('mouseleave', () => {
+        frames.forEach((img, i) => {
+          img.style.opacity = (i === 0 ? '1' : '0');
+        });
+        segments.forEach((seg, i) => {
+          seg.classList.toggle('active', i === 0);
+        });
+      });
+    });
+  }
+}
+
+initInteractiveCards();
+
+function initRelatedProductsSwiper() {
+  const relatedProductsSwiper = document.querySelector('.related-products-swiper');
+
+  if (relatedProductsSwiper) {
+    const swiper = new Swiper('.related-products-swiper', {
+      slidesPerView: 3,
+      spaceBetween: 40,
+      slidesPerGroup: 1,
+      loop: false,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        320: { slidesPerView: 1, spaceBetween: 20 },
+        768: { slidesPerView: 2, spaceBetween: 30 },
+        1024: { slidesPerView: 3, spaceBetween: 40 },
+      },
+    });
+  }
+}
+
+initRelatedProductsSwiper();
