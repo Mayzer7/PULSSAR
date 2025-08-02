@@ -93,35 +93,43 @@ selectConfiguration();
 const productDescCard = document.querySelector('.product-desc-card');
 
 if (productDescCard) {
-    const cards = document.querySelectorAll('.product-desc-card');
+   const cards = document.querySelectorAll('.product-desc-card');
 
-    document.addEventListener('DOMContentLoaded', () => {
-      cards.forEach(card => {
-        if (card.classList.contains('open')) {
-          const info = card.querySelector('.product-desc-card-info');
-          info.style.maxHeight = info.scrollHeight + 'px';
-        }
-      });
-    });
-
-    cards.forEach(card => {
-      const btn = card.querySelector('.product-desc-card-open-btn');
+document.addEventListener('DOMContentLoaded', () => {
+  cards.forEach(card => {
+    if (card.classList.contains('open')) {
       const info = card.querySelector('.product-desc-card-info');
-
-      btn.addEventListener('click', () => {
-        const isOpen = card.classList.contains('open');
-
-        cards.forEach(c => {
-          c.classList.remove('open');
-          c.querySelector('.product-desc-card-info').style.maxHeight = null;
-        });
-
-        if (!isOpen) {
-          card.classList.add('open');
-          info.style.maxHeight = info.scrollHeight + 'px';
-        }
-    });
+      info.style.maxHeight = info.scrollHeight + 'px';
+    }
   });
+});
+
+cards.forEach(card => {
+  const btn = card.querySelector('.product-desc-card-open-btn');
+  const info = card.querySelector('.product-desc-card-info');
+
+  btn.addEventListener('click', () => {
+    const isOpen = card.classList.contains('open');
+
+    // Сначала сворачиваем все
+    cards.forEach(c => {
+      c.classList.remove('open');
+      c.querySelector('.product-desc-card-info').style.maxHeight = null;
+    });
+
+    // Если карточка была закрыта — открываем и скроллим к ней
+    if (!isOpen) {
+      card.classList.add('open');
+      info.style.maxHeight = info.scrollHeight + 'px';
+
+      // Плавно скроллим карточку в верхнюю часть окна
+      card.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
+});
 }
 
 // Раскрытие отзывов поболь
@@ -142,71 +150,25 @@ if (productDescCardReviewTexts) {
   ro.observe(textEl);
 
   btn.addEventListener('click', () => {
-  const isExpanding = !textEl.classList.contains('expanded');
-  btn.classList.toggle('open', isExpanding);
+    const isExpanding = !textEl.classList.contains('expanded');
+    btn.classList.toggle('open', isExpanding);
 
-  const btnLabel = btn.querySelector('.btn-label');
-  btnLabel.textContent = isExpanding ? 'Скрыть' : 'Читать весь отзыв';
-
-  if (isExpanding) {
-    textEl.classList.add('expanded');
-    textEl.style.maxHeight = textEl.scrollHeight + 'px';
-    setTimeout(() => textEl.style.maxHeight = 'none', 0);
-  } else {
-    const fullH = textEl.scrollHeight;
-    const lineH = parseFloat(getComputedStyle(textEl).lineHeight);
-    const collapsedH = lineH * 3;
-    textEl.style.maxHeight = fullH + 'px';
-    void textEl.offsetHeight;
-    textEl.style.maxHeight = collapsedH + 'px';
-    setTimeout(() => textEl.classList.remove('expanded'), 0);
-  }
-});
+    if (isExpanding) {
+      textEl.classList.add('expanded');
+      textEl.style.maxHeight = textEl.scrollHeight + 'px';
+      setTimeout(() => textEl.style.maxHeight = 'none', 0);
+    } else {
+      const fullH = textEl.scrollHeight;
+      const lineH = parseFloat(getComputedStyle(textEl).lineHeight);
+      const collapsedH = lineH * 3;
+      textEl.style.maxHeight = fullH + 'px';
+      void textEl.offsetHeight;
+      textEl.style.maxHeight = collapsedH + 'px';
+      setTimeout(() => textEl.classList.remove('expanded'), 0);
+    }
+  });
 });
 }
-
-
-// Оценка в блоке "Оставить отзыв"
-
-function sendStars() {
-  const stars = document.querySelectorAll('.send-review-stars svg');
-
-  if (stars) {
-    let currentRating = 0; 
-
-    const setFill = (rating) => {
-      stars.forEach(star => {
-        const val = parseInt(star.dataset.value, 10);
-        if (val <= rating) {
-          star.classList.add('filled');
-        } else {
-          star.classList.remove('filled');
-        }
-      });
-    };
-
-    stars.forEach(star => {
-      star.addEventListener('mouseover', () => {
-        const hoverValue = parseInt(star.dataset.value, 10);
-        setFill(hoverValue);
-      });
-
-      star.addEventListener('mouseout', () => {
-        setFill(currentRating);
-      });
-
-      star.addEventListener('click', () => {
-        currentRating = parseInt(star.dataset.value, 10);
-        console.log('Поставленный рейтинг:', currentRating);
-      });
-    });
-
-    setFill(currentRating);
-  }
-}
-
-sendStars();
-
 
 // Функция переключения картинок при наведении в секции "С этим товаром покупают"
 
@@ -271,3 +233,192 @@ function initRelatedProductsSwiper() {
 }
 
 initRelatedProductsSwiper();
+
+
+
+// Отправка файла в форме "Оставить заявку"
+
+const getRequestForm = document.querySelector('.send-review-form');
+
+function sendFile() {
+  if (getRequestForm) {
+    const formats = ['jpg','jpeg','png','pdf'];
+    const input   = document.getElementById('file-input');
+    const btn     = document.getElementById('file-btn');
+    const infoWr  = document.getElementById('file-info');
+    const nameEl  = infoWr.querySelector('.file-name');
+    const remove  = document.getElementById('file-remove');
+    const wrapper = document.querySelector('.file-upload-wrapper');
+
+    btn.addEventListener('click', () => input.click());
+    
+    input.addEventListener('change', () => {
+      if (!input.files.length) return;
+      
+      const file = input.files[0];
+      const ext  = file.name.split('.').pop().toLowerCase();
+
+      if (!formats.includes(ext)) {
+        alert('Неподдерживаемый формат: ' + ext);
+        input.value = '';
+        return;
+      }
+
+      const base = file.name.slice(0, 5);
+      nameEl.textContent = `${base}.${ext}`;
+
+      wrapper.classList.add('has-file');
+      infoWr.style.display = 'flex';
+    });
+
+    remove.addEventListener('click', () => {
+      input.value = '';
+      wrapper.classList.remove('has-file');
+      infoWr.style.display = 'none';
+      nameEl.textContent = '';
+    });
+  }
+}
+
+sendFile();
+
+
+function sendForm(data) {
+  // Здесь будет отправка на бэкенд, а пока — просто в консоль:
+  console.log('Отправляем данные формы:', data);
+  clearReviewForm();
+}
+
+function clearReviewForm() {
+  const form = document.querySelector('.send-review-form');
+  if (!form) return;
+
+  if (form) {
+    form.reset();
+
+    const stars = form.querySelectorAll('.send-review-stars svg');
+    stars.forEach(star => star.classList.remove('filled'));
+
+    const nameField = form.querySelector('input[type="text"]');
+    const reviewField = form.querySelector('textarea');
+    const politicsWrapper = form.querySelector('.accept-politics');
+
+    nameField.classList.remove('error');
+    reviewField.classList.remove('error');
+    politicsWrapper.classList.remove('error');
+
+    // Сброс файла
+    const fileInput   = document.getElementById('file-input');
+    const fileNameEl  = document.querySelector('.file-name');
+    const fileInfoWr  = document.getElementById('file-info');
+    const fileWrapper = document.querySelector('.file-upload-wrapper');
+
+    if (fileInput) fileInput.value = '';
+    if (fileNameEl) fileNameEl.textContent = '';
+    if (fileInfoWr) fileInfoWr.style.display = 'none';
+    if (fileWrapper) fileWrapper.classList.remove('has-file');
+  }
+}
+
+function ValidateGetRequestForm() {
+  const form = document.querySelector('.send-review-form');
+
+  if (!form) return;
+
+  if (form) {
+    const stars            = form.querySelectorAll('.send-review-stars svg');
+    let currentRating      = 0;
+
+    const nameField        = form.querySelector('input[type="text"]');
+    const phoneField       = form.querySelector('input[type="tel"]');
+    const reviewField      = form.querySelector('textarea');
+    const fileInput        = form.querySelector('#file-input');
+    const politicsWrapper  = form.querySelector('.accept-politics');
+    const politicsCheckbox = politicsWrapper.querySelector('input[type="checkbox"]');
+
+    // Выставление рейтинга звёзд
+    const setFill = rating => {
+      stars.forEach(star => {
+        star.classList.toggle('filled', parseInt(star.dataset.value, 10) <= rating);
+      });
+    };
+
+    stars.forEach(star => {
+      const val = parseInt(star.dataset.value, 10);
+
+      star.addEventListener('mouseover', () => setFill(val));
+      star.addEventListener('mouseout',  () => setFill(currentRating));
+      star.addEventListener('click',    () => {
+        currentRating = val;
+        setFill(currentRating);
+      });
+    });
+
+    // Валидация 
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      let isValid = true;
+
+      // имя
+      if (!nameField.value.trim()) {
+        nameField.classList.add('error');
+        isValid = false;
+      } else {
+        nameField.classList.remove('error');
+      }
+
+      // отзыв
+      if (!reviewField.value.trim()) {
+        reviewField.classList.add('error');
+        isValid = false;
+      } else {
+        reviewField.classList.remove('error');
+      }
+
+      // чекбокс
+      if (!politicsCheckbox.checked) {
+        politicsWrapper.classList.add('error');
+        isValid = false;
+      } else {
+        politicsWrapper.classList.remove('error');
+      }
+
+      if (!isValid) return;
+
+      // сбор данных, включая рейтинг
+      const formData = {
+        name:    nameField.value.trim(),
+        phone:   phoneField.value.trim() || null,
+        review:  reviewField.value.trim(),
+        rating:  currentRating,           
+        accept:  politicsCheckbox.checked,
+        file:    fileInput.files[0]?.name || null
+      };
+
+      sendForm(formData);
+    });
+
+    // Сброс ошибок при вводе/смене 
+    nameField.addEventListener('input', () => {
+      if (nameField.classList.contains('error') && nameField.value.trim()) {
+        nameField.classList.remove('error');
+      }
+    });
+
+    reviewField.addEventListener('input', () => {
+      if (reviewField.classList.contains('error') && reviewField.value.trim()) {
+        reviewField.classList.remove('error');
+      }
+    });
+
+    politicsCheckbox.addEventListener('change', () => {
+      if (politicsCheckbox.checked) {
+        politicsWrapper.classList.remove('error');
+      }
+    });
+  }
+}
+
+
+ValidateGetRequestForm();

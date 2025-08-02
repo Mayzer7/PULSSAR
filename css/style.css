@@ -3995,6 +3995,10 @@ body, html {
   background: #FAF8F5;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   outline: none;
 }
@@ -6941,6 +6945,7 @@ p.send-review-title {
 }
 
 .accept-politics {
+  margin-top: 14px;
   display: flex;
   gap: 12px;  
 }
@@ -6964,6 +6969,36 @@ p.send-review-title {
   gap: 6px;
 }
 
+.send-photos-btn .upload-label {
+  position: relative;        
+  display: inline-block;    
+  cursor: pointer;
+  color: #CFA567;
+  transition: color 0.2s;
+}
+
+.send-photos-btn .upload-label,
+.file-name {
+  display: inline-block;
+  line-height: 1.2;      
+  vertical-align: middle;   
+}
+
+.send-photos-btn .upload-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background-color: #CFA567;
+  transition: width 0.3s ease;
+}
+
+.send-photos-btn .upload-label:hover::after {
+  width: 100%;
+}
+
 .send-review-btn {
   cursor: pointer;
   font-family: "Open Sans", sans-serif;
@@ -6985,6 +7020,152 @@ p.send-review-title {
 
 .product-desc-card-info ul li::marker {
   font-size: 12px; 
+}
+
+.custom-checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.custom-checkbox input {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  border: 1px solid #100E0E;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.custom-checkbox input::after {
+  content: "";
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 1px 1px 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.custom-checkbox input:checked {
+  background-color: #CFA567;
+  border-color: #CFA567;
+}
+
+.custom-checkbox input:checked::after {
+  opacity: 1;
+}
+
+/* Отправка файла */
+
+.file-upload-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.send-photos-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #CFA567;
+  font: 16px/1 'Open Sans', sans-serif;
+}
+
+.file-upload-wrapper.has-file .send-photos-btn {
+  display: none;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.file-upload-wrapper.has-file .file-info {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.file-upload-wrapper.has-file .send-photos-btn {
+  display: none;
+}
+
+.file-name {
+  font: 16px/1 'Open Sans', sans-serif;
+  color: #CFA567;
+}
+
+.file-remove {
+  background: none;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: #100E0E;
+  padding: 0;
+}
+
+.file-remove {
+  color: #100E0E;      
+  transition: color 0.2s;
+}
+
+.file-remove:hover {
+  color: #CFA567;       
+}
+
+/* Валидация */
+
+.send-review-form input,
+.send-review-form textarea {
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+
+.send-review-form input.error,
+.send-review-form textarea.error {
+  border-color: #FF6B6B !important;
+}
+
+.send-review-form input.error::placeholder,
+.send-review-form textarea.error::placeholder {
+  color: #FF6B6B;
+}
+
+.accept-politics,
+.accept-politics p {
+  transition: color 0.3s ease;
+}
+.custom-checkbox input {
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.accept-politics.error .custom-checkbox input {
+  border-color: #FF6B6B !important;
+  background-color: transparent;
+}
+
+.accept-politics.error p,
+.accept-politics.error p a {
+  color: #FF6B6B;
 }
 
 /* Advantages */
