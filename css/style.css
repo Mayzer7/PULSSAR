@@ -6227,12 +6227,16 @@ hr.white {
   }
 }
 
-
+/* 1. Убираем системный тап‑хайлайт */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
 
 /* Доработка сайта */
 
 .main {
   padding: 0px 40px;
+  min-width: 320px;
 }
 
 @media (max-width: 959px) {
@@ -6522,6 +6526,7 @@ p.product-item-price {
   font-family: "Open Sans", sans-serif;
   font-size: 18px;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .add-to-favorites-btn svg path {
@@ -6545,6 +6550,7 @@ p.product-item-price {
   font-family: "Open Sans", sans-serif;
   font-size: 18px;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .question-icon,
@@ -6658,6 +6664,50 @@ p.product-item-price {
     position: relative;
   }
 }
+
+@media (max-width: 639px) {
+  .product-title {
+    font-size: 26px;
+  }
+
+  .product-article,
+  .product-reviews-text {
+    font-size: 14px;
+  }
+
+  .in-stock {
+    padding-top: 24px;
+  }
+
+  .in-stock span {
+    font-size: 14px;
+  }
+
+  .product-item-price {
+    font-size: 32px;
+  }
+
+  .item-other-buttons {
+    margin-top: 10px;
+  }
+
+  .swiper-pagination-bullet {
+    width: 10px !important;
+    height: 10px !important;
+  }
+}
+
+@media (max-width: 373px) {
+  .add-to-favorites-btn,
+  .question-btn {
+    font-size: 10px;
+  }
+
+  .product-title {
+    font-size: 24px;
+  }
+}
+
 
 /* Выбрать комплектацию */
 
@@ -6793,6 +6843,7 @@ p.product-item-price {
 @media (max-width: 725px) {
   .select-configuration-cards {
     grid-template-columns: 1fr;
+    padding-right: 10px;
   }
 }
 
@@ -6830,6 +6881,8 @@ p.product-desc-card-title {
   font-size: 24px;
   font-weight: 500;
   margin-bottom: 0px;
+  max-width: 270px;
+  overflow-wrap: break-word;
 }
 
 
@@ -7445,11 +7498,6 @@ p.send-review-title {
     font-size: 14px;
   }
 
-  .product-desc-card-review-author,
-  .send-review-title {
-    font-size: 18px;
-  }
-
   p.send-review-title {
     margin-bottom: 16px;
   }
@@ -7484,9 +7532,20 @@ p.send-review-title {
     font-size: 14px;
   }
 
-  .product-desc-card-info ul li,
+  /* .product-desc-card-info ul li,
   .product-desc-card-info p:not(.product-desc-card-rating-number) {
     font-size: 14px;
+  } */
+
+  .product-desc-card-review-author,
+  .send-review-title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 900px) {
+  .product-desc-card-title {
+    max-width: 85%;
   }
 }
 
@@ -7554,6 +7613,17 @@ p.send-review-title {
 @media (max-width: 900px) {
   .advantages {
     padding: 86px 0px 70px 0px;
+  }
+}
+
+@media (max-width: 700px) {
+  .advantages-card img {
+    max-width: 45px;
+    max-height: 45px;
+  }
+  .advantages-card-title {
+    font-size: 16px;
+    max-width: 160px;
   }
 }
 
@@ -7784,7 +7854,9 @@ p.related-products-card-price {
     font-size: 30px;
   }
 
-  .related-products-card-in-stock span {
+  .related-products-card-in-stock span,
+  .no-stock span,
+  .related-products-card-rating p {
     font-size: 14px;
   }
 
@@ -7828,16 +7900,25 @@ p.related-products-card-price {
   }
 }
 
+@media (max-width: 700px) {
+  .related-products-title {
+    font-size: 26px;
+  }
+}
+
 /* Footer */
+
 
 .footer {
   padding: 0px;
+  min-width: 350px;
 }
 
 .footer-container {
   display: grid;
   grid-template-columns: 0.5fr 1fr;
   padding: 80px 40px 40px 40px;
+  min-width: 320px;
 }
 
 .footer-content-top {
@@ -7866,6 +7947,16 @@ p.footer-navigation-list-title {
   font-weight: 400;
   font-size: 18px;
   color: #737373;
+}
+
+.footer-navigation-list-info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.footer-navigation-list-info-container:last-child {
+  margin-top: 24px;
 }
 
 .footer-navigation-list-info-numbers {
@@ -7966,7 +8057,7 @@ p.footer-navigation-title {
 }
 
 .footer-copyright {
-  padding: 24px 40px 24px 40px;
+  padding: 0px 40px 24px 40px; 
   white-space: nowrap;
 }
 
@@ -8057,27 +8148,21 @@ p.footer-copyright-text {
   }
 }
 
+@media (max-width: 1280px) {
+  .footer-container {
+    padding: 60px 40px 26px 40px;
+  }
+
+  .footer-copyright {
+    padding: 0px 40px 24px 40px;
+  }
+}
+
 @media (max-width: 1200px) {
   .footer-container {
     grid-template-columns: 1fr;
     gap: 33px;
   }
-
-  /* .footer-content-top {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  } */
-
-  /* .footer-navigation-socials {
-    flex-direction: column;
-    gap: 16px;
-  } */
-
-  /* .footer-navigation:last-child {
-    margin-bottom: 50px;
-  } */
-
-  
 }
 
 @media (max-width: 1100px) {
@@ -8092,7 +8177,7 @@ p.footer-copyright-text {
 
 @media (max-width: 959px) {
   .footer-container {
-    padding: 80px 30px 40px 30px;
+    padding: 60px 30px 30px 30px;
   }
 
   .footer-copyright {
@@ -8119,36 +8204,88 @@ p.footer-copyright-text {
 
   .footer-copyright-links {
     justify-content: space-between;
-    /* flex-direction: column;
-    gap: 6px; */
+  }
+}
+
+@media (max-width: 700px) {
+  .footer-content-top .footer-navigation:nth-child(4) {
+    grid-column: 1 / -1;
+  }
+
+  
+  .payment-methods {
+    gap: 16px;
   }
 }
 
 @media (max-width: 639px) {
   .footer-container {
-    padding: 80px 15px 40px 15px;
+    padding: 30px 15px 30px 15px;
   }
 
   .footer-copyright {
-    padding: 24px 15px 24px 15px;
+    padding: 0px 15px 24px 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-copyright-links {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 570px) {
+  .footer-container {
+    padding: 30px 15px 30px 15px;
+  }
+
+  .footer-content-top {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: auto;
+    gap: 20px;
+  }
+
+  .footer-content-top .footer-navigation:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .footer-content-top .footer-navigation:nth-child(4) {
+    grid-column: 1 / -1;
+  }
+
+  .accept-payment-methods {
+    margin-top: 40px;
+  }
+
+  .footer-navigation-list-info-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-navigation-socials {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .footer-navigation-socials-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: flex-start;
+  }
+
+  .footer-yandex-rating {
+    margin-top: 0px;
+  }
+
+  .payment-methods {
+    gap: 16px;
+  }
+
+  .footer-navigation-list {
+    gap: 16px;
   }
 }
 
 
-
-
-
-
-
-
-
-
-/* .footer-copyright-inner {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .footer-copyright-links {
-    flex-direction: column;
-    gap: 6px;
-  } */
