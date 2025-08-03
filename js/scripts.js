@@ -93,52 +93,86 @@ selectConfiguration();
 const productDescCard = document.querySelector('.product-desc-card');
 
 if (productDescCard) {
-   const cards = document.querySelectorAll('.product-desc-card');
+  function smoothScrollTo(card) {
+    const header = document.querySelector('.site-header'); 
+    const headerHeight = header ? header.offsetHeight : 0;
+    const targetY = card.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10;
 
-document.addEventListener('DOMContentLoaded', () => {
-  cards.forEach(card => {
-    const info = card.querySelector('.product-desc-card-info');
-    info.style.maxHeight = null;
-
-    if (card.classList.contains('open')) {
-      info.style.maxHeight = info.scrollHeight + 'px';
+    if (window.innerWidth < 768) {
+      window.scrollTo(0, targetY);
+      return;
     }
-  });
 
-  cards.forEach(card => {
-    if (card.classList.contains('open')) {
+    const startY = window.pageYOffset;
+    const distance = targetY - startY;
+    const duration = 500; 
+    let startTime = null;
+
+    function easeInOutQuad(t) {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    }
+
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeInOutQuad(progress);
+
+      window.scrollTo(0, startY + distance * eased);
+
+      if (elapsed < duration) {
+        requestAnimationFrame(step);
+      }
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  const cards = document.querySelectorAll('.product-desc-card');
+
+  document.addEventListener('DOMContentLoaded', () => {
+    cards.forEach(card => {
       const info = card.querySelector('.product-desc-card-info');
-      info.style.maxHeight = info.scrollHeight + 'px';
-    }
-  });
-});
+      info.style.maxHeight = null;
 
-cards.forEach(card => {
-  const btn = card.querySelector('.product-desc-card-open-btn');
-  const info = card.querySelector('.product-desc-card-info');
-
-  btn.addEventListener('click', () => {
-    const isOpen = card.classList.contains('open');
-
-    // Сначала сворачиваем все
-    cards.forEach(c => {
-      c.classList.remove('open');
-      c.querySelector('.product-desc-card-info').style.maxHeight = null;
+      if (card.classList.contains('open')) {
+        info.style.maxHeight = info.scrollHeight + 'px';
+      }
     });
 
-    // Если карточка была закрыта — открываем и скроллим к ней
-    if (!isOpen) {
-      card.classList.add('open');
-      info.style.maxHeight = info.scrollHeight + 'px';
-
-      // Плавно скроллим карточку в верхнюю часть окна
-      card.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
+    cards.forEach(card => {
+      if (card.classList.contains('open')) {
+        const info = card.querySelector('.product-desc-card-info');
+        info.style.maxHeight = info.scrollHeight + 'px';
+      }
+    });
   });
-});
+
+  cards.forEach(card => {
+    const btn = card.querySelector('.product-desc-card-open-btn');
+    const info = card.querySelector('.product-desc-card-info');
+
+    btn.addEventListener('click', () => {
+      const isOpen = card.classList.contains('open');
+
+      cards.forEach(c => {
+        c.classList.remove('open');
+        c.querySelector('.product-desc-card-info').style.maxHeight = null;
+      });
+
+      if (!isOpen) {
+        card.classList.add('open');
+        info.style.maxHeight = info.scrollHeight + 'px';
+
+        info.addEventListener('transitionend', function onEnd(e) {
+          if (e.propertyName === 'max-height') {
+            smoothScrollTo(card);
+            info.removeEventListener('transitionend', onEnd);
+          }
+        });
+      }
+    });
+  });
 }
 
 // Раскрытие отзывов поболь
@@ -288,7 +322,8 @@ function validatePhoneNumber(phone) {
 }
 
 const phoneInput = document.getElementById('phone');
-phoneInput.addEventListener('input', (e) => {
+if (phoneInput) {
+  phoneInput.addEventListener('input', (e) => {
   let value = getDigits(phoneInput.value);
 
   if (e.inputType === 'deleteContentBackward' && value.length <= 1) {
@@ -324,44 +359,48 @@ phoneInput.addEventListener('input', (e) => {
     cursorPos + (newLen - oldLen)
   );
 });
+}
 
 // Отправка файла в форме "Оставить заявку"
 function sendFile() {
-  const formats = ['jpg','jpeg','png','pdf'];
   const input   = document.getElementById('file-input');
-  const btn     = document.getElementById('file-btn');
-  const infoWr  = document.getElementById('file-info');
-  const nameEl  = infoWr.querySelector('.file-name');
-  const remove  = document.getElementById('file-remove');
-  const wrapper = document.querySelector('.file-upload-wrapper');
 
-  btn.addEventListener('click', () => input.click());
+  if (input) {
+    const formats = ['jpg','jpeg','png','pdf'];
+    const btn     = document.getElementById('file-btn');
+    const infoWr  = document.getElementById('file-info');
+    const nameEl  = infoWr.querySelector('.file-name');
+    const remove  = document.getElementById('file-remove');
+    const wrapper = document.querySelector('.file-upload-wrapper');
 
-  input.addEventListener('change', () => {
-    if (!input.files.length) return;
+    btn.addEventListener('click', () => input.click());
 
-    const file = input.files[0];
-    const ext  = file.name.split('.').pop().toLowerCase();
+    input.addEventListener('change', () => {
+      if (!input.files.length) return;
 
-    if (!formats.includes(ext)) {
-      alert('Неподдерживаемый формат: ' + ext);
+      const file = input.files[0];
+      const ext  = file.name.split('.').pop().toLowerCase();
+
+      if (!formats.includes(ext)) {
+        alert('Неподдерживаемый формат: ' + ext);
+        input.value = '';
+        return;
+      }
+
+      const base = file.name.slice(0, 5);
+      nameEl.textContent = `${base}.${ext}`;
+
+      wrapper.classList.add('has-file');
+      infoWr.style.display = 'flex';
+    });
+
+    remove.addEventListener('click', () => {
       input.value = '';
-      return;
-    }
-
-    const base = file.name.slice(0, 5);
-    nameEl.textContent = `${base}.${ext}`;
-
-    wrapper.classList.add('has-file');
-    infoWr.style.display = 'flex';
-  });
-
-  remove.addEventListener('click', () => {
-    input.value = '';
-    wrapper.classList.remove('has-file');
-    infoWr.style.display = 'none';
-    nameEl.textContent = '';
-  });
+      wrapper.classList.remove('has-file');
+      infoWr.style.display = 'none';
+      nameEl.textContent = '';
+    });
+  }
 }
 
 // Отправка данных (заглушка)
@@ -511,6 +550,71 @@ function ValidateGetRequestForm() {
   });
 }
 
-// Запуск
 sendFile();
 ValidateGetRequestForm();
+
+
+
+// Оформление заказа 
+
+function choiceCountProduct(action) {
+  const valueElem = document.getElementById('quantity-value');
+  let current = parseInt(valueElem.textContent, 10);
+
+  if (action === 'minus' && current > 1) {
+    current -= 1;
+  } else if (action === 'plus') {
+    current += 1;
+  }
+
+  valueElem.textContent = current;
+}
+
+// Промокод
+
+const promo = document.querySelector('.promo-code');
+
+if (promo) {
+  const input = document.querySelector('.promo-code input');
+  const btnApply = document.querySelector('.promo-code-btn');
+  const btnClear = document.querySelector('.promo-code-clear');
+
+  function updateButtonVisibility() {
+    if (input.value.trim().length > 0) {
+      btnApply.classList.add('visible');
+    } else {
+      btnApply.classList.remove('visible');
+      btnClear.classList.remove('visible');
+    }
+  }
+
+  input.addEventListener('input', () => {
+    updateButtonVisibility();
+    if (input.value.trim().length === 0) {
+      btnClear.classList.remove('visible');
+    }
+  });
+
+  function sendPromo() {
+    const promo = input.value.trim();
+    if (promo.length === 0) return;
+
+    console.log('Промокод введен:', promo);
+    
+    btnApply.classList.remove('visible');
+    btnClear.classList.add('visible');
+    
+  }
+
+  btnApply.addEventListener('click', () => {
+    sendPromo();
+  });
+
+
+  btnClear.addEventListener('click', () => {
+    input.value = '';
+    btnClear.classList.remove('visible');
+    btnApply.classList.remove('visible');
+    input.focus();
+  });
+}
