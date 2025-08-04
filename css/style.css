@@ -7483,7 +7483,7 @@ p.send-review-title {
   margin-bottom: 10px;
   color: #FF6B6B;
   font-size: 14px;
-  display: block;          
+  display: none;          
   opacity: 0;           
   max-height: 0;            
   overflow: hidden;         
@@ -7494,9 +7494,9 @@ p.send-review-title {
 
 .error-message.show {
   opacity: 1;            
-  max-height: 2em;      
+  max-height: 2em;    
+  display: block;  
 }
-
 
 
 /* Адаптив "Отзывов" */
