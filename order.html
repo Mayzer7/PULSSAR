@@ -34,16 +34,17 @@
             <div class="cart-container">
                 <div class="cart-left-side">
                     <div class="cart-left-side-head">
-                        <button class="cart-choice-all-button">
+                        <button type="button" class="cart-choice-all-button">
                             <label class="custom-checkbox">
                                 <input 
+                                    id="select-all"
                                     type="checkbox" 
                                     name="all-choice"
                                     data-field="all-choice" 
                                 />
                                 <span class="checkbox-box"></span>
+                                Выбрать все
                             </label>
-                            Выбрать все
                         </button>
 
                         <button class="clear-cart-btn">
@@ -54,7 +55,21 @@
                     <div class="cart-items">
                         <div class="cart-item">
                             <div class="cart-image">
-                                <img src="img/product/1.png" alt="">
+                                <div class="cart-image-wrapper">
+                                    <button class="choice-item-btn">
+                                        <label class="custom-checkbox">
+                                            <input 
+                                                class="item-checkbox"
+                                                type="checkbox" 
+                                                name="all-choice"
+                                                data-field="all-choice" 
+                                            />
+                                            <span class="checkbox-box"></span>
+                                        </label>
+                                    </button>
+
+                                    <img src="img/product/1.png" alt="">
+                                </div>
                             </div>
 
                             <div class="cart-item-info">
@@ -76,15 +91,75 @@
 
                                 <div class="cart-item-price">
                                     <div class="quantity-selector">
-                                        <button class="quantity-btn minus" onclick="choiceCountProduct('minus')">
+                                        <button class="quantity-btn minus">
                                             <svg width="17" height="1" viewBox="0 0 17 1" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M17 0.5L8.5 0.5L0 0.499999" stroke="black"/>
                                             </svg>
                                         </button>
                                         
-                                        <div class="quantity-value" id="quantity-value">1</div>
+                                        <div class="quantity-value">1</div>
                                         
-                                        <button class="quantity-btn plus" onclick="choiceCountProduct('plus')">
+                                        <button class="quantity-btn plus">
+                                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M17 8.5L8.5 8.5M-3.71547e-07 8.5L8.5 8.5M8.5 8.5L8.5 -3.71547e-07L8.5 17" stroke="black"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <p class="cart-item-price-value">
+                                        114 900 ₽
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cart-item">
+                            <div class="cart-image">
+                                <div class="cart-image-wrapper">
+                                    <button class="choice-item-btn">
+                                        <label class="custom-checkbox">
+                                            <input 
+                                                class="item-checkbox"
+                                                type="checkbox" 
+                                                name="all-choice"
+                                                data-field="all-choice" 
+                                            />
+                                            <span class="checkbox-box"></span>
+                                        </label>
+                                    </button>
+
+                                    <img src="img/product/1.png" alt="">
+                                </div>
+                            </div>
+
+                            <div class="cart-item-info">
+                                <div class="cart-item-desc">
+                                    <a href="product.html" class="cart-item-name">
+                                        Подвесная люстра VARDA (Количество ламп 3, цвет плафона желтый, цвет каркаса св.дерево,  размер 85*35см)
+                                    </a>
+
+                                    <button class="delete-cart-item-btn">
+                                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M20.25 0.75L10.5 10.5M0.749999 20.25L10.5 10.5M10.5 10.5L0.749999 0.750001L20.25 20.25" stroke="black"/>
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <p class="cart-item-article">
+                                    Артикул: VARDA-66678-rn-P
+                                </p>
+
+                                <div class="cart-item-price">
+                                    <div class="quantity-selector">
+                                        <button class="quantity-btn minus"> 
+                                            <svg width="17" height="1" viewBox="0 0 17 1" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M17 0.5L8.5 0.5L0 0.499999" stroke="black"/>
+                                            </svg>
+                                        </button>
+                                        
+                                        <div class="quantity-value">1</div>
+                                        
+                                        <button class="quantity-btn plus">
                                             <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M17 8.5L8.5 8.5M-3.71547e-07 8.5L8.5 8.5M8.5 8.5L8.5 -3.71547e-07L8.5 17" stroke="black"/>
                                             </svg>
@@ -99,18 +174,24 @@
                         </div>
                     </div>
 
-                    <div class="promo-code">
-                        <input type="text" placeholder="Промокод" />
-                        
-                        <button class="promo-code-btn">
-                            Применить
-                        </button>
-                        
-                        <button class="promo-code-clear" aria-label="Очистить">
-                            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20.25 0.75L10.5 10.5M0.749999 20.25L10.5 10.5M10.5 10.5L0.749999 0.750001L20.25 20.25" stroke="black"/>
-                            </svg>
-                        </button>
+                    <div class="promo-code-container">
+                        <div class="promo-code">
+                            <input type="text" placeholder="Промокод" />
+                            
+                            <button class="promo-code-btn">
+                                Применить
+                            </button>
+                            
+                            <button class="promo-code-clear" aria-label="Очистить">
+                                <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20.25 0.75L10.5 10.5M0.749999 20.25L10.5 10.5M10.5 10.5L0.749999 0.750001L20.25 20.25" stroke="black"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <p class="promo-code-error">
+                            Промокод не найден
+                        </p>
                     </div>
 
                     <div class="cart-lines">
@@ -152,7 +233,10 @@
                         </div>
 
                         <input type="text" placeholder="Ваше имя *" class="cart-form-input">
-                        <input type="tel" placeholder="Номер телефона *" class="cart-form-input">
+                        <input id="phone" type="tel" placeholder="Номер телефона *" class="cart-form-input">
+                        <span class="error-message phone-error">
+                            Введите корректный номер телефона
+                        </span>
                         <input type="text" placeholder="E-mail *" class="cart-form-input">
 
                         <div class="cart-form-head delivery-methods">
@@ -168,24 +252,38 @@
                         </div>
 
                         <div class="delivery-methods-text">
-                            <p>
-                                Срок поставки заказных светильников составляет 5-7 недель, в зависимости от сезона
-                            </p>
+                            <div class="method-content delivery-content-self">
+                                <p>Самовывоз доступен через 2–3 рабочих дня с момента оформления заказа.</p>
+                                
+                                <ul>
+                                    <li>Адрес пункта: Москва, ул. Кржижановского д 23 стр 3 офис 5</li>
+                                    <li>Режим работы: Пн–Пт 10:00–18:00</li>
+                                    <li>Предварительная запись не требуется</li>
+                                </ul>
+                            </div>
 
-                            <ul>
-                                <li>от 30 000 ₽ — БЕСПЛАТНО</li>
-                                <li>Курьером по Москве — 390 ₽ </li>
-                                <li>За пределы МКАД — 30 ₽ / 1 км  </li>
-                            </ul>
+                            <div class="method-content delivery-content-delivery">
+                                <p>
+                                    Срок поставки заказных светильников составляет 5-7 недель, в зависимости от сезона
+                                </p>
+
+                                <ul>
+                                    <li>от 30 000 ₽ — БЕСПЛАТНО</li>
+                                    <li>Курьером по Москве — 390 ₽ </li>
+                                    <li>За пределы МКАД — 30 ₽ / 1 км  </li>
+                                </ul>
+                            </div>
                         </div>
 
-                        <div class="cart-form-head delivery-methods">
-                            <p class="cart-form-title">Адрес доставки</p>
-                        </div>
+                        <div class="delivery-address">
+                            <div class="cart-form-head delivery-methods">
+                                <p class="cart-form-title">Адрес доставки</p>
+                            </div>
 
-                        <input type="text" placeholder="Москва" class="cart-form-input">
-                        <input type="tel" placeholder="Введите адрес * " class="cart-form-input">
-                        <input type="text" placeholder="Комментарий по доставке. Например, как найти вход, пропускная система и тд." class="cart-form-input">
+                            <input type="text" placeholder="Москва" class="cart-form-input">
+                            <input type="tel" placeholder="Введите адрес * " class="cart-form-input">
+                            <textarea class="cart-form-input" rows="2" placeholder="Комментарий по доставке. Например, как найти вход, пропускная система и т.д."></textarea>
+                        </div>
                     
                         <div class="cart-form-head delivery-methods">
                             <p class="cart-form-title">Способ оплаты</p>
@@ -208,7 +306,7 @@
                             <p>Я соглашаюсь <span><a href="#">c политикой обработки персональных данных</a></span></p>
                         </div>
 
-                        <button class="place-order-btn">
+                        <button class="place-order-btn" type="submit">
                             Оформить заказ
                         </button>
                     </form>

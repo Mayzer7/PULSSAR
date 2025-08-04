@@ -404,8 +404,8 @@ function sendFile() {
 }
 
 // Отправка данных (заглушка)
-function sendForm(data) {
-  console.log('Данные формы:', data);
+function sendFormReview(data) {
+  console.log('Отзыв:', data);
   clearReviewForm();
 }
 
@@ -434,7 +434,7 @@ function clearReviewForm() {
 }
 
 // Валидация формы
-function ValidateGetRequestForm() {
+function ValidateReviewForm() {
   const form = document.querySelector('.send-review-form');
   if (!form) return;
 
@@ -521,7 +521,7 @@ function ValidateGetRequestForm() {
       file:    document.getElementById('file-input').files[0]?.name || null
     };
 
-    sendForm(formData);
+    sendFormReview(formData);
   });
 
   // Сброс ошибок при вводе
@@ -551,70 +551,309 @@ function ValidateGetRequestForm() {
 }
 
 sendFile();
-ValidateGetRequestForm();
+ValidateReviewForm();
 
 
 
 // Оформление заказа 
 
-function choiceCountProduct(action) {
-  const valueElem = document.getElementById('quantity-value');
-  let current = parseInt(valueElem.textContent, 10);
+function choiceCountProduct(btn, action) {
+  const quantitySelector = document.querySelector('.quantity-selector');
 
-  if (action === 'minus' && current > 1) {
-    current -= 1;
-  } else if (action === 'plus') {
-    current += 1;
+  if (quantitySelector) {
+    document.querySelector('.cart-items').addEventListener('click', e => {
+      const btn = e.target.closest('.quantity-btn');
+      if (!btn) return; 
+
+      const selector = btn.closest('.quantity-selector');
+      const valueEl = selector.querySelector('.quantity-value');
+      let count = parseInt(valueEl.textContent, 10);
+
+      if (btn.classList.contains('minus') && count > 1) {
+        count--;
+      } else if (btn.classList.contains('plus')) {
+        count++;
+      }
+
+      valueEl.textContent = count;
+    });
   }
-
-  valueElem.textContent = current;
 }
+
+choiceCountProduct();
 
 // Промокод
 
 const promo = document.querySelector('.promo-code');
+let promoValid = false;
 
 if (promo) {
-  const input = document.querySelector('.promo-code input');
-  const btnApply = document.querySelector('.promo-code-btn');
-  const btnClear = document.querySelector('.promo-code-clear');
+  const input    = promo.querySelector('input');
+  const btnApply = promo.querySelector('.promo-code-btn');
+  const btnClear = promo.querySelector('.promo-code-clear');
+  const errorEl  = document.querySelector('.promo-code-error');
 
   function updateButtonVisibility() {
-    if (input.value.trim().length > 0) {
-      btnApply.classList.add('visible');
-    } else {
-      btnApply.classList.remove('visible');
+    const hasText = input.value.trim().length > 0;
+    btnApply.classList.toggle('visible', hasText);
+    if (!hasText) {
       btnClear.classList.remove('visible');
+      hideError();
     }
   }
 
-  input.addEventListener('input', () => {
-    updateButtonVisibility();
-    if (input.value.trim().length === 0) {
-      btnClear.classList.remove('visible');
-    }
-  });
+  input.addEventListener('input', updateButtonVisibility);
 
-  function sendPromo() {
-    const promo = input.value.trim();
-    if (promo.length === 0) return;
+  btnApply.addEventListener('click', (e) => {
+    e.preventDefault();
+    const code = input.value.trim();
+    if (!code) return;
 
-    console.log('Промокод введен:', promo);
-    
     btnApply.classList.remove('visible');
     btnClear.classList.add('visible');
-    
-  }
 
-  btnApply.addEventListener('click', () => {
-    sendPromo();
+    const isValid = checkPromoCode(code);
+    promoValid = isValid;
+
+    if (!isValid) {
+      showError("Промокод не найден");
+    } else {
+      hideError();
+      console.log("Промокод принят:", code);
+    }
   });
-
 
   btnClear.addEventListener('click', () => {
     input.value = '';
     btnClear.classList.remove('visible');
     btnApply.classList.remove('visible');
+    hideError();
     input.focus();
   });
+
+  function showError(message) {
+    errorEl.textContent = message;
+    errorEl.classList.add('visible');
+    errorEl.style.maxHeight = `${errorEl.scrollHeight}px`;
+  }
+
+  function hideError() {
+    errorEl.classList.remove('visible');
+    errorEl.style.maxHeight = '0';
+  }
+
+  // Для бекенда
+  function checkPromoCode(code) {
+    return code === 'ПРОМОКОД10';
+  }
 }
+
+// Выбрать всё
+
+const btnSelectAll = document.querySelector('.cart-choice-all-button');
+
+if (btnSelectAll) {
+  const selectAll = document.getElementById('select-all');
+  const items = document.querySelectorAll('.item-checkbox');
+
+  selectAll.addEventListener('change', () => {
+    items.forEach(cb => cb.checked = selectAll.checked);
+  });
+
+  items.forEach(cb => {
+    cb.addEventListener('change', () => {
+      const allChecked = Array.from(items).every(i => i.checked);
+      selectAll.checked = allChecked;
+    });
+  });
+}
+
+// Описание способа доставки
+
+const deliveryMethodsText = document.querySelector('.delivery-methods-text');
+
+if (deliveryMethodsText) {
+  const radios = document.querySelectorAll('input[name="delivery-method"]');
+  const contents = {
+    self: document.querySelector('.delivery-content-self'),
+    delivery: document.querySelector('.delivery-content-delivery')
+  };
+  const addressBlock = document.querySelector('.delivery-address');
+
+  function updateDeliveryContent() {
+    const chosen = document.querySelector('input[name="delivery-method"]:checked').value;
+
+    Object.values(contents).forEach(el => el.classList.remove('active'));
+    contents[chosen].classList.add('active');
+
+    // Если выбран способ самовывоз — скрываем блок с адресом
+    if (chosen === 'self') {
+      addressBlock.style.maxHeight = `${addressBlock.scrollHeight}px`; 
+
+      requestAnimationFrame(() => {
+        addressBlock.style.maxHeight = '0';
+        addressBlock.classList.remove('visible');
+      });
+    } else {
+      addressBlock.classList.add('visible');
+      const height = addressBlock.scrollHeight;
+      addressBlock.style.maxHeight = '0';
+      requestAnimationFrame(() => {
+        addressBlock.style.maxHeight = `${height}px`;
+      });
+    }
+  }
+
+  addressBlock.addEventListener('transitionend', e => {
+    if (e.propertyName === 'max-height' && addressBlock.classList.contains('visible')) {
+      addressBlock.style.maxHeight = 'none';
+    }
+  });
+
+  updateDeliveryContent();
+
+  radios.forEach(radio => radio.addEventListener('change', updateDeliveryContent));
+}
+
+
+// Форма для оформления заказа
+
+function sendOrderForm(data) {
+  console.log('Данные заказа:', data);
+
+  const form = document.querySelector('.cart-form');
+  if (form) form.reset();
+}
+
+function validateOrderForm() {
+  const form = document.querySelector('.cart-form');
+  if (!form) return;
+
+  const inputs         = form.querySelectorAll('.cart-form-input');
+  const nameField      = inputs[0];
+  const phoneField     = inputs[1];
+  const emailField     = inputs[2];
+  const cityField      = inputs[3];
+  const addressField   = inputs[4];
+  const commentField   = inputs[5];
+  const phoneError     = form.querySelector('.phone-error');
+  const acceptWrapper  = form.querySelector('.accept-politics');
+  const acceptCheckbox = acceptWrapper.querySelector('input[type="checkbox"]');
+  const promoInput     = document.querySelector('.promo-code input');
+
+  phoneField.addEventListener('input', () => {
+    const raw = phoneField.value.trim();
+    if (
+      phoneField.classList.contains('error') &&
+      (validatePhoneNumber(raw) || raw === '')
+    ) {
+      phoneField.classList.remove('error');
+      phoneError.classList.remove('show');
+    }
+  });
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    let isValid = true;
+
+    // сброс всех прошлых ошибок
+    inputs.forEach(i => i.classList.remove('error'));
+    acceptWrapper.classList.remove('error');
+    phoneError.classList.remove('show');
+
+    // имя
+    if (!nameField.value.trim()) {
+      nameField.classList.add('error');
+      isValid = false;
+    }
+
+    // телефон
+    const rawPhone = phoneField.value.trim();
+    if (!rawPhone) {
+      phoneField.classList.add('error');
+      isValid = false;
+    } else if (!validatePhoneNumber(rawPhone)) {
+      phoneField.classList.add('error');
+      phoneError.classList.add('show');
+      isValid = false;
+    }
+
+    // email
+    if (!emailField.value.trim()) {
+      emailField.classList.add('error');
+      isValid = false;
+    }
+
+    // чекбокс соглашения
+    if (!acceptCheckbox.checked) {
+      acceptWrapper.classList.add('error');
+      isValid = false;
+    }
+
+    // если доставка проверяем адрес
+    const deliveryMethod = form.querySelector('input[name="delivery-method"]:checked')?.value;
+    if (deliveryMethod === 'delivery') {
+      if (!addressField.value.trim()) {
+        addressField.classList.add('error');
+        isValid = false;
+      }
+    }
+
+    if (!isValid) return;
+
+    const data = {
+      name:           nameField.value.trim(),
+      phone:          rawPhone,
+      email:          emailField.value.trim(),
+      person:         form.querySelector('input[name="person-type"]:checked')?.value,
+      deliveryMethod: deliveryMethod,
+      city:           deliveryMethod === 'delivery' ? cityField.value.trim() : null,
+      address:        deliveryMethod === 'delivery' ? addressField.value.trim() : null,
+      comment:        commentField.value.trim(),
+      promo:          promoValid ? promoInput.value.trim() : null,
+      accept:         acceptCheckbox.checked
+    };
+    sendOrderForm(data);
+    clearOrderForm();
+  });
+
+  inputs.forEach(input => {
+    input.addEventListener('input', () => {
+      if (input.classList.contains('error') && input.value.trim()) {
+        input.classList.remove('error');
+      }
+    });
+  });
+  acceptCheckbox.addEventListener('change', () => {
+    if (acceptCheckbox.checked) {
+      acceptWrapper.classList.remove('error');
+    }
+  });
+}
+
+function clearOrderForm() {
+  const form = document.querySelector('.cart-form');
+  if (!form) return;
+
+  form.reset();
+
+  form.querySelectorAll('.cart-form-input').forEach(input => input.classList.remove('error'));
+  const acceptWrapper = form.querySelector('.accept-politics');
+  if (acceptWrapper) acceptWrapper.classList.remove('error');
+
+  // Очистка промокода
+  const promoInput = document.querySelector('.promo-code input');
+  if (promoInput) {
+    promoInput.value = '';
+    const promoBtnClear = document.querySelector('.promo-code-clear');
+    const promoBtnApply = document.querySelector('.promo-code-btn');
+    const promoError = document.querySelector('.promo-code-error');
+    promoBtnClear?.classList.remove('visible');
+    promoBtnApply?.classList.remove('visible');
+    promoError?.classList.remove('visible');
+    promoError.style.maxHeight = '0';
+  }
+}
+
+
+validateOrderForm();
