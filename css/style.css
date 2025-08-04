@@ -6257,7 +6257,7 @@ hr.white {
 
 .product-item {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0px, 1fr));
+  grid-template-columns: minmax(0px, 655px) 1fr;
   gap: 40px;
   position: relative;
 }
@@ -6280,7 +6280,7 @@ hr.white {
 
 .swiper-main {
   width: 100%;  
-  max-width: 900px;
+  max-width: 655px;
   margin: 0 auto;    
   overflow-x: hidden;
   position: relative;
@@ -6312,7 +6312,8 @@ hr.white {
 }
 
 .swiper-main .swiper-slide img {
-  /* max-height: 700px;    */
+  max-height: 655px;
+  max-width: 655px;   
   display: block;
   width: 100%;     
   height: auto;       
@@ -7483,7 +7484,7 @@ p.send-review-title {
   margin-bottom: 10px;
   color: #FF6B6B;
   font-size: 14px;
-  display: none;          
+  display: block;          
   opacity: 0;           
   max-height: 0;            
   overflow: hidden;         
@@ -7494,8 +7495,28 @@ p.send-review-title {
 
 .error-message.show {
   opacity: 1;            
-  max-height: 2em;    
-  display: block;  
+  max-height: 2em;      
+}
+
+.error-message-2 {
+  padding-left: 10px;
+  margin-bottom: 10px;
+  color: #FF6B6B;
+  font-size: 14px;
+  display: none;          
+  opacity: 0;           
+  max-height: 0;            
+  overflow: hidden;         
+  transition: 
+    opacity 0.3s ease,  
+    max-height 0.3s ease;   
+}
+
+.error-message-2.show {
+  display: block;
+  opacity: 1;            
+  max-height: 2em;      
+
 }
 
 
