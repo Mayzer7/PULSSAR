@@ -6257,7 +6257,7 @@ hr.white {
 
 .product-item {
   display: grid;
-  grid-template-columns: minmax(0px, 695px) 1fr;
+  grid-template-columns: 1fr minmax(0px, 900px);
   gap: 40px;
   position: relative;
 }
