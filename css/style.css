@@ -8996,7 +8996,7 @@ p.cart-form-title {
 
 /* Адаптив страница order.html */
 
-@media (max-width: 1300px) {
+@media (max-width: 1350px) {
   .cart-container {
     grid-template-columns: minmax(0px, 800px) minmax(0px, 330px);
   }
@@ -9164,5 +9164,292 @@ p.cart-form-title {
 
   .cart-form-link {
     font-size: 16px;
+  }
+}
+
+/* Страница "my-orders.html" */
+
+.order-left-side-head {
+  display: flex;
+  padding: 10px 0px 0px 0px;
+  gap: 26px;
+  border-bottom: 1px solid #D0D0D0;
+}
+
+.order-left-side-head a {
+  color: #000000;
+  border-bottom: 6px solid transparent;
+}
+
+.active-link {
+  color: #CFA567 !important; 
+  border-bottom: 6px solid #CFA567 !important;
+  text-decoration: none !important; 
+}
+
+.order-items-head {
+  display: grid;
+  grid-template-columns: minmax(0px, 157px) minmax(0px, 245px) minmax(0px, 158px) minmax(0px, 183px) minmax(0px, 470px);
+}
+
+.order-items-head p {
+  margin: 0px;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  color: #8C8C8C;
+}
+
+.order-item {
+  display: grid;
+  grid-template-columns: minmax(0px, 157px) minmax(0px, 245px) minmax(0px, 158px) minmax(0px, 183px) minmax(0px, 470px);
+  border-top: 1px solid #D0D0D0;
+  padding: 20px 0px;
+  align-items: center;
+}
+
+.order-item:last-child {
+  border-bottom: 1px solid #D0D0D0;
+}
+
+.order-item p {
+  margin: 0px;
+  font-size: 16px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  color: #000000;
+}
+
+.order-item-status {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+}
+
+
+.order-item-link {
+  color: #CFA567;
+  text-transform: uppercase;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  text-align: right;
+  padding-left: 20px;
+}
+
+.order-item-link:hover {
+  text-decoration: none;
+  color: #000000;
+}
+
+.pay-btn {
+  cursor: pointer;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 600; 
+  border-radius: 39px;
+  border: none;
+  background-color: #CFA567;
+  color: #F9F7F3;   
+  text-transform: uppercase;
+  font-size: 20px;
+  padding: 16px 32px;
+  transition: background-color 0.3s ease;
+  max-width: 174px;
+  width: 100%;
+}
+
+.pay-btn:hover {
+  background-color: #D4AD6C; 
+}
+
+.order-right-side-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.order-right-side-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.order-right-side-links a {
+  position: relative;
+  padding: 20px; 
+  border: 1px solid #D0D0D0;
+  border-radius: 12px;
+  background-color: #fff;
+  color: #000;
+  transition: background-color .2s;
+  font-family: 'Yandex Sans', sans-serif;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.order-right-side-links a:hover {
+  background-color: #FEF4ED; 
+  text-decoration: none;
+}
+
+.active-tight-link::before  {
+  content: "";
+  position: absolute;
+  top: 0px; bottom: 0px;    
+  left: 0;
+  width: 11px;               
+  background-color: #CFA567;
+  border-radius: 12px 0px 0px 12px;
+}
+
+.active-tight-link:hover {
+  background-color: #fff !important; 
+}
+
+/* Адаптив страницы "my-orders.html" */
+
+@media (max-width: 1630px) {
+  .order-item,
+  .order-items-head {
+    grid-template-columns: minmax(0px, 107px) minmax(0px, 200px) minmax(0px, 128px) minmax(0px, 150px) minmax(0px, 1fr);
+  }
+}
+
+@media (max-width: 1470px) {
+  .order-item,
+  .order-items-head {
+    grid-template-columns: minmax(0px, 85px) minmax(0px, 173px) minmax(0px, 100px) minmax(0px, 132px) minmax(0px, 1fr);
+  }
+}
+
+@media (max-width: 1370px) {
+  .order-item,
+  .order-items-head {
+    grid-template-columns: minmax(0px, 85px) minmax(0px, 173px) minmax(0px, 100px) minmax(0px, 132px) minmax(0px, 1fr);
+  }
+
+  .order-item {
+    padding: 14px 0px;
+  }
+
+  .order-item-link {
+    font-size: 16px;
+  }
+
+  .pay-btn {
+    font-size: 16px;
+    padding: 13px 48px;
+  }
+}
+
+@media (max-width: 1350px) {
+  .order-item-status {
+    grid-template-columns: 1fr 0.5fr; 
+  }
+}
+
+@media (max-width: 1300px) {
+  .order-items-head { display: none; }
+  
+  .order-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
+  }
+
+  .order-item {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border: 1px solid #D0D0D0;
+    border-radius: 12px;
+    background: #FFF;
+  }
+
+  .order-item-number,
+  .order-item-data,
+  .order-item-count,
+  .order-item-price,
+  .order-item-status {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 12px;
+    padding: 12px 0px;
+    border-bottom: 1px solid #D0D0D0;
+    font: 16px/1 'Open Sans', sans-serif;
+    color: #000;
+    width: 100%;
+  }
+  .order-item-number::before { 
+    content: "Номер";            
+    color: #8C8C8C;
+    padding-right: 20px; 
+  }
+
+  .order-item-data::before   { 
+    content: "Дата оформления"; 
+    color: #8C8C8C; 
+  }
+
+  .order-item-count::before  { 
+    content: "Кол-во";           
+    color: #8C8C8C; 
+  }
+  .order-item-price::before  { 
+    content: "Цена";             
+    color: #8C8C8C; 
+  }
+
+  .order-item-status {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;       
+    margin: 0 0 12px;
+    width: 100%;
+    font: 16px/1 'Open Sans', sans-serif;
+    color: #000;
+    border-bottom: none;
+  }
+
+  .order-item-status > *:first-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 0 0 12px;
+    border-bottom: 1px solid #D0D0D0;
+    font: 16px/1 'Open Sans', sans-serif;
+    text-align: right;
+  }
+
+  .order-item-status > *:first-child::before {
+    content: "Статус";
+    color: #8C8C8C;
+    margin-right: 10px;
+    padding-right: 10px;
+  }
+
+  .order-item-status > .order-item-link,
+  .order-item-status > .pay-btn {
+    display: block;
+    width: 100%;
+    text-align: right;
+    margin: 12px 0 0;
+    padding: 0;
+    font: 16px/1 'Open Sans', sans-serif;
+    color: #CFA567;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    text-decoration: none;
+    font-weight: 600;
+    text-align: right;
   }
 }
