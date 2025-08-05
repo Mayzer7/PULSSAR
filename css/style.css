@@ -9453,3 +9453,148 @@ p.cart-form-title {
     text-align: right;
   }
 }
+
+
+
+/* Страница "payment.html" */
+
+.payment-left-side-head {
+  display: flex;
+  padding: 10px 0px 0px 0px;
+  gap: 26px;
+}
+
+.payment-title {
+  font-family: 'Prata', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.payment-methods-cards {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.payment-methods-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.payment-methods-card p {
+  margin: 0px;
+}
+
+.payment-methods-card-title {
+  color: #000000;
+  font-family: 'Prata', serif;
+  font-size: 18px;
+  font-weight: 400;
+  padding-top: 20px;
+  padding-bottom: 4px;
+}
+
+.payment-methods-card-subtitle {
+  font-size: 14px;
+  color: #939393;
+}
+
+.product-delivery-time {
+  padding: 80px 0px;
+}
+
+.product-delivery-time-title {
+  margin-bottom: 18px;
+  font-family: 'Prata', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.product-delivery-time-text {
+  margin-top: 0px;
+  color: #000000;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.quality-control-title {
+  margin-bottom: 24px;
+  font-family: 'Prata', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.quality-control-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}
+
+.quality-control-card p {
+  margin: 0px;
+}
+
+.quality-control-card-number {
+  color: #D0A567;
+  font-family: 'Prata', serif;
+  font-size: 32px;
+  font-weight: 400;
+  padding-bottom: 24px;
+}
+
+.quality-control-card-text {
+  color: #000000;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+@media (max-width: 1350px) {
+  .payment-title,
+  .product-delivery-time-title,
+  .quality-control-title {
+    font-size: 20px;
+  }
+
+  .product-delivery-time-text {
+    font-size: 16px;
+  }
+
+  .quality-control-card-number {
+    font-size: 30px;
+  }
+
+  .quality-control-card-text {
+    font-size: 14px;
+  }
+
+  .product-delivery-time {
+    padding: 60px 0px;
+  }
+}
+
+@media (max-width: 800px) {
+  .payment-methods-cards,
+  .quality-control-cards {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 20px;
+  }
+
+  .quality-control-card-number {
+    padding-bottom: 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  .payment-methods-card-title {
+    font-size: 16px;
+    padding-top: 16px;
+  }
+}
