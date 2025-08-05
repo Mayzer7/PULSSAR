@@ -6257,9 +6257,10 @@ hr.white {
 
 .product-item {
   display: grid;
-  grid-template-columns: 1fr minmax(0px, 900px);
+  grid-template-columns: repeat(auto-fit, minmax(0px, 656px) minmax(0px, 1145px));
   gap: 40px;
   position: relative;
+  padding: 0px 80px;
 }
 
 .product-item-img-wrapper {
@@ -6368,7 +6369,7 @@ hr.white {
 
 .product-item-left-side {
   position: sticky;
-  top: 0px;
+  top: 30px;
   align-self: start; 
 }
 
@@ -6581,6 +6582,12 @@ p.product-item-price {
   }
 }
 
+@media (max-width: 1550px) {
+  .product-item {
+    padding: 0px;
+  }
+}
+
 @media (max-width: 1280px) {
   .product-item-badge p,
   .product-reviews-text,
@@ -6669,6 +6676,7 @@ p.product-item-price {
 
   .product-item-left-side {
     position: relative;
+    top: 0px;
   }
 }
 
@@ -6815,7 +6823,7 @@ p.product-item-price {
   }
 }
 
-@media (max-width: 1350px) {
+@media (max-width: 1450px) {
   .select-configuration-card-img img {
     max-width: 118px;
   }
