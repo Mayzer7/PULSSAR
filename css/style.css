@@ -6412,7 +6412,11 @@ p.product-article {
   display: flex;
   align-items: center;
   text-align: center;
-  gap: 7px;
+  gap: 7px; 
+}
+
+.product-reviews-container-left-side:hover {
+  text-decoration: none;
 }
 
 .product-reviews-container-right-side {
@@ -6949,8 +6953,14 @@ p.product-desc-card-specification {
   margin-bottom: 0px;
 }
 
-.underline {
+.product-desc-card-specification a {
   text-decoration: underline;
+  color: #000;
+  transition: all 0.3s ease;
+}
+
+.product-desc-card-specification a:hover {
+  color: #CFA567;
 }
 
 .product-desc-card-open-btn svg {

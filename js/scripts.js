@@ -416,9 +416,13 @@ function clearReviewForm() {
 
   form.reset();
 
-  form.querySelectorAll('.send-review-stars svg').forEach(star =>
-    star.classList.remove('filled')
-  );
+  const stars = form.querySelectorAll('.send-review-stars svg');
+
+  stars.forEach(star => star.classList.remove('filled'));
+
+  stars.forEach(star => star.classList.add('filled'));
+
+  currentRating = 5;
 
   form.querySelectorAll('.error').forEach(el =>
     el.classList.remove('error')
@@ -440,12 +444,15 @@ function ValidateReviewForm() {
 
   // Рейтинг
   const stars            = form.querySelectorAll('.send-review-stars svg');
-  let currentRating      = 0;
+  let currentRating      = 5;
   const setFill = rating => {
     stars.forEach(star => {
       star.classList.toggle('filled', parseInt(star.dataset.value, 10) <= rating);
     });
   };
+
+  setFill(currentRating);
+
   stars.forEach(star => {
     const val = parseInt(star.dataset.value, 10);
     star.addEventListener('mouseover', () => setFill(val));
@@ -857,3 +864,93 @@ function clearOrderForm() {
 
 
 validateOrderForm();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Переход при нажатии на рейтинг товара к якорной ссылке отзывов
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (location.hash === '#reviews') {
+    setTimeout(() => openCardAndScroll('#reviews'), 100);
+  }
+
+  document.querySelectorAll('a[href="#reviews"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      history.pushState(null, '', '#reviews');
+      openCardAndScroll('#reviews');
+    });
+  });
+
+  window.addEventListener('hashchange', () => {
+    if (location.hash === '#reviews') {
+      openCardAndScroll('#reviews');
+    }
+  });
+});
+
+function smoothScrollTo(element, duration = 600) {
+  const startY = window.pageYOffset;
+  const endY = element.getBoundingClientRect().top + startY;
+  const diff = endY - startY;
+  let start;
+
+  function step(timestamp) {
+    if (!start) start = timestamp;
+    const time = timestamp - start;
+    const t = Math.min(time / duration, 1);
+    const eased = t < 0.5 ? 2*t*t : -1 + (4 - 2*t)*t;
+    window.scrollTo(0, startY + diff * eased);
+    if (time < duration) {
+      requestAnimationFrame(step);
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
+function openCardAndScroll(id) {
+  const head = document.querySelector(id);
+  const card = head && head.closest('.product-desc-card');
+  if (!card) return;
+
+  document.querySelectorAll('.product-desc-card.open').forEach(openCard => {
+    if (openCard !== card) {
+      openCard.classList.remove('open');
+      const info = openCard.querySelector('.product-desc-card-info');
+      if (info) info.style.maxHeight = null;
+    }
+  });
+
+  const info = card.querySelector('.product-desc-card-info');
+
+  if (card.classList.contains('open')) {
+    smoothScrollTo(card, 800);
+    return;
+  }
+
+  card.classList.add('open');
+  info.style.maxHeight = info.scrollHeight + 'px';
+
+  const onTransitionEnd = e => {
+    if (e.propertyName === 'max-height') {
+      smoothScrollTo(card, 800);
+      info.removeEventListener('transitionend', onTransitionEnd);
+    }
+  };
+  info.addEventListener('transitionend', onTransitionEnd);
+}
