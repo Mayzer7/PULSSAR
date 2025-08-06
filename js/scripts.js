@@ -1,5 +1,5 @@
-// Доработка сайта
-
+const html = document.documentElement;
+const body = document.body;
 const swiperThumbs = document.querySelector(".swiper-thumbs");
 
 if (swiperThumbs) {
@@ -31,6 +31,75 @@ if (swiperThumbs) {
         },
     });
 }
+
+
+// Модальное окно для полноэкранного просмотра изображений товара
+
+const modalGallery = document.getElementById('galleryModal');
+
+if (modalGallery) {
+  const mainImages = document.querySelectorAll('.main-images-swiper img');
+  const modalWrap   = modalGallery.querySelector('.swiper-fullscreen .swiper-wrapper');
+  const closeBtn    = modalGallery.querySelector('.modal-close');
+  const overlay = modalGallery.querySelector('.fullscreen-overlay');
+  let fullscreenSwiper;
+
+  mainImages.forEach(img => {
+    const slide = document.createElement('div');
+    slide.className = 'swiper-slide';
+    slide.appendChild(img.cloneNode());
+    modalWrap.appendChild(slide);
+  });
+
+  function initFullscreenSwiper() {
+    fullscreenSwiper = new Swiper('.swiper-fullscreen', {
+      slidesPerView: 1,
+      centeredSlides: true,
+
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      loop: false,
+    });
+  }
+
+  mainImages.forEach((img, idx) => {
+    img.style.cursor = 'pointer';
+    img.addEventListener('click', () => {
+    modalGallery.classList.add('open');
+    html.classList.add('no-scroll');
+    body.classList.add('no-scroll');
+
+    if (!fullscreenSwiper) initFullscreenSwiper();
+    fullscreenSwiper.slideToLoop(idx, 0); 
+    });
+  });
+
+  function closeModal() {
+    modalGallery.classList.remove('open');
+    modalGallery.classList.add('closing'); 
+
+    html.classList.remove('no-scroll');
+    body.classList.remove('no-scroll');
+
+    modalGallery.addEventListener('transitionend', onTransitionEnd);
+  }
+
+  function onTransitionEnd(e) {
+    if (e.propertyName === 'opacity') {
+      modalGallery.classList.remove('closing');
+      modalGallery.removeEventListener('transitionend', onTransitionEnd);
+    }
+  }
+
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
+}
+
+
+
+
 
 // Добавить в избранное
 
@@ -90,80 +159,61 @@ selectConfiguration();
 
 // Раскрытие карточек "Описание товара"
 
-const productDescCard = document.querySelector('.product-desc-card');
+const productDescCards = document.querySelectorAll('.product-desc-card');
 
-if (productDescCard) {
+if (productDescCards.length) {
+  // Вспомогательная функция плавного скролла
   function smoothScrollTo(card) {
-    const header = document.querySelector('.site-header'); 
+    const header = document.querySelector('.site-header');
     const headerHeight = header ? header.offsetHeight : 0;
     const targetY = card.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10;
-
     if (window.innerWidth < 768) {
       window.scrollTo(0, targetY);
       return;
     }
-
     const startY = window.pageYOffset;
     const distance = targetY - startY;
-    const duration = 500; 
+    const duration = 500;
     let startTime = null;
-
     function easeInOutQuad(t) {
       return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     }
-
     function step(timestamp) {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const eased = easeInOutQuad(progress);
-
       window.scrollTo(0, startY + distance * eased);
-
-      if (elapsed < duration) {
-        requestAnimationFrame(step);
-      }
+      if (elapsed < duration) requestAnimationFrame(step);
     }
-
     requestAnimationFrame(step);
   }
 
-  const cards = document.querySelectorAll('.product-desc-card');
-
+  // Инициализация высот при загрузке страницы
   document.addEventListener('DOMContentLoaded', () => {
-    cards.forEach(card => {
+    productDescCards.forEach(card => {
       const info = card.querySelector('.product-desc-card-info');
-      info.style.maxHeight = null;
-
-      if (card.classList.contains('open')) {
-        info.style.maxHeight = info.scrollHeight + 'px';
-      }
-    });
-
-    cards.forEach(card => {
-      if (card.classList.contains('open')) {
-        const info = card.querySelector('.product-desc-card-info');
-        info.style.maxHeight = info.scrollHeight + 'px';
-      }
+      info.style.maxHeight = card.classList.contains('open')
+        ? info.scrollHeight + 'px'
+        : null;
     });
   });
 
-  cards.forEach(card => {
+  productDescCards.forEach(card => {
     const btn = card.querySelector('.product-desc-card-open-btn');
+    const clickArea = card.querySelector('.click-area');
     const info = card.querySelector('.product-desc-card-info');
 
-    btn.addEventListener('click', () => {
+    // Функция открытия/закрытия карточки
+    function toggleCard() {
       const isOpen = card.classList.contains('open');
-
-      cards.forEach(c => {
+      productDescCards.forEach(c => {
         c.classList.remove('open');
         c.querySelector('.product-desc-card-info').style.maxHeight = null;
       });
-
       if (!isOpen) {
         card.classList.add('open');
         info.style.maxHeight = info.scrollHeight + 'px';
-
         info.addEventListener('transitionend', function onEnd(e) {
           if (e.propertyName === 'max-height') {
             smoothScrollTo(card);
@@ -171,11 +221,15 @@ if (productDescCard) {
           }
         });
       }
-    });
+    }
+
+    // Навешиваем на кнопку и на всю click-area
+    btn.addEventListener('click', toggleCard);
+    clickArea.addEventListener('click', toggleCard);
   });
 }
 
-// Раскрытие отзывов поболь
+// Раскрытие отзывов побольше
 
 const productDescCardReviewTexts = document.querySelectorAll('.product-desc-card-review-texts');
 

@@ -35,25 +35,25 @@
                     <div class="product-item-badge">
                         <p>Выбор дизайнеров</p>
                     </div>
-                    <div class="swiper-wrapper">
+                    <div class="swiper-wrapper main-images-swiper">
                         <div class="swiper-slide">
-                            <img src="img/product/1.png" alt="">
+                            <img src="test-images/2.jpg" alt="">
                         </div>
 
                         <div class="swiper-slide">
-                            <img src="img/product/2.png" alt="">
+                            <img src="test-images/4.jpg" alt="">
                         </div>
 
                         <div class="swiper-slide">
-                            <img src="img/product/3.png" alt="">
+                            <img src="test-images/5.jpg" alt="">
                         </div>
 
                         <div class="swiper-slide">
-                            <img src="img/product/4.png" alt="">
+                            <img src="test-images/8.jpg" alt="">
                         </div>
                         
                         <div class="swiper-slide">
-                            <img src="img/product/1.png" alt="">
+                            <img src="test-images/7.jpg" alt="">
                         </div>
 
                         <div class="swiper-slide">
@@ -326,6 +326,8 @@
 
                     <div class="product-desc-cards">
                         <div class="product-desc-card open">
+                            <div class="click-area"></div>
+                            
                             <div class="product-desc-card-head product-desc-card-review-container">
                                 <p class="product-desc-card-title">
                                     Характеристики
@@ -412,6 +414,7 @@
                         </div>
 
                         <div class="product-desc-card">
+                            <div class="click-area"></div>
                             <div class="product-desc-card-head">
                                 <p class="product-desc-card-title">
                                     Описание
@@ -436,6 +439,7 @@
                         </div>
 
                         <div class="product-desc-card product-desc-card-review">
+                            <div class="click-area"></div>
                             <div id="reviews" class="product-desc-card-head product-desc-card-review-container">
                                 <p class="product-desc-card-title">
                                     Отзывы
@@ -691,6 +695,7 @@
                             </div>    
 
                             <div class="product-desc-card">
+                                <div class="click-area"></div>
                                 <div class="product-desc-card-head">
                                     <p class="product-desc-card-title">
                                         Оплата и доставка
@@ -1539,7 +1544,26 @@
         </div>
     </footer>
 
-    
+    <!-- Модальное окно для полноэкранного просмотра изображений товара -->
+    <div class="fullscreen-modal" id="galleryModal">
+        <div class="fullscreen-overlay"></div>
+            <div class="fullscreen-content">
+            <button class="modal-close">
+                <svg class="modal-close-icon" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.25 0.750107L10.5 10.5001M0.749999 20.2501L10.5 10.5001M10.5 10.5001L0.749999 0.750107L20.25 20.2501" stroke="white"/>
+                </svg>
+            </button>
+            <div class="swiper-container swiper-fullscreen">
+            <div class="swiper-wrapper">
+                <!-- Слайды клонируются из main-images-swiper-->
+            </div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="js/swiper-bundle.min.js"></script>
     <script src="js/scripts.js"></script>
 </body>
