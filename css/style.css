@@ -6713,9 +6713,19 @@ p.product-item-price {
   margin-bottom: 0px;
 }
 
+.product-item-right-side {
+  display: flex;
+  flex-direction: column;
+}
+
 .item-buttons {
   display: flex;
   gap: 10px;
+
+  position: sticky;
+  top: 130px;       
+  z-index: 2000;      
+  padding-top: 10px;
 }
 
 .add-to-cart-btn {
@@ -6752,6 +6762,7 @@ p.product-item-price {
   transition: background-color 0.3s ease;
   border: 1px solid #CFA567;
   text-align: center;
+  background-color: #faf8f4;
 }
 
 .buy-now-btn:hover {
@@ -6772,6 +6783,7 @@ p.product-item-price {
   transform: scale(0.95);
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: none;
+  background-color: #faf8f4;
 }
 
 .item-quantity-selector.show {
@@ -9411,6 +9423,7 @@ p.cart-form-title {
   opacity: 1;
 }
 
+
 .delivery-methods {
   margin-top: 40px;
 }
@@ -10083,4 +10096,59 @@ p.cart-form-title {
     font-size: 16px;
     padding-top: 16px;
   }
+}
+
+@media (max-width: 357px) {
+  .delivery-address textarea {
+    min-height: 95px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.header-test {
+  box-sizing: border-box;
+  height: 133px;      
+  width: 100%;
+  background: #000;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  color: #fff;
+  text-transform: uppercase;
+  font-family: 'Prata', serif;
+  font-weight: 400;
+}
+
+.header-test.scroll-down {
+  position: fixed;
+  top: 0;
+  min-height: 133px;
+  max-height: 133px;
+  left: 0;
+  right: 0;
+  background: #000;
+}
+
+.header-test {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  color: #fff;
+  text-transform: uppercase;
+  font-family: 'Prata', serif;
+  font-weight: 400;
 }

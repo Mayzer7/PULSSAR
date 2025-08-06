@@ -1085,3 +1085,38 @@ function openCardAndScroll(id) {
   };
   info.addEventListener('transitionend', onTransitionEnd);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const header = document.querySelector('.header-test');
+  let lastScrollY = window.pageYOffset;
+  const threshold = 100;
+
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.pageYOffset;
+
+    if (currentScrollY > lastScrollY && currentScrollY > threshold) {
+      header.classList.add('scroll-down');
+    }
+    if (currentScrollY === 0) {
+      header.classList.remove('scroll-down');
+    }
+
+    lastScrollY = currentScrollY;
+  });
+});
