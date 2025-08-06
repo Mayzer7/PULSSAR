@@ -6677,11 +6677,10 @@ p.product-item-price {
 }
 
 .product-item-discount {
-  margin-top: 24px;
-  display: flex;
-  align-items: center;
-  text-align: center;
+  display: inline-flex;
+  align-items: baseline;
   gap: 16px;
+  margin-top: 24px;
 }
 
 .product-item-discount p {
@@ -6713,23 +6712,9 @@ p.product-item-price {
   margin-bottom: 0px;
 }
 
-.product-item-right-side {
-  /* Убираем любые overflow, которые ломают поведение sticky */
-  overflow: visible;
-  /* Чтобы позиционирование sticky сработало относительно этой колонки, нужно, чтобы она не была статической */
-  position: relative;
-}
-
 .item-buttons {
-  position: fixed;
-  bottom: 20px;            /* отступ от низа экрана */
-  right: 110px;             /* смещение от правой границы экрана — подгоните по отступам макета */
-  z-index: 2000;
-  padding: 10px;
   display: flex;
   gap: 10px;
-  border-radius: 39px;
-  width: calc(55% - 60px);
 }
 
 .add-to-cart-btn {
@@ -6766,7 +6751,6 @@ p.product-item-price {
   transition: background-color 0.3s ease;
   border: 1px solid #CFA567;
   text-align: center;
-  background-color: #faf8f4;
 }
 
 .buy-now-btn:hover {
@@ -6787,7 +6771,6 @@ p.product-item-price {
   transform: scale(0.95);
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: none;
-  background-color: #faf8f4;
 }
 
 .item-quantity-selector.show {
@@ -6859,6 +6842,111 @@ p.product-item-price {
     font-size: 16px;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+.fixed-product-info {
+  position: fixed;
+  bottom: 0px;            
+  right: 0px;            
+  z-index: 2000;
+  width: 100%;
+  background-color: #FFFFFF;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.fixed-product-info-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+}
+
+.fixed-product-info-left-side {
+  display: flex;
+  flex-direction: column;
+}
+
+.fixed-product-info-right-side {
+  display: flex;
+  align-items: center;
+}
+
+.fixed-add-to-cart-btn,
+.fixed-buy-now-btn,
+.fixed-quantity-selector {
+  width: auto;
+  white-space: nowrap;
+}
+
+.favorite-btn-icon {
+  max-width: 59px;
+  max-height: 59px;
+  min-width: 59px;
+  min-height: 59px;
+}
+
+.fixed-product-info-left-side p {
+  margin: 0;
+}
+
+.fixed-product-info-left-side-title {
+  font-family: 'Prata', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #000000;
+  max-width: 600px;
+  padding-right: 10px;
+}
+
+.fixed-product-info-left-side-article {
+  font-family: 'Open Sans', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.fixed-add-to-cart-btn,
+.fixed-buy-now-btn {
+  padding: 10px 95px;
+}
+
+.fixed-quantity-selector {
+  max-height: 57px;
+}
+
+.fixed-item-quantity-value {
+  padding: 0px 100px;
+}
+
+
+@media (max-width: 1400px) {
+  .fixed-add-to-cart-btn,
+  .fixed-buy-now-btn {
+    padding: 10px 20px;
+  }
+
+  .fixed-item-quantity-value {
+    padding: 0px 30px;
+  }
+}
+
+
+
+
+
+
+
 
 .item-other-buttons {
   display: flex;
@@ -6974,6 +7062,23 @@ p.product-item-price {
     padding: 13px 0px;
   }
 
+  .fixed-product-info-left-side-title {
+    font-size: 16px;
+  }
+
+  .fixed-product-info-left-side-article {
+    font-size: 14px;
+  }
+
+  .fixed-add-to-cart-btn,
+  .fixed-buy-now-btn {
+    padding: 10px 20px;
+  }
+
+  .fixed-item-quantity-value {
+    padding: 0px 10px;
+  }
+
   .question-icon,
   .add-to-favorite-icon {
     width: 25px;
@@ -7024,6 +7129,36 @@ p.product-item-price {
     padding: 14.5px 0px;
   }
 
+  .fixed-add-to-cart-btn,
+  .fixed-buy-now-btn {
+    font-size: 12px;
+    padding: 10px 20px;
+  }
+
+  .fixed-product-info-left-side-title {
+    font-size: 12px;
+  }
+
+  .fixed-product-info-left-side-article {
+    font-size: 10px;
+  }
+
+  .fixed-item-quantity-value {
+    padding: 0px 0px;
+  }
+
+  .fixed-quantity-selector {
+    max-height: 43px;
+    max-width: 177px;
+  }
+
+  .favorite-btn-icon {
+    max-width: 45px;
+    min-width: 45px;
+    max-height: 45px;
+    min-height: 45px;
+  }
+
   .product-title {
     font-size: 30px;
   }
@@ -7055,6 +7190,20 @@ p.product-item-price {
   .product-item-price {
     margin-top: 6px;
   }
+
+  .in-stocks {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 800px) {
+  .fixed-product-info-left-side {
+    display: none;
+  }
+
+  .fixed-product-info-container {
+    padding: 14px 16px;
+  }
 }
 
 @media (max-width: 639px) {
@@ -7065,10 +7214,6 @@ p.product-item-price {
   .product-article,
   .product-reviews-text {
     font-size: 14px;
-  }
-
-  .in-stock {
-    padding-top: 24px;
   }
 
   .in-stock span {
@@ -7106,6 +7251,23 @@ p.product-item-price {
   .question-btn,
   .product-item-badge-sale p {
     font-size: 12px;
+  }
+}
+
+@media (max-width: 450px) {
+  .fixed-add-to-cart-btn, .fixed-buy-now-btn {
+    padding: 10px;
+  }
+
+  .fixed-quantity-selector {
+    max-width: 156px;
+    max-height: 37px;
+  }
+}
+
+@media (max-width: 405px) {
+  .favorite-btn-icon {
+    display: none;
   }
 }
 
@@ -7194,9 +7356,8 @@ p.product-item-price {
 }
 
 .select-configuration-card-discount {
-  display: flex;
-  align-items: center;
-  text-align: center;
+  display: inline-flex;
+  align-items: baseline;
   gap: 16px;
 }
 
@@ -9057,6 +9218,13 @@ p.cart-item-price-value {
   gap: 16px;
 }
 
+.cart-item-discount {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
 .cart-item-discount p {
   margin: 0px;
 }
@@ -9426,7 +9594,6 @@ p.cart-form-title {
 .delivery-address.visible {
   opacity: 1;
 }
-
 
 .delivery-methods {
   margin-top: 40px;
@@ -10102,11 +10269,20 @@ p.cart-form-title {
   }
 }
 
-@media (max-width: 357px) {
-  .delivery-address textarea {
-    min-height: 95px;
+@media (max-width: 370px) {
+  .select-configuration-card-info p {
+    font-size: 10px;
   }
 }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10129,7 +10305,7 @@ p.cart-form-title {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 50px;
+  font-size: 32px;
   color: #fff;
   text-transform: uppercase;
   font-family: 'Prata', serif;
@@ -10155,4 +10331,10 @@ p.cart-form-title {
   text-transform: uppercase;
   font-family: 'Prata', serif;
   font-weight: 400;
+}
+
+@media (max-width: 800px) {
+  .header-test {
+    height: 163px;
+  }
 }

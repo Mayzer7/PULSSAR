@@ -615,109 +615,133 @@ sendFile();
 ValidateReviewForm();
 
 
+// Добавление товара в корзину
 
-// Оформление заказа 
+function addToCart(isAdded, quantity) {
+  const result = { isAdded, quantity };
+  console.log(result);
+  return result;
+}
 
-function initQuantitySelector(containerInput, {
-  btnClass = 'quantity-btn',
-  valueClass = 'quantity-value',
-  selectorClass = 'quantity-selector',
-} = {}) {
-  const container = typeof containerInput === 'string'
-    ? document.querySelector(containerInput)
-    : containerInput;
+const addButtons    = document.querySelectorAll('.js-add-btn');
+const qtySelectors  = document.querySelectorAll('.js-qty-selector');
+const minusButtons  = document.querySelectorAll('.js-minus');
+const plusButtons   = document.querySelectorAll('.js-plus');
+const qtyValues     = document.querySelectorAll('.js-qty-value');
 
-  if (!container) return;
+let currentCount = 1;
 
-  container.addEventListener('click', e => {
-    const btn = e.target.closest(`.${btnClass}`);
-    if (!btn) return;
-
-    const selector = btn.closest(`.${selectorClass}`);
-    const valueEl = selector.querySelector(`.${valueClass}`);
-    let count = parseInt(valueEl.textContent, 10);
-
-    if (btn.classList.contains('minus') && count > 1) {
-      count--;
-    } else if (btn.classList.contains('plus')) {
-      count++;
-    }
-
-    valueEl.textContent = count;
+function showSelectors() {
+  addButtons.forEach(btn => btn.style.display = 'none');
+  qtySelectors.forEach(sel => {
+    sel.style.display = 'inline-flex';
+    setTimeout(() => sel.classList.add('show'), 10);
   });
 }
 
-// Для товара
-initQuantitySelector('#productQuantity', {
-  btnClass: 'item-quantity-btn',
-  valueClass: 'item-quantity-value',
-  selectorClass: 'item-quantity-selector',
-});
+function hideSelectors() {
+  qtySelectors.forEach(sel => sel.classList.remove('show'));
+  setTimeout(() => {
+    qtySelectors.forEach(sel => sel.style.display = 'none');
+    addButtons.forEach(btn => btn.style.display = 'inline-block');
+  }, 300);
+}
 
-// Для корзины 
-document.querySelectorAll('.cart-item-info-bottom').forEach(cartItem => {
-  initQuantitySelector(cartItem, {
-    btnClass: 'quantity-btn',
-    valueClass: 'quantity-value',
-    selectorClass: 'quantity-selector',
-  });
-});
+function renderCount() {
+  qtyValues.forEach(val => val.textContent = currentCount);
+}
 
+addButtons.forEach(btn =>
+  btn.addEventListener('click', () => {
+    showSelectors();
+    currentCount = 1;
+    renderCount();
+    addToCart(true, currentCount);
+  })
+);
 
+minusButtons.forEach(btn =>
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (currentCount <= 1) {
+      addToCart(false, 0);
+      hideSelectors();
+      currentCount = 1;
+    } else {
+      currentCount--;
+      addToCart(true, currentCount);
+    }
+    renderCount();
+  })
+);
 
+plusButtons.forEach(btn =>
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    currentCount++;
+    renderCount();
+    addToCart(true, currentCount);
+  })
+);
 
 
 
 // Выбор количества товара добавленного в корзину
 
-function updateQuantity() {
-  const addToCartBtn = document.querySelector('.add-to-cart-btn');
+function setupAddToCart(container) {
+  const addBtn      = container.querySelector('.add-to-cart-btn');
+  const qtySelector = container.querySelector('.item-quantity-selector');
+  const minusBtn    = qtySelector.querySelector('.minus');
+  const plusBtn     = qtySelector.querySelector('.plus');
+  const valueEl     = qtySelector.querySelector('.item-quantity-value');
+  let currentCount  = parseInt(valueEl.textContent, 10) || 1;
 
-  if (addToCartBtn) {
-    const quantitySelector = document.getElementById('productQuantity');
-    const minusBtn         = quantitySelector.querySelector('.minus');
-    const plusBtn          = quantitySelector.querySelector('.plus');
-    const valueEl          = quantitySelector.querySelector('.item-quantity-value');
-    let currentCount       = parseInt(valueEl.textContent, 10) || 1;
+  // клик «Добавить»
+  addBtn.addEventListener('click', () => {
+    addBtn.style.display      = 'none';
+    qtySelector.style.display = 'inline-flex';
+    setTimeout(() => qtySelector.classList.add('show'), 10);
+    addToCart(true, currentCount);
+  });
 
-    addToCartBtn.addEventListener('click', () => {
-      addToCartBtn.style.display = 'none';
-      quantitySelector.style.display = 'inline-flex';
-      setTimeout(() => quantitySelector.classList.add('show'), 10);
-    });
-
-    function updateQuantity(delta) {
-      currentCount = Math.max(1, currentCount + delta);
+  function reset() {
+    qtySelector.classList.remove('show');
+    setTimeout(() => {
+      qtySelector.style.display = 'none';
+      addBtn.style.display      = 'inline-block';
+      addToCart(false, 0);
+      currentCount = 1;
       valueEl.textContent = currentCount;
-    }
-
-    function resetToAddButton() {
-      quantitySelector.classList.remove('show');
-      setTimeout(() => {
-        quantitySelector.style.display = 'none';
-        addToCartBtn.style.display     = 'inline-block';
-        currentCount = 1;
-        valueEl.textContent = currentCount;
-      }, 300);
-    }
-
-    minusBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      if (currentCount === 1) {
-        resetToAddButton();
-      } else {
-        updateQuantity(-1);
-      }
-    });
-
-    plusBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      updateQuantity(+1);
-    });
+    }, 300);
   }
+
+  minusBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (currentCount === 1) {
+      reset();
+    } else {
+      currentCount--;
+      valueEl.textContent = currentCount;
+      addToCart(true, currentCount);
+    }
+  });
+
+  plusBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    currentCount++;
+    valueEl.textContent = currentCount;
+    addToCart(true, currentCount);
+  });
 }
 
-updateQuantity();
+// запуск для всех блоков
+document.querySelectorAll('.item-buttons').forEach(container => {
+  // проверяем, что в контейнере есть нужная разметка
+  if (container.querySelector('.add-to-cart-btn')
+   && container.querySelector('.item-quantity-selector')) {
+    setupAddToCart(container);
+  }
+});
 
 
 // Промокод
@@ -1085,21 +1109,6 @@ function openCardAndScroll(id) {
   };
   info.addEventListener('transitionend', onTransitionEnd);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
