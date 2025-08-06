@@ -6714,18 +6714,22 @@ p.product-item-price {
 }
 
 .product-item-right-side {
-  display: flex;
-  flex-direction: column;
+  /* Убираем любые overflow, которые ломают поведение sticky */
+  overflow: visible;
+  /* Чтобы позиционирование sticky сработало относительно этой колонки, нужно, чтобы она не была статической */
+  position: relative;
 }
 
 .item-buttons {
+  position: fixed;
+  bottom: 20px;            /* отступ от низа экрана */
+  right: 110px;             /* смещение от правой границы экрана — подгоните по отступам макета */
+  z-index: 2000;
+  padding: 10px;
   display: flex;
   gap: 10px;
-
-  position: sticky;
-  top: 130px;       
-  z-index: 2000;      
-  padding-top: 10px;
+  border-radius: 39px;
+  width: calc(55% - 60px);
 }
 
 .add-to-cart-btn {
