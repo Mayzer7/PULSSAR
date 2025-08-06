@@ -618,30 +618,107 @@ ValidateReviewForm();
 
 // Оформление заказа 
 
-function choiceCountProduct(btn, action) {
-  const quantitySelector = document.querySelector('.quantity-selector');
+function initQuantitySelector(containerInput, {
+  btnClass = 'quantity-btn',
+  valueClass = 'quantity-value',
+  selectorClass = 'quantity-selector',
+} = {}) {
+  const container = typeof containerInput === 'string'
+    ? document.querySelector(containerInput)
+    : containerInput;
 
-  if (quantitySelector) {
-    document.querySelector('.cart-items').addEventListener('click', e => {
-      const btn = e.target.closest('.quantity-btn');
-      if (!btn) return; 
+  if (!container) return;
 
-      const selector = btn.closest('.quantity-selector');
-      const valueEl = selector.querySelector('.quantity-value');
-      let count = parseInt(valueEl.textContent, 10);
+  container.addEventListener('click', e => {
+    const btn = e.target.closest(`.${btnClass}`);
+    if (!btn) return;
 
-      if (btn.classList.contains('minus') && count > 1) {
-        count--;
-      } else if (btn.classList.contains('plus')) {
-        count++;
+    const selector = btn.closest(`.${selectorClass}`);
+    const valueEl = selector.querySelector(`.${valueClass}`);
+    let count = parseInt(valueEl.textContent, 10);
+
+    if (btn.classList.contains('minus') && count > 1) {
+      count--;
+    } else if (btn.classList.contains('plus')) {
+      count++;
+    }
+
+    valueEl.textContent = count;
+  });
+}
+
+// Для товара
+initQuantitySelector('#productQuantity', {
+  btnClass: 'item-quantity-btn',
+  valueClass: 'item-quantity-value',
+  selectorClass: 'item-quantity-selector',
+});
+
+// Для корзины 
+document.querySelectorAll('.cart-item-info-bottom').forEach(cartItem => {
+  initQuantitySelector(cartItem, {
+    btnClass: 'quantity-btn',
+    valueClass: 'quantity-value',
+    selectorClass: 'quantity-selector',
+  });
+});
+
+
+
+
+
+
+// Выбор количества товара добавленного в корзину
+
+function updateQuantity() {
+  const addToCartBtn = document.querySelector('.add-to-cart-btn');
+
+  if (addToCartBtn) {
+    const quantitySelector = document.getElementById('productQuantity');
+    const minusBtn         = quantitySelector.querySelector('.minus');
+    const plusBtn          = quantitySelector.querySelector('.plus');
+    const valueEl          = quantitySelector.querySelector('.item-quantity-value');
+    let currentCount       = parseInt(valueEl.textContent, 10) || 1;
+
+    addToCartBtn.addEventListener('click', () => {
+      addToCartBtn.style.display = 'none';
+      quantitySelector.style.display = 'inline-flex';
+      setTimeout(() => quantitySelector.classList.add('show'), 10);
+    });
+
+    function updateQuantity(delta) {
+      currentCount = Math.max(1, currentCount + delta);
+      valueEl.textContent = currentCount;
+    }
+
+    function resetToAddButton() {
+      quantitySelector.classList.remove('show');
+      setTimeout(() => {
+        quantitySelector.style.display = 'none';
+        addToCartBtn.style.display     = 'inline-block';
+        currentCount = 1;
+        valueEl.textContent = currentCount;
+      }, 300);
+    }
+
+    minusBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (currentCount === 1) {
+        resetToAddButton();
+      } else {
+        updateQuantity(-1);
       }
+    });
 
-      valueEl.textContent = count;
+    plusBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      updateQuantity(+1);
     });
   }
 }
 
-choiceCountProduct();
+updateQuantity();
+
 
 // Промокод
 

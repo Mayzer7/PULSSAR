@@ -32,28 +32,17 @@
             <div class="product-item-left-side">
                 <!-- Главный слайдер -->
                 <div class="swiper-container swiper-main">
-                    <div class="product-item-badge">
+                    <!-- <div class="product-item-badge">
                         <p>Выбор дизайнеров</p>
+                    </div> -->
+
+                    <div class="product-item-badge-sale">
+                        <p>sale</p>
                     </div>
+                    
                     <div class="swiper-wrapper main-images-swiper">
                         <div class="swiper-slide">
-                            <img src="test-images/2.jpg" alt="">
-                        </div>
-
-                        <div class="swiper-slide">
-                            <img src="test-images/4.jpg" alt="">
-                        </div>
-
-                        <div class="swiper-slide">
-                            <img src="test-images/5.jpg" alt="">
-                        </div>
-
-                        <div class="swiper-slide">
-                            <img src="test-images/8.jpg" alt="">
-                        </div>
-                        
-                        <div class="swiper-slide">
-                            <img src="test-images/7.jpg" alt="">
+                            <img src="img/product/1.png" alt="">
                         </div>
 
                         <div class="swiper-slide">
@@ -62,6 +51,26 @@
 
                         <div class="swiper-slide">
                             <img src="img/product/3.png" alt="">
+                        </div>
+
+                        <div class="swiper-slide">
+                            <img src="img/product/4.png" alt="">
+                        </div>
+                        
+                        <div class="swiper-slide">
+                            <img src="img/product/1.png" alt="">
+                        </div>
+
+                        <div class="swiper-slide">
+                            <img src="img/product/2.png" alt="">
+                        </div>
+
+                        <div class="swiper-slide">
+                            <img src="img/product/3.png" alt="">
+                        </div>
+
+                        <div class="swiper-slide">
+                            <img src="img/product/4.png" alt="">
                         </div>
                     </div>
 
@@ -121,12 +130,40 @@
                     </div>
                 </div>
 
-                <div class="in-stock">
-                    <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 3.75L6.5 9.25L15 0.75" stroke="#6FAB41" stroke-width="1.5"/>
-                    </svg>
+                <div class="in-stocks">
+                    <div class="in-stock">
+                        <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 3.75L6.5 9.25L15 0.75" stroke="#6FAB41" stroke-width="1.5"/>
+                        </svg>
 
-                    <span>В наличии</span>
+                        <span>В наличии</span>
+                    </div>
+
+                    <div class="in-stock">
+                        <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 3.75L6.5 9.25L15 0.75" stroke="#6FAB41" stroke-width="1.5"/>
+                        </svg>
+
+                        <span>В Москве</span>
+                    </div>
+
+                    <div class="in-stock">
+                        <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 3.75L6.5 9.25L15 0.75" stroke="#6FAB41" stroke-width="1.5"/>
+                        </svg>
+
+                        <span>В Китае</span>
+                    </div>
+                </div>
+
+                <div class="product-item-discount">
+                    <p class="product-item-discount-price">
+                        114 900 ₽
+                    </p>
+                    
+                    <p class="product-item-discount-banner">
+                        - 20%
+                    </p>
                 </div>
 
                 <p class="product-item-price">
@@ -137,6 +174,23 @@
                     <button class="add-to-cart-btn">
                         Добавить в корзину
                     </button>
+
+                    
+                    <div class="item-quantity-selector" id="productQuantity">
+                        <button class="item-quantity-btn minus">
+                            <svg class="minus-icon" viewBox="0 0 17 1" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17 0.5L8.5 0.5L0 0.499999" stroke="#CFA567"/>
+                            </svg>
+                        </button>
+                                            
+                        <div class="item-quantity-value">1</div>
+                                            
+                        <button class="item-quantity-btn plus">
+                            <svg class="plus-icon" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17 8.5L8.5 8.5M-3.71547e-07 8.5L8.5 8.5M8.5 8.5L8.5 -3.71547e-07L8.5 17" stroke="#CFA567"/>
+                            </svg>
+                        </button>
+                    </div>
 
                     <button class="buy-now-btn">
                         Купить в один клик
@@ -184,8 +238,20 @@
                                     <p>Размер: <span>85*35</span></p>
                                 </div>
 
-                                <div class="select-configuration-card-price">
-                                    <p>114 900 ₽</p>
+                                <div class="select-configuration-card-price-container">
+                                    <div class="select-configuration-card-discount">
+                                        <p class="select-configuration-card-discount-price">
+                                            114 900 ₽
+                                        </p>
+                                        
+                                        <p class="select-configuration-card-discount-banner">
+                                            - 90%
+                                        </p>
+                                    </div>
+
+                                    <div class="select-configuration-card-price">
+                                        <p>114 900 ₽</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
