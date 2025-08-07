@@ -9933,7 +9933,7 @@ p.cart-form-title {
 
 .order-items-head {
   display: grid;
-  grid-template-columns: minmax(0px, 157px) minmax(0px, 245px) minmax(0px, 158px) minmax(0px, 183px) minmax(0px, 470px);
+  grid-template-columns: minmax(0px, 157px) minmax(0px, 245px) minmax(0px, 158px) minmax(0px, 183px) minmax(0px, 470px) 1fr;
 }
 
 .order-items-head p {
@@ -9948,7 +9948,7 @@ p.cart-form-title {
 
 .order-item {
   display: grid;
-  grid-template-columns: minmax(0px, 157px) minmax(0px, 245px) minmax(0px, 158px) minmax(0px, 183px) minmax(0px, 470px);
+  grid-template-columns: minmax(0px, 157px) minmax(0px, 245px) minmax(0px, 158px) minmax(0px, 183px) minmax(0px, 270px) 1fr;
   border-top: 1px solid #D0D0D0;
   padding: 20px 0px;
   align-items: center;
@@ -9965,13 +9965,6 @@ p.cart-form-title {
   font-weight: 400;
   color: #000000;
 }
-
-.order-item-status {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-}
-
 
 .order-item-link {
   color: #CFA567;
@@ -10057,24 +10050,43 @@ p.cart-form-title {
 
 /* Адаптив страницы "my-orders.html" */
 
+@media (max-width: 1700px) {
+  .order-item {
+    grid-template-columns: minmax(0px, 157px) minmax(0px, 245px) minmax(0px, 100px) minmax(0px, 158px) minmax(0px, 200px) 1fr;
+  }
+
+  .order-items-head {
+    grid-template-columns: minmax(0px, 157px) minmax(0px, 245px) minmax(0px, 100px) minmax(0px, 158px) minmax(0px, 200px);
+  }
+}
+
 @media (max-width: 1630px) {
-  .order-item,
   .order-items-head {
     grid-template-columns: minmax(0px, 107px) minmax(0px, 200px) minmax(0px, 128px) minmax(0px, 150px) minmax(0px, 1fr);
+  }
+
+  .order-item {
+    grid-template-columns: minmax(0px, 107px) minmax(0px, 200px) minmax(0px, 128px) minmax(0px, 150px) minmax(0px, 1fr) 1fr;
   }
 }
 
 @media (max-width: 1470px) {
-  .order-item,
   .order-items-head {
     grid-template-columns: minmax(0px, 85px) minmax(0px, 173px) minmax(0px, 100px) minmax(0px, 132px) minmax(0px, 1fr);
+  }
+
+  .order-item {
+    grid-template-columns: minmax(0px, 85px) minmax(0px, 173px) minmax(0px, 100px) minmax(0px, 132px) minmax(0px, 1fr) 1fr;
   }
 }
 
 @media (max-width: 1370px) {
-  .order-item,
   .order-items-head {
-    grid-template-columns: minmax(0px, 85px) minmax(0px, 173px) minmax(0px, 100px) minmax(0px, 132px) minmax(0px, 1fr);
+    grid-template-columns: minmax(0px, 85px) minmax(0px, 173px) minmax(0px, 100px) minmax(0px, 110px) minmax(0px, 1fr);
+  }
+
+  .order-item {
+    grid-template-columns: minmax(0px, 85px) minmax(0px, 173px) minmax(0px, 100px) minmax(0px, 110px) minmax(0px, 250px) 1fr;
   }
 
   .order-item {
@@ -10098,6 +10110,15 @@ p.cart-form-title {
 }
 
 @media (max-width: 1250px) {
+  .order-item p,
+  .pay-btn {
+    font-size: 14px;
+  }
+
+  .pay-btn {
+    padding: 13px 36px;
+  }
+
   .order-items-head { display: none; }
   
   .order-items {
@@ -10108,12 +10129,13 @@ p.cart-form-title {
   }
 
   .order-item {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
     border: 1px solid #D0D0D0;
     border-radius: 12px;
     background: #FFF;
+    padding: 16px;
   }
 
   .order-item-number,
@@ -10121,82 +10143,41 @@ p.cart-form-title {
   .order-item-count,
   .order-item-price,
   .order-item-status {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin: 0 0 12px;
-    padding: 12px 0px;
-    border-bottom: 1px solid #D0D0D0;
-    font: 16px/1 'Open Sans', sans-serif;
-    color: #000;
-    width: 100%;
-  }
-
-  .order-item-number::before { 
-    content: "Номер";            
-    color: #8C8C8C;
-    padding-right: 20px; 
-  }
-
-  .order-item-data::before   { 
-    content: "Дата оформления"; 
-    color: #8C8C8C; 
-  }
-
-  .order-item-count::before  { 
-    content: "Кол-во";           
-    color: #8C8C8C; 
-  }
-  .order-item-price::before  { 
-    content: "Цена";             
-    color: #8C8C8C; 
-  }
-
-  .order-item-status {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;       
-    margin: 0 0 12px;
-    width: 100%;
-    font: 16px/1 'Open Sans', sans-serif;
-    color: #000;
-    border-bottom: none;
-  }
-
-  .order-item-status > *:first-child {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    width: 100%;
-    margin: 0;
-    padding: 0 0 12px;
     border-bottom: 1px solid #D0D0D0;
     font: 16px/1 'Open Sans', sans-serif;
-    text-align: right;
-  }
-
-  .order-item-status > *:first-child::before {
-    content: "Статус";
-    color: #8C8C8C;
-    margin-right: 10px;
-    padding-right: 10px;
-  }
-
-  .order-item-status > .order-item-link,
-  .order-item-status > .pay-btn {
-    display: block;
+    color: #000;
     width: 100%;
-    text-align: right;
-    margin: 12px 0 0;
-    padding: 0;
-    font: 16px/1 'Open Sans', sans-serif;
-    color: #CFA567;
+    padding: 10px 0px;
+  }
+
+  .order-item-number::before { content: "Номер";            color: #8C8C8C; padding-right: 20px; }
+  .order-item-data::before   { content: "Дата оформления";  color: #8C8C8C; padding-right: 20px; }
+  .order-item-count::before  { content: "Кол-во";            color: #8C8C8C; padding-right: 20px; }
+  .order-item-price::before  { content: "Цена";              color: #8C8C8C; padding-right: 20px; }
+  .order-item-status::before { content: "Статус";            color: #8C8C8C; padding-right: 20px; }
+
+  .order-item-number,
+  .order-item-data,
+  .order-item-count,
+  .order-item-price,
+  .order-item-status {
+    grid-column: 1 / -1;
+  }
+
+  .order-item-link {
+    grid-column: 2 / 3;
+    justify-self: start; 
     text-transform: uppercase;
-    background: none;
-    border: none;
-    text-decoration: none;
+    font-family: 'Open Sans', sans-serif;
     font-weight: 600;
-    text-align: right;
+    font-size: 16px;
+    color: #CFA567;
+    text-decoration: none;
+    padding: 0;
+    padding-top: 10px;
   }
 }
 
