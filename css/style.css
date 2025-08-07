@@ -6711,6 +6711,11 @@ p.product-item-price {
   color: #000000;
   margin-top: 10px;
   margin-bottom: 0px;
+  line-height: 1;
+}
+
+.ya-split {
+  margin-bottom: 24px;
 }
 
 .item-buttons {
