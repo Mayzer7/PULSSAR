@@ -47,13 +47,13 @@
                             </label>
                         </button>
 
-                        <button class="clear-cart-btn">
+                        <button class="clear-cart-btn" id="clear-cart-btn">
                             Очистить корзину
                         </button>
                     </div>
 
                     <div class="cart-items">
-                        <div class="cart-item">
+                        <div class="cart-item" data-item-id="1">
                             <div class="cart-image">
                                 <div class="cart-image-wrapper">
                                     <button class="choice-item-btn">
@@ -85,6 +85,8 @@
                                                 <path d="M20.25 0.75L10.5 10.5M0.749999 20.25L10.5 10.5M10.5 10.5L0.749999 0.750001L20.25 20.25" stroke="black"/>
                                             </svg>
                                         </button>
+
+                                        
                                     </div>
 
                                     <p class="cart-item-article">
@@ -94,8 +96,8 @@
                                 
                                 <div class="cart-item-info-bottom">
                                     <div class="cart-item-price">
-                                        <div class="quantity-selector">
-                                            <button class="quantity-btn minus">
+                                        <div class="quantity-selector quantity-selector-card">
+                                            <button type="button" class="quantity-btn quantity-btn-cart-minus minus">
                                                 <svg class="minus-icon" viewBox="0 0 17 1" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M17 0.5L8.5 0.5L0 0.499999" stroke="#CFA567"/>
                                                 </svg>
@@ -103,7 +105,7 @@
                                             
                                             <div class="quantity-value">1</div>
                                             
-                                            <button class="quantity-btn plus">
+                                            <button class="quantity-btn quantity-btn-cart-plus plus">
                                                 <svg class="plus-icon" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M17 8.5L8.5 8.5M-3.71547e-07 8.5L8.5 8.5M8.5 8.5L8.5 -3.71547e-07L8.5 17" stroke="#CFA567"/>
                                                 </svg>
@@ -130,7 +132,7 @@
                             </div>
                         </div>
 
-                       <div class="cart-item">
+                        <div class="cart-item" data-item-id="2">
                             <div class="cart-image">
                                 <div class="cart-image-wrapper">
                                     <button class="choice-item-btn">
@@ -145,7 +147,7 @@
                                         </label>
                                     </button>
 
-                                    <img src="img/product/1.png" alt="">
+                                    <img src="img/product/4.png" alt="">
                                 </div>
                             </div>
 
@@ -153,8 +155,7 @@
                                 <div class="cart-item-info-top">
                                     <div class="cart-item-desc">
                                         <a href="product.html" class="cart-item-name">
-                                            Подвесная люстра VARDA (Количество ламп 3, цвет плафона желтый, цвет каркаса св.дерево,  размер 85*35см)
-
+                                            Лампочка VARDA (Количество ламп 3)
                                         </a>
 
                                         <button class="delete-cart-item-btn">
@@ -171,8 +172,8 @@
                                 
                                 <div class="cart-item-info-bottom">
                                     <div class="cart-item-price">
-                                        <div class="quantity-selector">
-                                            <button class="quantity-btn minus">
+                                        <div class="quantity-selector quantity-selector-card">
+                                            <button type="button" class="quantity-btn quantity-btn-cart-minus minus">
                                                 <svg class="minus-icon" viewBox="0 0 17 1" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M17 0.5L8.5 0.5L0 0.499999" stroke="#CFA567"/>
                                                 </svg>
@@ -180,7 +181,7 @@
                                             
                                             <div class="quantity-value">1</div>
                                             
-                                            <button class="quantity-btn plus">
+                                            <button class="quantity-btn quantity-btn-cart-plus plus">
                                                 <svg class="plus-icon" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M17 8.5L8.5 8.5M-3.71547e-07 8.5L8.5 8.5M8.5 8.5L8.5 -3.71547e-07L8.5 17" stroke="#CFA567"/>
                                                 </svg>
@@ -194,6 +195,28 @@
                                 </div>
                             </div>
                         </div>
+
+                        <template id="remove-banner-template">
+                            <div class="cart-item-remove-banner">
+                                <div class="cart-item-remove-banner-left-side">
+                                    <p class="cart-item-remove-banner-text">
+                                        Товар <span>«Подвесная люстра VARDA (Количество ламп 3, цвет плафона жёлтый, цвет каркаса св.дерево, размер 8 × 5см)»</span> был удалён из корзины
+                                    </p>
+
+                                    <button class="recover-item-btn">
+                                        Восстановить
+                                    </button>
+                                </div>
+
+                                <div class="cart-item-remove-banner-right-side">
+                                    <button class="hide-banner-item-btn">
+                                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M20.25 0.75L10.5 10.5M0.749999 20.25L10.5 10.5M10.5 10.5L0.749999 0.750001L20.25 20.25" stroke="black"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
                     </div>
 
                     <div class="promo-code-container">
@@ -239,6 +262,7 @@
                     </div>
                 </div>
 
+            
                 <div class="cart-right-side">
                     <form class="cart-form">
                         <div class="cart-form-head">
