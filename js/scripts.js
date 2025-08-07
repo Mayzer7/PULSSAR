@@ -1,3 +1,28 @@
+// Доработка сайта
+
+// Тестовая шапка
+
+const headerTest = document.querySelector('.header-test');
+
+if (headerTest) {
+  let lastScrollY = window.pageYOffset;
+  const threshold = 100;
+
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.pageYOffset;
+
+    if (currentScrollY > lastScrollY && currentScrollY > threshold) {
+      headerTest.classList.add('scroll-down');
+    }
+    if (currentScrollY === 0) {
+      headerTest.classList.remove('scroll-down');
+    }
+
+    lastScrollY = currentScrollY;
+  });
+}
+
+
 const html = document.documentElement;
 const body = document.body;
 const swiperThumbs = document.querySelector(".swiper-thumbs");
@@ -111,29 +136,35 @@ function deleteFavorite(productId) {
   console.log('Удалён из избранного:', productId);
 }
 
-function initFavoriteButtons() {
-  const addToFavoritesBtn = document.querySelector('.add-to-favorites-btn');
-  const addToFavoriteRelatedProductsBtn = document.querySelector('.add-to-favorite-related-products-btn');
-  
-  if (addToFavoritesBtn || addToFavoriteRelatedProductsBtn) {
-    document.querySelectorAll('.add-to-favorite-related-products-btn, .add-to-favorites-btn')
-    .forEach(btn => {
-      const productId = btn.closest('[data-product-id]')?.dataset.productId;
+document.addEventListener('click', function(event) {
+    const btn = event.target.closest(
+      '.add-to-favorites-btn, .add-to-favorite-related-products-btn, .favorite-btn'
+    );
+    if (!btn) return;  
+    const container = btn.closest('[data-product-id]');
+    if (!container) {
+      console.warn('Кнопка без data-product-id:', btn);
+      return;
+    }
+    const productId = container.dataset.productId;
 
-      btn.addEventListener('click', () => {
-        const isActive = btn.classList.toggle('active');
+    const isActive = btn.classList.toggle('active');
+    if (isActive) {
+      addToFavorite(productId);
+    } else {
+      deleteFavorite(productId);
+    }
+});
 
-        if (isActive) {
-          addToFavorite(productId);
-        } else {
-          deleteFavorite(productId);
-        }
-      });
-    }); 
-  }
+const favoriteBtn = document.querySelector('.favorite-btn');
+
+if (favoriteBtn) {
+  favoriteBtn.addEventListener('click', function () {
+    const icon = this.querySelector('.favorite-btn-icon');
+    icon.classList.toggle('filled');
+  });
 }
 
-initFavoriteButtons();
 
 // Выбрать комплектацию
 
@@ -141,17 +172,13 @@ function selectConfiguration() {
   const cards = document.querySelectorAll('.select-configuration-card');
 
   if (cards) {
-      cards.forEach((card, index) => {
-      card.dataset.id = index + 1;
-
-      card.addEventListener('click', () => {
-        cards.forEach(c => c.classList.remove('active'));
-
-        card.classList.add('active');
-
-        console.log('Выбрана карточка:', card.dataset.id);
-      });
+    cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      console.log('Выбрана комплектация:', card.dataset.id);
     });
+   });
   }
 }
 
@@ -162,7 +189,6 @@ selectConfiguration();
 const productDescCards = document.querySelectorAll('.product-desc-card');
 
 if (productDescCards.length) {
-  // Вспомогательная функция плавного скролла
   function smoothScrollTo(card) {
     const header = document.querySelector('.site-header');
     const headerHeight = header ? header.offsetHeight : 0;
@@ -189,7 +215,6 @@ if (productDescCards.length) {
     requestAnimationFrame(step);
   }
 
-  // Инициализация высот при загрузке страницы
   document.addEventListener('DOMContentLoaded', () => {
     productDescCards.forEach(card => {
       const info = card.querySelector('.product-desc-card-info');
@@ -204,7 +229,6 @@ if (productDescCards.length) {
     const clickArea = card.querySelector('.click-area');
     const info = card.querySelector('.product-desc-card-info');
 
-    // Функция открытия/закрытия карточки
     function toggleCard() {
       const isOpen = card.classList.contains('open');
       productDescCards.forEach(c => {
@@ -223,7 +247,6 @@ if (productDescCards.length) {
       }
     }
 
-    // Навешиваем на кнопку и на всю click-area
     btn.addEventListener('click', toggleCard);
     clickArea.addEventListener('click', toggleCard);
   });
@@ -744,6 +767,41 @@ document.querySelectorAll('.item-buttons').forEach(container => {
 });
 
 
+// Регулировка количества товара в корзине
+
+function setupCartQuantity() {
+  const cart = document.querySelector('.cart');
+
+  if (cart) {
+    document.querySelectorAll('.quantity-selector').forEach(selector => {
+      const minusBtn = selector.querySelector('.minus');
+      const plusBtn  = selector.querySelector('.plus');
+      const valueEl  = selector.querySelector('.quantity-value');
+      let count = parseInt(valueEl.textContent, 10) || 1;
+
+      function update(newCount) {
+        count = newCount;
+        valueEl.textContent = count;
+      }
+
+      minusBtn.addEventListener('click', e => {
+        e.preventDefault();
+        if (count > 1) {
+          update(count - 1);
+        } 
+      });
+
+      plusBtn.addEventListener('click', e => {
+        e.preventDefault();
+        update(count + 1);
+      });
+    });
+  }
+}
+
+setupCartQuantity();
+
+
 // Промокод
 
 const promo = document.querySelector('.promo-code');
@@ -1017,24 +1075,7 @@ function clearOrderForm() {
   }
 }
 
-
 validateOrderForm();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Переход при нажатии на рейтинг товара к якорной ссылке отзывов
 
@@ -1111,21 +1152,59 @@ function openCardAndScroll(id) {
 }
 
 
+
+// Появление нижнего баннера с ценой при скролле
+
 document.addEventListener('DOMContentLoaded', () => {
-  const header = document.querySelector('.header-test');
-  let lastScrollY = window.pageYOffset;
-  const threshold = 100;
+  const buyButtonsBlock = document.querySelector('.js-item-buttons');
+  const relatedSection  = document.querySelector('.js-related-products');
+  const banner          = document.querySelector('.fixed-product-info');
+  const footer          = document.querySelector('footer'); // Подставь нужный селектор футера
 
-  window.addEventListener('scroll', () => {
-    const currentScrollY = window.pageYOffset;
+  if (!buyButtonsBlock || !relatedSection || !banner || !footer) return;
 
-    if (currentScrollY > lastScrollY && currentScrollY > threshold) {
-      header.classList.add('scroll-down');
+  let isBuyButtonsVisible = true;
+  let isRelatedVisible = false;
+  let isFooterVisible = false;
+
+  const updateBannerVisibility = () => {
+    if (!isBuyButtonsVisible && !isRelatedVisible && !isFooterVisible) {
+      banner.classList.add('visible');
+    } else {
+      banner.classList.remove('visible');
     }
-    if (currentScrollY === 0) {
-      header.classList.remove('scroll-down');
-    }
+  };
 
-    lastScrollY = currentScrollY;
+  const buyButtonsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      isBuyButtonsVisible = entry.isIntersecting;
+      updateBannerVisibility();
+    });
+  }, { threshold: 0 });
+
+  const relatedObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      isRelatedVisible = entry.isIntersecting;
+      updateBannerVisibility();
+    });
+  }, {
+    root: null,
+    rootMargin: `0px 0px -${banner.offsetHeight}px 0px`,
+    threshold: 0,
   });
+
+  const footerObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      isFooterVisible = entry.isIntersecting;
+      updateBannerVisibility();
+    });
+  }, {
+    root: null,
+    rootMargin: `0px 0px -${banner.offsetHeight}px 0px`,
+    threshold: 0,
+  });
+
+  buyButtonsObserver.observe(buyButtonsBlock);
+  relatedObserver.observe(relatedSection);
+  footerObserver.observe(footer);
 });

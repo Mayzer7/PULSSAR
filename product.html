@@ -18,7 +18,7 @@
 </head>
 <body>
     <!-- Шапка -->
-    <header class="header-test">
+    <header>
         Шапка
     </header>
 
@@ -30,7 +30,7 @@
     </div>
 
     <main class="main">
-        <section class="product-item">
+        <section class="product-item" data-product-id="1234">
             <div class="product-item-left-side">
                 <!-- Главный слайдер -->
                 <div class="swiper-container swiper-main">
@@ -217,7 +217,7 @@
                                 </button>
                                 
                                 <div class="item-quantity-selector fixed-quantity-selector js-qty-selector">
-                                    <button class="item-quantity-btn minus js-minus">
+                                    <button class="item-quantity-btn fixed-item-quantity-btn minus js-minus">
                                         <svg class="minus-icon" viewBox="0 0 17 1" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M17 0.5L8.5 0.5L0 0.499999" stroke="#CFA567"/>
                                         </svg>
@@ -236,13 +236,15 @@
                                     Купить в один клик
                                 </button>
 
-                                <svg class="favorite-btn-icon" viewBox="0 0 69 69" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <foreignObject x="-10" y="-10" width="89" height="89"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5px);clip-path:url(#bgblur_0_752_5131_clip_path);height:100%;width:100%"></div></foreignObject><circle data-figma-bg-blur-radius="10" cx="34.5" cy="34.5" r="34" stroke="#CFA567"/>
-                                    <path d="M25.786 19.0102C19.9047 19.0102 15.1367 23.7781 15.1367 29.6594C15.1367 40.3087 27.7222 49.9898 34.499 52.2416C41.2758 49.9898 53.8612 40.3087 53.8612 29.6594C53.8612 23.7781 49.0933 19.0102 43.212 19.0102C39.6106 19.0102 36.4255 20.7983 34.499 23.5352C33.5168 22.1366 32.2122 20.9952 30.6956 20.2076C29.179 19.4199 27.4949 19.0092 25.786 19.0102Z" stroke="#CFA567" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <defs>
-                                    <clipPath id="bgblur_0_752_5131_clip_path" transform="translate(10 10)"><circle cx="34.5" cy="34.5" r="34"/>
-                                    </clipPath></defs>
-                                </svg>
+                                <button class="favorite-btn">
+                                    <svg class="favorite-btn-icon" viewBox="0 0 69 69" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <foreignObject x="-10" y="-10" width="89" height="89"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5px);clip-path:url(#bgblur_0_752_5131_clip_path);height:100%;width:100%"></div></foreignObject><circle data-figma-bg-blur-radius="10" cx="34.5" cy="34.5" r="34" stroke="#CFA567"/>
+                                        <path d="M25.786 19.0102C19.9047 19.0102 15.1367 23.7781 15.1367 29.6594C15.1367 40.3087 27.7222 49.9898 34.499 52.2416C41.2758 49.9898 53.8612 40.3087 53.8612 29.6594C53.8612 23.7781 49.0933 19.0102 43.212 19.0102C39.6106 19.0102 36.4255 20.7983 34.499 23.5352C33.5168 22.1366 32.2122 20.9952 30.6956 20.2076C29.179 19.4199 27.4949 19.0092 25.786 19.0102Z" stroke="#CFA567" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <defs>
+                                        <clipPath id="bgblur_0_752_5131_clip_path" transform="translate(10 10)"><circle cx="34.5" cy="34.5" r="34"/>
+                                        </clipPath></defs>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -276,7 +278,7 @@
                     </p>
 
                     <div class="select-configuration-cards">
-                        <div class="select-configuration-card active">
+                        <div class="select-configuration-card active" data-id="1">
                             <div class="select-configuration-card-img">
                                 <img src="img/select-configuration-images/1.png" alt="">
                             </div>
@@ -307,7 +309,7 @@
                             </div>
                         </div>
 
-                        <div class="select-configuration-card">
+                        <div class="select-configuration-card" data-id="2">
                             <div class="select-configuration-card-img">
                                 <img src="img/select-configuration-images/2.png" alt="">
                             </div>
@@ -326,7 +328,7 @@
                             </div>
                         </div>
 
-                        <div class="select-configuration-card">
+                        <div class="select-configuration-card" data-id="3">
                             <div class="select-configuration-card-img">
                                 <img src="img/select-configuration-images/3.png" alt="">
                             </div>
@@ -345,7 +347,7 @@
                             </div>
                         </div>
 
-                        <div class="select-configuration-card">
+                        <div class="select-configuration-card" data-id="4">
                             <div class="select-configuration-card-img">
                                 <img src="img/select-configuration-images/4.png" alt="">
                             </div>
@@ -364,7 +366,7 @@
                             </div>
                         </div>
 
-                        <div class="select-configuration-card">
+                        <div class="select-configuration-card" data-id="5">
                             <div class="select-configuration-card-img">
                                 <img src="img/select-configuration-images/5.png" alt="">
                             </div>
@@ -383,7 +385,7 @@
                             </div>
                         </div>
 
-                        <div class="select-configuration-card">
+                        <div class="select-configuration-card" data-id="6">
                             <div class="select-configuration-card-img">
                                 <img src="img/select-configuration-images/1.png" alt="">
                             </div>
@@ -402,7 +404,7 @@
                             </div>
                         </div>
 
-                        <div class="select-configuration-card">
+                        <div class="select-configuration-card" data-id="7">
                             <div class="select-configuration-card-img">
                                 <img src="img/select-configuration-images/1.png" alt="">
                             </div>
@@ -421,7 +423,7 @@
                             </div>
                         </div>
 
-                        <div class="select-configuration-card">
+                        <div class="select-configuration-card" data-id="8">
                             <div class="select-configuration-card-img">
                                 <img src="img/select-configuration-images/1.png" alt="">
                             </div>
@@ -885,7 +887,7 @@
             </div>
         </section>
 
-        <section class="related-products">
+        <section class="related-products js-related-products">
             <h2 class="related-products-title">
                 С этим товаром покупают
             </h2>
@@ -894,7 +896,7 @@
                 <div class="swiper-container related-products-swiper">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <div class="related-products-card image-hover-card">
+                            <div class="related-products-card image-hover-card" data-product-id="1">
                                 <div class="image-container">
                                     <img src="img/related-products/1.png" alt="" class="frame-0">
                                     <img src="img/related-products/2.png" alt="" class="frame-1">
@@ -982,7 +984,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="related-products-card image-hover-card">
+                            <div class="related-products-card image-hover-card" data-product-id="2">
                                 <div class="image-container">
                                     <img src="img/related-products/2.png" alt="" class="frame-0">
                                     <img src="img/related-products/2.png" alt="" class="frame-1">
@@ -1065,7 +1067,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="related-products-card image-hover-card">
+                            <div class="related-products-card image-hover-card" data-product-id="3">
                                 <div class="image-container">
                                     <img src="img/related-products/3.png" alt="" class="frame-0">
                                     <img src="img/related-products/2.png" alt="" class="frame-1">
@@ -1152,7 +1154,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="related-products-card image-hover-card">
+                            <div class="related-products-card image-hover-card" data-product-id="4">
                                 <div class="image-container">
                                     <img src="img/related-products/1.png" alt="" class="frame-0">
                                     <img src="img/related-products/2.png" alt="" class="frame-1">
@@ -1240,7 +1242,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="related-products-card image-hover-card">
+                            <div class="related-products-card image-hover-card" data-product-id="5">
                                 <div class="image-container">
                                     <img src="img/related-products/2.png" alt="" class="frame-0">
                                     <img src="img/related-products/2.png" alt="" class="frame-1">
@@ -1323,7 +1325,7 @@
                         </div>
 
                         <div class="swiper-slide">
-                            <div class="related-products-card image-hover-card">
+                            <div class="related-products-card image-hover-card" data-product-id="6">
                                 <div class="image-container">
                                     <img src="img/related-products/3.png" alt="" class="frame-0">
                                     <img src="img/related-products/2.png" alt="" class="frame-1">
