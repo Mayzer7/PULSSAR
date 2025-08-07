@@ -8016,6 +8016,7 @@ p.send-review-title {
   font-size: 12px; 
 }
 
+
 .custom-checkbox {
   display: inline-flex;
   align-items: center;
@@ -8033,6 +8034,7 @@ p.send-review-title {
   position: relative;
   cursor: pointer;
   transition: background-color 0.2s, border-color 0.2s;
+  background-color: white;
 }
 
 .custom-checkbox input::after {
@@ -8056,6 +8058,10 @@ p.send-review-title {
 
 .custom-checkbox input:checked::after {
   opacity: 1;
+}
+
+.custom-checkbox.error input {
+  border: 1px solid #FF6B6B !important;
 }
 
 /* Отправка файла */
@@ -9777,6 +9783,9 @@ p.cart-form-title {
 .fade-in.show {
   opacity: 1;
 }
+
+
+
 
 .quantity-btn svg {
   pointer-events: none;
