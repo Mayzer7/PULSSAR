@@ -443,7 +443,7 @@ function sendFile() {
   const input   = document.getElementById('file-input');
 
   if (input) {
-    const formats = ['jpg','jpeg','png','pdf'];
+    const formats = ['jpg', 'jpeg', 'png', 'webp'];
     const btn     = document.getElementById('file-btn');
     const infoWr  = document.getElementById('file-info');
     const nameEl  = infoWr.querySelector('.file-name');
