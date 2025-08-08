@@ -7241,6 +7241,36 @@ p.product-item-price {
   .fixed-product-info-container {
     padding: 14px 16px;
   }
+  
+  .fixed-product-info-right-side {
+    width: 100%;
+  }
+
+  .item-buttons {
+    display: flex;
+    gap: 8px;           
+    width: 100%;
+    align-items: center;
+  }
+
+  
+  .item-buttons > * {
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .fixed-add-to-cart-btn,
+  .fixed-buy-now-btn {
+    flex: 1 1 0;       
+    width: auto;       
+    padding: 10px 12px; 
+  }
+
+
+  .fixed-quantity-selector,
+  .favorite-btn {
+    display: none;
+  }
 }
 
 @media (max-width: 639px) {
