@@ -1409,3 +1409,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// Предотвращаем переход по ссылке товара, который не в наличии
+
+document.addEventListener('click', function(e) {
+  const target = e.target.closest('.order-btn-dissabled');
+
+  if (target) {
+    e.preventDefault(); 
+    e.stopPropagation(); 
+  }
+});

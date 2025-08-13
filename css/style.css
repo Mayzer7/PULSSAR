@@ -6321,18 +6321,28 @@ hr.white {
   border-radius: 2px;
 }
 
-.product-item-badge {
+.product-item-badges {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product-item-badge {
   background-color: #CFA567;
-  padding: 20px 0px;
   border-bottom-right-radius: 26px;
-  max-width: 256px;
-  min-width: 256px;
+  padding: 7px 0px;
+  max-width: 161px;
+  min-width: 161px;
   width: 100%;
   text-align: center;
+}
+
+.product-item-badge-sale {
+  background-color: #CA0603;
 }
 
 .product-item-badge p {
@@ -6340,30 +6350,38 @@ hr.white {
   text-transform: uppercase;
   font-family: 'Open Sans', sans-serif;
   font-size: 20px;
+  font-weight: 600;
+}
+
+/* Адаптив бейджеков */
+
+@media (max-width: 1350px) {
+  .product-item-badge {
+    max-width: 149px;
+    min-width: 149px;
+  }
   
-  font-weight: 600;
+  .product-item-badge p {
+    font-size: 16px;
+  }
+
+  .miniature-badge {
+    max-width: 131px;
+    min-width: 131px;
+    width: 100%;
+  }
 }
 
-.product-item-badge-sale {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  background-color: #CA0603;
-  padding: 20px 0px;
-  max-width: 256px;
-  min-width: 256px;
-  width: 100%;
-  text-align: center;
-  border-bottom-right-radius: 26px;
-}
+@media (max-width: 900px) {
+  .product-item-badge p {
+    font-size: 12px;
+  }
 
-.product-item-badge-sale p {
-  color: #F9F7F3;
-  text-transform: uppercase;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 20px;
-  font-weight: 600;
+  .product-item-badge,
+  .miniature-badge {
+    max-width: 113px;
+    min-width: 113px;
+  }
 }
 
 .swiper-main .swiper-slide {
@@ -7033,11 +7051,9 @@ p.product-item-price {
 }
 
 @media (max-width: 1280px) {
-  .product-item-badge p,
   .product-reviews-text,
   .add-to-favorites-btn,
-  .question-btn,
-  .product-item-badge-sale p {
+  .question-btn {
     font-size: 16px;
   }
 
@@ -7046,19 +7062,8 @@ p.product-item-price {
     gap: 6px;
   }
 
-  .product-item-badge {
-    padding: 13.5px 0px;
-  }
-
   .product-title {
     font-size: 32px;
-  }
-
-  .product-item-badge-sale,
-  .product-item-badge {
-    max-width: 213px;
-    min-width: 213px;
-    padding: 13.5px 0px;
   }
 
   .product-reviews-container-right-side img {
@@ -7312,23 +7317,9 @@ p.product-item-price {
     height: 10px !important;
   }
 
-  .product-item-badge {
-    max-width: 156px;
-    min-width: 156px;
-    padding: 10px 0px;
-  }
-
-  .product-item-badge-sale {
-    max-width: 156px;
-    min-width: 156px;
-    padding: 10px 2px;
-  }
-
-  .product-item-badge p,
   .product-reviews-text,
   .add-to-favorites-btn,
-  .question-btn,
-  .product-item-badge-sale p {
+  .question-btn {
     font-size: 12px;
   }
 }
