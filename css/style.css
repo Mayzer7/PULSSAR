@@ -8412,6 +8412,11 @@ p.send-review-title {
   margin-bottom: 120px;
 }
 
+.related-products-cards a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .related-products-card {
   position: relative;
   overflow: hidden;

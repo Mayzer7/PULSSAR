@@ -672,8 +672,26 @@ function renderCount() {
   qtyValues.forEach(val => val.textContent = currentCount);
 }
 
+function isOutOfStock(el) {
+  const container = el.closest('.js-item-buttons');
+  if (!container) return false;
+  const addBtn = container.querySelector('.js-add-btn');
+  return !!(addBtn && addBtn.classList.contains('order-btn-dissabled'));
+}
+
+
+addButtons.forEach(btn => {
+  if (btn.classList.contains('order-btn-dissabled')) {
+    try {
+      btn.disabled = true; // запрещает клики/фокус
+    } catch (e) {}
+    btn.setAttribute('aria-disabled', 'true');
+  }
+});
+
 addButtons.forEach(btn =>
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', (e) => {
+    if (isOutOfStock(btn)) return; 
     showSelectors();
     currentCount = 1;
     renderCount();
@@ -681,9 +699,12 @@ addButtons.forEach(btn =>
   })
 );
 
+
 minusButtons.forEach(btn =>
   btn.addEventListener('click', e => {
     e.stopPropagation();
+    if (isOutOfStock(btn)) return;
+
     if (currentCount <= 1) {
       addToCart(false, 0);
       hideSelectors();
@@ -696,9 +717,12 @@ minusButtons.forEach(btn =>
   })
 );
 
+
 plusButtons.forEach(btn =>
   btn.addEventListener('click', e => {
     e.stopPropagation();
+    if (isOutOfStock(btn)) return;
+
     currentCount++;
     renderCount();
     addToCart(true, currentCount);
