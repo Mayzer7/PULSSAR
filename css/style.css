@@ -6302,7 +6302,7 @@ hr.white {
   position: relative;
   overflow: hidden;
   aspect-ratio: 1 / 1; 
-  max-height: 530px;
+  max-height: 655px;
 }
 
 .main-images-swiper img {
@@ -6524,7 +6524,7 @@ hr.white {
 
 .product-item-left-side {
   position: sticky;
-  top: 30px;
+  top: 80px;
   align-self: start; 
 }
 
@@ -10684,44 +10684,47 @@ p.cart-item-remove-banner-text {
 
 .header-test {
   box-sizing: border-box;
-  height: 133px;      
   width: 100%;
-  background: #000;
   z-index: 9999;
+  display: flex;
+  flex-direction: column; 
+  align-items: stretch; 
+  font-size: 32px;
+  color: #fff;
+  font-family: 'Prata', serif;
+  font-weight: 400;
+  padding: 0px;
+}
 
+.header-test-top {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
-  color: #fff;
-  text-transform: uppercase;
-  font-family: 'Prata', serif;
-  font-weight: 400;
+  background-color: black;
+  text-align: center;
+  height: 65px;
+  max-height: 65px;
+}
+
+.header-test-bottom {
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 70px;
+  max-height: 70px;
 }
 
 .header-test.scroll-down {
   position: fixed;
   top: 0;
-  min-height: 133px;
-  max-height: 133px;
   left: 0;
   right: 0;
-  background: #000;
-}
-
-.header-test {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 50px;
-  color: #fff;
-  text-transform: uppercase;
-  font-family: 'Prata', serif;
-  font-weight: 400;
 }
 
 @media (max-width: 800px) {
   .header-test {
-    height: 163px;
+    height: auto; /* чтобы не ломалось */
   }
 }
