@@ -6788,6 +6788,18 @@ p.product-article {
   gap: 2px;
 }
 
+.product-reviews-icons img {
+  width: 28px;
+  height: 28px;
+}
+
+@media (max-width: 1350px) {
+  .product-reviews-icons img {
+    width: 21px;
+    height: 21px;
+  }
+}
+
 .product-reviews-text {
   margin-top: 0px;
   font-size: 20px;
