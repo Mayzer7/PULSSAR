@@ -23,105 +23,523 @@ if (headerTest) {
 }
 
 
-const html = document.documentElement;
-const body = document.body;
-const swiperThumbs = document.querySelector(".swiper-thumbs");
+// Слайдер товара
 
-if (swiperThumbs) {
-    const mainSlides = document.querySelectorAll('.swiper-main .swiper-slide');
+  let lastUserInteractionAt = 0;
+  const USER_INTERACTION_WINDOW = 900; 
+
+  function markUserInteraction() {
+    lastUserInteractionAt = (performance && performance.now) ? performance.now() : Date.now();
+  }
+  function wasRecentlyUserInitiated() {
+    const now = (performance && performance.now) ? performance.now() : Date.now();
+    return (now - lastUserInteractionAt) <= USER_INTERACTION_WINDOW;
+  }
+
+  const html = document.documentElement;
+  const body = document.body;
+  const modalGallery = document.getElementById('galleryModal');
+
+  document.addEventListener('DOMContentLoaded', async function () {
+    const swiperThumbsEl = document.querySelector(".swiper-thumbs");
+    if (!swiperThumbsEl) return;
+
+    const mainSlides = Array.from(document.querySelectorAll('.swiper-main .swiper-slide'));
     const thumbsWrapper = document.querySelector('.swiper-thumbs .swiper-wrapper');
 
-    mainSlides.forEach(slide => {
-        const clone = slide.cloneNode(true);
-        clone.classList.remove('swiper-slide-active', 'some-other-class');
-        thumbsWrapper.appendChild(clone);
+    thumbsWrapper.innerHTML = '';
+
+    function captureFrameFromVideoSrc(src, time = 0.05, timeout = 5000) {
+      return new Promise((resolve, reject) => {
+        if (!src) return reject(new Error('no video src'));
+        const vid = document.createElement('video');
+        vid.crossOrigin = 'anonymous';
+        vid.preload = 'metadata';
+        vid.muted = true;
+        vid.playsInline = true;
+        vid.src = src;
+
+        let settled = false;
+        const cleanup = () => {
+          try { vid.src = ''; } catch (e) {}
+          vid.remove();
+        };
+
+        const onError = () => {
+          if (settled) return;
+          settled = true;
+          cleanup();
+          reject(new Error('video load error'));
+        };
+
+        const drawFrame = () => {
+          if (settled) return;
+          try {
+            const w = vid.videoWidth;
+            const h = vid.videoHeight;
+            if (!w || !h) throw new Error('no video dimensions');
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(vid, 0, 0, w, h);
+            const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+            settled = true;
+            cleanup();
+            resolve(dataURL);
+          } catch (err) {
+            settled = true;
+            cleanup();
+            reject(err);
+          }
+        };
+
+        const onLoadedData = () => {
+          try {
+            const seekTo = Math.min(time, (vid.duration && vid.duration / 2) || time);
+            vid.currentTime = seekTo;
+          } catch (e) {
+            drawFrame();
+          }
+        };
+        const onSeeked = () => { drawFrame(); };
+
+        const t = setTimeout(() => {
+          if (settled) return;
+          settled = true;
+          cleanup();
+          reject(new Error('timeout capturing frame'));
+        }, timeout);
+
+        vid.addEventListener('loadeddata', onLoadedData, { once: true });
+        vid.addEventListener('seeked', onSeeked, { once: true });
+        vid.addEventListener('error', onError, { once: true });
+
+        vid.style.display = 'none';
+        document.body.appendChild(vid);
+      });
+    }
+
+    const thumbGenerationPromises = [];
+
+    mainSlides.forEach((slide, index) => {
+      const thumbSlide = document.createElement('div');
+      thumbSlide.className = 'swiper-slide';
+
+      const videoEl = slide.querySelector('video');
+      const imgEl = slide.querySelector('img');
+
+      if (videoEl) {
+        const posterAttr = videoEl.getAttribute('poster');
+        const videoSrc = videoEl.currentSrc || videoEl.src;
+
+        thumbSlide.innerHTML = `
+          <div class="thumb-media" aria-hidden="false">
+            <img src="img/product/video-poster.jpg" alt="video thumb">
+            <span class="thumb-play-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" focusable="false">
+                <circle cx="32" cy="32" r="28" fill="rgba(0,0,0,0.56)"/>
+                <polygon points="24,20 24,44 48,32" fill="#ffffff"/>
+              </svg>
+            </span>
+          </div>
+        `;
+        thumbSlide.dataset.type = 'video';
+
+        if (posterAttr) {
+          const img = thumbSlide.querySelector('img');
+          if (img) img.src = posterAttr;
+        } else if (videoSrc) {
+          const p = captureFrameFromVideoSrc(videoSrc, 0.05, 5000)
+            .then(dataUrl => {
+              const img = thumbSlide.querySelector('img');
+              if (img) img.src = dataUrl;
+            })
+            .catch(err => {
+              console.warn('Thumbnail generation failed for', videoSrc, err);
+            });
+          thumbGenerationPromises.push(p);
+        }
+      } else if (imgEl) {
+        thumbSlide.innerHTML = `<div class="thumb-media"><img src="${imgEl.src}" alt=""></div>`;
+      } else {
+        thumbSlide.innerHTML = `<div class="thumb-media"><img src="img/product/placeholder.jpg" alt=""></div>`;
+      }
+
+      thumbsWrapper.appendChild(thumbSlide);
     });
 
+    try {
+      await Promise.race([
+        Promise.all(thumbGenerationPromises),
+        new Promise((res) => setTimeout(res, 3000))
+      ]);
+    } catch (e) {
+      console.warn('Some thumbnails generation failed or timed out', e);
+    }
+
     const thumbsSwiper = new Swiper('.swiper-thumbs', {
-        spaceBetween: 11,
-        slidesPerView: 4,
-        watchSlidesProgress: true,
-        freeMode: false,
-        
+      spaceBetween: 11,
+      slidesPerView: 4,
+      watchSlidesProgress: true,
+      freeMode: false,
     });
 
     const mainSwiper = new Swiper('.swiper-main', {
-        spaceBetween: 10,
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-        },
-        thumbs: {
-            swiper: thumbsSwiper,
-        },
+      spaceBetween: 10,
+      pagination: { el: '.swiper-pagination', clickable: true },
+      thumbs: { swiper: thumbsSwiper },
     });
-}
 
-
-// Модальное окно для полноэкранного просмотра изображений товара
-
-const modalGallery = document.getElementById('galleryModal');
-
-if (modalGallery) {
-  const mainImages = document.querySelectorAll('.main-images-swiper img');
-  const modalWrap   = modalGallery.querySelector('.swiper-fullscreen .swiper-wrapper');
-  const closeBtn    = modalGallery.querySelector('.modal-close');
-  const overlay = modalGallery.querySelector('.fullscreen-overlay');
-  let fullscreenSwiper;
-
-  mainImages.forEach(img => {
-    const slide = document.createElement('div');
-    slide.className = 'swiper-slide';
-    slide.appendChild(img.cloneNode());
-    modalWrap.appendChild(slide);
-  });
-
-  function initFullscreenSwiper() {
-    fullscreenSwiper = new Swiper('.swiper-fullscreen', {
-      slidesPerView: 1,
-      centeredSlides: true,
-
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      loop: false,
-    });
-  }
-
-  mainImages.forEach((img, idx) => {
-    img.style.cursor = 'pointer';
-    img.addEventListener('click', () => {
-    modalGallery.classList.add('open');
-    html.classList.add('no-scroll');
-    body.classList.add('no-scroll');
-
-    if (!fullscreenSwiper) initFullscreenSwiper();
-    fullscreenSwiper.slideToLoop(idx, 0); 
-    });
-  });
-
-  function closeModal() {
-    modalGallery.classList.remove('open');
-    modalGallery.classList.add('closing'); 
-
-    html.classList.remove('no-scroll');
-    body.classList.remove('no-scroll');
-
-    modalGallery.addEventListener('transitionend', onTransitionEnd);
-  }
-
-  function onTransitionEnd(e) {
-    if (e.propertyName === 'opacity') {
-      modalGallery.classList.remove('closing');
-      modalGallery.removeEventListener('transitionend', onTransitionEnd);
+    function pauseAllVideos() {
+      document.querySelectorAll('.swiper-main video').forEach(v => {
+        try { v.pause(); } catch (e) {}
+      });
     }
-  }
 
-  closeBtn.addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
-}
+    function ensureUnmuteButton(slideEl, videoEl) {
+      let btn = slideEl.querySelector('.main-unmute-btn');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.className = 'main-unmute-btn';
+        btn.type = 'button';
+        btn.textContent = 'Включить звук';
+        slideEl.style.position = 'relative';
+        slideEl.appendChild(btn);
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          try {
+            videoEl.muted = false;
+            videoEl.play().catch(()=>{});
+            btn.style.display = 'none';
+          } catch (err) {}
+        });
+      }
+      return btn;
+    }
 
+    mainSwiper.on('touchStart', function () { markUserInteraction(); });
+
+    const thumbSlides = Array.from(thumbsWrapper.querySelectorAll('.swiper-slide'));
+    thumbSlides.forEach((thumb, idx) => {
+      thumb.addEventListener('click', (e) => {
+        e.preventDefault();
+        markUserInteraction();
+        mainSwiper.slideTo(idx);
+        const targetSlide = mainSlides[idx];
+        const targetVideo = targetSlide ? targetSlide.querySelector('video') : null;
+        if (targetVideo) {
+          try {
+            targetVideo.muted = false;
+            targetVideo.play().catch(()=>{});
+          } catch(e) {}
+        }
+      });
+    });
+
+    mainSlides.forEach((slide) => {
+      const video = slide.querySelector('video');
+      if (!video) return;
+
+      if (getComputedStyle(slide).position === 'static') {
+        slide.style.position = 'relative';
+      }
+
+      let pointerDown = false;
+      let startX = 0;
+      let startY = 0;
+      const SWIPE_THRESHOLD = 30;
+
+      const onPointerDown = (ev) => {
+        if (ev.pointerType === 'mouse' && ev.button !== 0) return;
+        pointerDown = true;
+        startX = ev.clientX;
+        startY = ev.clientY;
+        markUserInteraction();
+        try { ev.target.setPointerCapture(ev.pointerId); } catch(e) {}
+      };
+
+      const onPointerMove = (ev) => {
+        if (!pointerDown) return;
+        const dx = ev.clientX - startX;
+        const dy = ev.clientY - startY;
+        if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+          pointerDown = false;
+          try { ev.target.releasePointerCapture(ev.pointerId); } catch(e) {}
+          pauseAllVideos();
+          if (dx < 0) mainSwiper.slideNext();
+          else mainSwiper.slidePrev();
+        }
+      };
+
+      const onPointerUp = (ev) => {
+        pointerDown = false;
+        try { ev.target.releasePointerCapture(ev.pointerId); } catch(e) {}
+      };
+
+      video.addEventListener('pointerdown', onPointerDown, { passive: true });
+      video.addEventListener('pointermove', onPointerMove, { passive: true });
+      video.addEventListener('pointerup', onPointerUp, { passive: true });
+      video.addEventListener('pointercancel', onPointerUp, { passive: true });
+      video.addEventListener('click', () => { markUserInteraction(); });
+    });
+
+    mainSwiper.on('slideChangeTransitionEnd', () => {
+      document.querySelectorAll('.main-unmute-btn').forEach(b => b.style.display = 'none');
+      pauseAllVideos();
+
+      const slideEl = mainSwiper.slides[mainSwiper.activeIndex];
+      if (!slideEl) return;
+      const video = slideEl.querySelector('video');
+      if (!video) return;
+
+      if (wasRecentlyUserInitiated()) {
+        video.muted = false;
+        video.play().then(()=>{}).catch(() => {
+          video.muted = true;
+          video.play().catch(()=>{});
+          const btn = ensureUnmuteButton(slideEl, video);
+          btn.style.display = 'inline-block';
+        });
+      } else {
+        video.muted = true;
+        video.play().catch(()=>{});
+      }
+    });
+
+    setTimeout(() => mainSwiper.emit('slideChangeTransitionEnd'), 60);
+
+    // Модальное окно для просмотра товара
+    if (!modalGallery) return; 
+    const mainWrap = document.querySelector('.swiper-wrapper.main-images-swiper');
+    const modalWrap = modalGallery.querySelector('.swiper-fullscreen .swiper-wrapper');
+    const closeBtn = modalGallery.querySelector('.modal-close');
+    const overlay = modalGallery.querySelector('.fullscreen-overlay');
+
+    modalWrap.innerHTML = '';
+
+    function pauseAllVideosInDocument() {
+      document.querySelectorAll('video').forEach(v => {
+        try { v.pause(); } catch(e) {}
+      });
+    }
+
+    function ensureModalUnmuteButton(slideEl, videoEl) {
+      let btn = slideEl.querySelector('.main-unmute-btn');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.className = 'main-unmute-btn';
+        btn.type = 'button';
+        btn.textContent = 'Включить звук';
+        slideEl.appendChild(btn);
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          try {
+            videoEl.muted = false;
+            videoEl.play().catch(()=>{});
+            btn.style.display = 'none';
+          } catch (err) {}
+        });
+      }
+      return btn;
+    }
+
+    const modalSourceSlides = Array.from(mainWrap ? mainWrap.querySelectorAll('.swiper-slide') : []);
+    modalSourceSlides.forEach((origSlide) => {
+      const slide = document.createElement('div');
+      slide.className = 'swiper-slide';
+
+      const video = origSlide.querySelector('video');
+      const img = origSlide.querySelector('img');
+
+      if (video) {
+        const v = document.createElement('video');
+        v.className = 'modal-video';
+        v.src = video.currentSrc || video.src;
+        v.preload = 'metadata';
+        v.playsInline = true;
+        v.controls = true;
+        v.setAttribute('playsinline', '');
+        slide.appendChild(v);
+      } else if (img) {
+        const cloneImg = img.cloneNode(true);
+        cloneImg.removeAttribute('width');
+        cloneImg.removeAttribute('height');
+        slide.appendChild(cloneImg);
+      } else {
+        const placeholder = document.createElement('div');
+        placeholder.style.width = '100%';
+        placeholder.style.height = '100%';
+        slide.appendChild(placeholder);
+      }
+
+      modalWrap.appendChild(slide);
+    });
+
+    let fullscreenSwiper = null;
+
+    function initFullscreenSwiper() {
+      if (fullscreenSwiper) return;
+
+      fullscreenSwiper = new Swiper('.swiper-fullscreen', {
+        slidesPerView: 1,
+        centeredSlides: true,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        loop: false,
+      });
+
+      fullscreenSwiper.on('touchStart', () => { markUserInteraction(); });
+
+      const nextBtn = modalGallery.querySelector('.swiper-button-next');
+      const prevBtn = modalGallery.querySelector('.swiper-button-prev');
+      [nextBtn, prevBtn].forEach(btn => {
+        if (btn) btn.addEventListener('click', () => { markUserInteraction(); });
+      });
+
+      const swiperEl = modalGallery.querySelector('.swiper-fullscreen');
+      if (swiperEl) {
+        swiperEl.addEventListener('pointerdown', (ev) => {
+          if (ev.pointerType === 'mouse' && ev.button !== 0) return;
+          markUserInteraction();
+        }, { passive: true });
+      }
+
+      document.addEventListener('keydown', (ev) => {
+        if (!modalGallery.classList.contains('open')) return;
+        if (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') {
+          markUserInteraction();
+        }
+      });
+
+      const modalVideoNodes = modalWrap.querySelectorAll('video.modal-video');
+      modalVideoNodes.forEach((videoEl) => {
+        let pointerDown = false;
+        let startX = 0, startY = 0;
+        const SWIPE_THRESHOLD = 30;
+
+        const onPointerDown = (ev) => {
+          if (ev.pointerType === 'mouse' && ev.button !== 0) return;
+          pointerDown = true;
+          startX = ev.clientX;
+          startY = ev.clientY;
+          markUserInteraction();
+          try { ev.target.setPointerCapture(ev.pointerId); } catch(e) {}
+        };
+        const onPointerMove = (ev) => {
+          if (!pointerDown) return;
+          const dx = ev.clientX - startX;
+          const dy = ev.clientY - startY;
+          if (Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+            pointerDown = false;
+            try { ev.target.releasePointerCapture(ev.pointerId); } catch(e) {}
+            if (dx < 0) fullscreenSwiper.slideNext();
+            else fullscreenSwiper.slidePrev();
+          }
+        };
+        const onPointerUp = (ev) => {
+          pointerDown = false;
+          try { ev.target.releasePointerCapture(ev.pointerId); } catch(e) {}
+        };
+
+        videoEl.addEventListener('pointerdown', onPointerDown, { passive: true });
+        videoEl.addEventListener('pointermove', onPointerMove, { passive: true });
+        videoEl.addEventListener('pointerup', onPointerUp, { passive: true });
+        videoEl.addEventListener('pointercancel', onPointerUp, { passive: true });
+        videoEl.addEventListener('click', () => { markUserInteraction(); });
+      });
+
+      fullscreenSwiper.on('slideChangeTransitionEnd', () => {
+        modalWrap.querySelectorAll('.main-unmute-btn').forEach(b => b.style.display = 'none');
+        modalWrap.querySelectorAll('video.modal-video').forEach(v => { try { v.pause(); } catch(e) {} });
+
+        const activeIndex = fullscreenSwiper.activeIndex;
+        const activeSlide = modalWrap.children[activeIndex];
+        if (!activeSlide) return;
+        const videoEl = activeSlide.querySelector('video.modal-video');
+        if (!videoEl) return;
+
+        if (wasRecentlyUserInitiated()) {
+          videoEl.muted = false;
+          videoEl.play().then(()=>{}).catch(() => {
+            videoEl.muted = true;
+            videoEl.play().catch(()=>{});
+            const btn = ensureModalUnmuteButton(activeSlide, videoEl);
+            btn.style.display = 'inline-block';
+          });
+        } else {
+          videoEl.muted = true;
+          videoEl.play().catch(()=>{});
+        }
+      });
+    }
+
+    function openModal(atIndex) {
+      pauseAllVideosInDocument();
+      modalGallery.classList.add('open');
+      html.classList.add('no-scroll');
+      body.classList.add('no-scroll');
+
+      if (!fullscreenSwiper) initFullscreenSwiper();
+
+      markUserInteraction();
+
+      fullscreenSwiper.slideTo(atIndex, 0);
+
+      try {
+        const activeSlide = modalWrap.children[atIndex];
+        if (!activeSlide) return;
+        const videoEl = activeSlide.querySelector('video.modal-video');
+        if (!videoEl) return;
+
+        videoEl.muted = false;
+        const playPromise = videoEl.play();
+        if (playPromise && playPromise.catch) {
+          playPromise.catch(() => {
+            videoEl.muted = true;
+            videoEl.play().catch(()=>{});
+            const btn = ensureModalUnmuteButton(activeSlide, videoEl);
+            btn.style.display = 'inline-block';
+          });
+        }
+      } catch (e) {
+      }
+    }
+
+    function closeModal() {
+      modalGallery.classList.remove('open');
+      modalGallery.classList.add('closing');
+
+      html.classList.remove('no-scroll');
+      body.classList.remove('no-scroll');
+
+      modalWrap.querySelectorAll('video.modal-video').forEach(v => { try { v.pause(); } catch(e) {} });
+      pauseAllVideosInDocument();
+
+      modalGallery.addEventListener('transitionend', function onEnd(e) {
+        if (e.propertyName === 'opacity') {
+          modalGallery.classList.remove('closing');
+          modalGallery.removeEventListener('transitionend', onEnd);
+        }
+      });
+    }
+
+    mainSlides.forEach((origSlide, idx) => {
+      const clickTarget = origSlide.querySelector('img') || origSlide;
+      if (!clickTarget) return;
+      clickTarget.style.cursor = 'pointer';
+      clickTarget.addEventListener('click', (e) => {
+        e.preventDefault();
+        markUserInteraction();
+        openModal(idx);
+      });
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (overlay) overlay.addEventListener('click', closeModal);
+});
 
 
 
@@ -683,7 +1101,7 @@ function isOutOfStock(el) {
 addButtons.forEach(btn => {
   if (btn.classList.contains('order-btn-dissabled')) {
     try {
-      btn.disabled = true; // запрещает клики/фокус
+      btn.disabled = true;
     } catch (e) {}
     btn.setAttribute('aria-disabled', 'true');
   }
