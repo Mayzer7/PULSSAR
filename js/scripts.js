@@ -1067,6 +1067,7 @@ const qtySelectors  = document.querySelectorAll('.js-qty-selector');
 const minusButtons  = document.querySelectorAll('.js-minus');
 const plusButtons   = document.querySelectorAll('.js-plus');
 const qtyValues     = document.querySelectorAll('.js-qty-value');
+let isAdding = false;
 
 let currentCount = 1;
 
@@ -1097,6 +1098,16 @@ function isOutOfStock(el) {
   return !!(addBtn && addBtn.classList.contains('order-btn-dissabled'));
 }
 
+function isElementVisible(el) {
+  if (!el) return false;
+  if (!el.getClientRects().length) return false;
+  const style = window.getComputedStyle(el);
+  if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity) === 0) return false;
+  return true;
+}
+
+let lastQtyChangeTime = 0;
+const QTY_DEBOUNCE_MS = 200; 
 
 addButtons.forEach(btn => {
   if (btn.classList.contains('order-btn-dissabled')) {
@@ -1108,8 +1119,13 @@ addButtons.forEach(btn => {
 });
 
 addButtons.forEach(btn =>
-  btn.addEventListener('click', (e) => {
-    if (isOutOfStock(btn)) return; 
+  btn.addEventListener('click', function handler(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    const clicked = e.currentTarget;
+    if (isOutOfStock(clicked)) return;
+
     showSelectors();
     currentCount = 1;
     renderCount();
@@ -1120,8 +1136,15 @@ addButtons.forEach(btn =>
 
 minusButtons.forEach(btn =>
   btn.addEventListener('click', e => {
-    e.stopPropagation();
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    if (!isElementVisible(btn)) return;
     if (isOutOfStock(btn)) return;
+
+    const now = Date.now();
+    if (now - lastQtyChangeTime < QTY_DEBOUNCE_MS) return;
+    lastQtyChangeTime = now;
 
     if (currentCount <= 1) {
       addToCart(false, 0);
@@ -1135,11 +1158,17 @@ minusButtons.forEach(btn =>
   })
 );
 
-
 plusButtons.forEach(btn =>
   btn.addEventListener('click', e => {
-    e.stopPropagation();
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    if (!isElementVisible(btn)) return;
     if (isOutOfStock(btn)) return;
+
+    const now = Date.now();
+    if (now - lastQtyChangeTime < QTY_DEBOUNCE_MS) return;
+    lastQtyChangeTime = now;
 
     currentCount++;
     renderCount();
