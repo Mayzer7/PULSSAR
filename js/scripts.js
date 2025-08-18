@@ -539,7 +539,62 @@ if (headerTest) {
 
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (overlay) overlay.addEventListener('click', closeModal);
+
+    // Просмотр изображений отзывов в модалке 
+    const reviewImages = Array.from(document.querySelectorAll('.product-desc-card-review-images img'));
+
+    if (reviewImages.length > 0) {
+      const reviewStartIndex = modalWrap.children.length;
+
+      reviewImages.forEach((origImg, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+
+        const cloneImg = origImg.cloneNode(true);
+        cloneImg.removeAttribute('width');
+        cloneImg.removeAttribute('height');
+        cloneImg.style.maxWidth = '100%';
+        cloneImg.style.height = 'auto';
+        cloneImg.style.display = 'block';
+        cloneImg.style.margin = '0 auto';
+
+        slide.appendChild(cloneImg);
+        modalWrap.appendChild(slide);
+
+        const modalIndex = reviewStartIndex + i;
+        origImg.dataset.modalIndex = modalIndex;
+
+        origImg.style.cursor = 'pointer';
+
+        origImg.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          markUserInteraction();
+          pauseAllVideosInDocument();
+          openModal(modalIndex);
+        });
+      });
+    }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

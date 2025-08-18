@@ -6269,6 +6269,7 @@ hr.white {
   gap: 40px;
   position: relative;
   padding: 0px 80px;
+  margin-top: 30px;
 }
 
 .product-item-img-wrapper {
@@ -6600,6 +6601,14 @@ hr.white {
   object-fit: contain;
 }
 
+.swiper-fullscreen .swiper-slide img {
+  max-height: 80vh;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
 .modal-close {
   position: absolute;
   top: 20px; 
@@ -6828,7 +6837,7 @@ p.product-article {
 }
 
 p.product-item-price {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
 .product-item-discount {
@@ -7547,8 +7556,8 @@ p.product-item-price {
 }
 
 .select-configuration-card-info p {
-  margin-bottom: 0px;
-  margin-top: 0px;
+  margin-bottom: 0px !important;
+  margin-top: 0px !important;
 }
 
 .select-configuration-card-description {
@@ -7572,7 +7581,7 @@ p.product-item-price {
 }
 
 .select-configuration-card-discount p {
-  margin: 0px;
+  margin: 0px !important;
 }
 
 .select-configuration-card-discount-price {
@@ -7721,7 +7730,7 @@ p.product-item-price {
 }
 
 p.product-desc-card-title {
-  margin-bottom: 0px;
+  margin-bottom: 0px !important;
 }
 
 .product-desc-card-title {
@@ -7785,8 +7794,8 @@ p.product-desc-card-title {
 }
 
 p.product-desc-card-specification {
-  margin-bottom: 0px;
-  margin-top: 0px;
+  margin-bottom: 0px !important;
+  margin-top: 0px !important; 
 }
 
 .product-desc-card-specification p {
@@ -7824,7 +7833,7 @@ p.product-desc-card-specification {
 }
 
 .product-desc-card-info p {
-  margin-bottom: 0px;
+  margin-bottom: 0px !important;
 }
 
 .product-desc-card-open-btn {
@@ -7903,7 +7912,7 @@ p.product-desc-card-specification {
 }
 
 p.product-desc-card-rating-number {
-  margin-bottom: 0px;
+  margin-bottom: 0px !important;
 }
 
 .product-desc-card-rating-number {
@@ -7939,12 +7948,12 @@ p.product-desc-card-rating-number {
 }
 
 p.product-desc-card-review-date {
-  margin-top: 0px;
+  margin-top: 0px !important;
   color: #939393;
 }
 
 p.product-desc-card-review-author {
-  margin-bottom: 0px;
+  margin-bottom: 0px !important;
 }
 
 .product-desc-card-review-author {
@@ -7966,6 +7975,34 @@ p.product-desc-card-review-author {
 .product-desc-card-review-stars {
   margin-top: 6px;
   margin-bottom: 10px;
+}
+
+.product-desc-card-review-images {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  row-gap: 12px;
+  margin-bottom: 10px;
+  max-width: 600px;
+}
+
+.product-desc-card-review-images img {
+  max-width: 108px;
+  max-height: 108px;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1350px) {
+  .product-desc-card-review-images {
+    gap: 7px;
+  }
+}
+
+@media (max-width: 400px) {
+  .product-desc-card-review-images {
+    gap: 4px;
+  }
 }
 
 p.product-desc-card-review-text,
@@ -8693,7 +8730,7 @@ p.related-products-card-title {
 }
 
 p.related-products-card-price {
-  margin-bottom: 0px;
+  margin-bottom: 0px !important;
 }
 .related-products-card-price {
   font-family: 'Prata', serif;
@@ -8870,7 +8907,7 @@ p.footer-navigation-list-title {
 }
 
 p.footer-navigation-list-info-text {
-  margin-top: 0px;
+  margin-top: 0px !important;
 }
 
 .footer-navigation-list-info-text {
@@ -8972,7 +9009,7 @@ p.footer-navigation-title {
 }
 
 p.footer-copyright-text {
-  margin-bottom: 0px;
+  margin-bottom: 0px !important; 
 }
 
 .footer-copyright-text {
@@ -9328,7 +9365,7 @@ p.footer-copyright-text {
 }
 
 p.cart-item-name {
-  margin-bottom: 0px;
+  margin-bottom: 0px !important;
 }
 
 .cart-item-name {
@@ -9470,7 +9507,7 @@ p.cart-item-article {
 }
 
 p.cart-item-price-value {
-  margin-top: 0px;
+  margin-top: 0px !important;
 }
 
 .cart-item-price-container {
@@ -9768,7 +9805,7 @@ p.cart-total-price-value {
 }
 
 p.cart-form-title {
-  margin-bottom: 0px;
+  margin-bottom: 0px !important;
 }
 
 .cart-form-title {
@@ -9966,7 +10003,7 @@ p.cart-form-title {
 }
 
 p.cart-item-remove-banner-text {
-  margin-bottom: 0px;
+  margin-bottom: 0px !important;
 }
 
 .cart-item-remove-banner-text {
@@ -10159,7 +10196,7 @@ p.cart-item-remove-banner-text {
   }
 
   p.cart-item-article {
-    margin-bottom: 0px;
+    margin-bottom: 0px !important;
   }
 
   .cart-item {
