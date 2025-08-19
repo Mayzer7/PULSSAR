@@ -8219,10 +8219,42 @@ p.send-review-title {
   background-color: #D4AD6C; 
 }
 
+.send-review {
+  position: relative; 
+}
+
+.review-sent {
+  white-space: nowrap;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translate(-50%, -20px); 
+  
+  opacity: 0;
+  pointer-events: none; 
+  
+  background-color: #74C69D;
+  color: #fff;
+  padding: 15px 25px;
+  border-radius: 39px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 20px;
+  text-align: center;
+  
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  z-index: 10;
+}
+
+.review-sent.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
 .product-desc-card-info ul li::marker {
   font-size: 12px; 
 }
-
 
 .custom-checkbox {
   display: inline-flex;
@@ -8458,6 +8490,10 @@ p.send-review-title {
   .send-review-btn {
     font-size: 16px;
     padding: 13px 0px;
+  }
+
+  .review-sent {
+    font-size: 16px;
   }
 
   .product-desc-card-title {
