@@ -802,10 +802,7 @@ selectConfiguration();
 
 // Раскрытие карточек "Описание товара"
 
-const productDescCards = document.querySelectorAll('.product-desc-card');
-
-if (productDescCards.length) {
-  function smoothScrollTo(card) {
+function smoothScrollTo(card) {
     const header = document.querySelector('.site-header');
     const headerHeight = header ? header.offsetHeight : 0;
     const targetY = card.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10;
@@ -817,9 +814,11 @@ if (productDescCards.length) {
     const distance = targetY - startY;
     const duration = 500;
     let startTime = null;
+
     function easeInOutQuad(t) {
       return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     }
+
     function step(timestamp) {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
@@ -832,41 +831,90 @@ if (productDescCards.length) {
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    productDescCards.forEach(card => {
-      const info = card.querySelector('.product-desc-card-info');
-      info.style.maxHeight = card.classList.contains('open')
-        ? info.scrollHeight + 'px'
-        : null;
-    });
-  });
+    const productDescCards = Array.from(document.querySelectorAll('.product-desc-card'));
+    if (!productDescCards.length) return;
 
-  productDescCards.forEach(card => {
-    const btn = card.querySelector('.product-desc-card-open-btn');
-    const clickArea = card.querySelector('.click-area');
-    const info = card.querySelector('.product-desc-card-info');
-
-    function toggleCard() {
-      const isOpen = card.classList.contains('open');
-      productDescCards.forEach(c => {
-        c.classList.remove('open');
-        c.querySelector('.product-desc-card-info').style.maxHeight = null;
-      });
-      if (!isOpen) {
-        card.classList.add('open');
-        info.style.maxHeight = info.scrollHeight + 'px';
-        info.addEventListener('transitionend', function onEnd(e) {
-          if (e.propertyName === 'max-height') {
-            smoothScrollTo(card);
-            info.removeEventListener('transitionend', onEnd);
-          }
-        });
-      }
+    function getInfo(card) {
+      return card.querySelector('.product-desc-card-info');
     }
 
-    btn.addEventListener('click', toggleCard);
-    clickArea.addEventListener('click', toggleCard);
-  });
-}
+    // начальные состояния
+    productDescCards.forEach(card => {
+      const info = getInfo(card);
+      if (!info) return;
+      if (card.classList.contains('open')) {
+        info.style.maxHeight = info.scrollHeight + 'px';
+      } else {
+        info.style.maxHeight = null;
+      }
+    });
+
+    function closeAll() {
+      productDescCards.forEach(c => {
+        c.classList.remove('open');
+        const i = getInfo(c);
+        if (i) i.style.maxHeight = null;
+        const btn = c.querySelector('.product-desc-card-open-btn');
+        if (btn) {
+          btn.classList.remove('is-open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    productDescCards.forEach(card => {
+      const btn = card.querySelector('.product-desc-card-open-btn');
+      const clickArea = card.querySelector('.click-area');
+      const info = getInfo(card);
+
+      function toggleCard() {
+        const isOpen = card.classList.contains('open');
+        closeAll();
+
+        if (!isOpen) {
+          card.classList.add('open');
+
+          if (btn) {
+            btn.classList.add('is-open');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+
+          if (info) {
+            info.style.maxHeight = info.scrollHeight + 'px';
+
+            function onEnd(e) {
+              if (e.propertyName === 'max-height') {
+                smoothScrollTo(card);
+                info.removeEventListener('transitionend', onEnd);
+              }
+            }
+            info.addEventListener('transitionend', onEnd);
+          } else {
+            smoothScrollTo(card);
+          }
+        }
+      }
+
+      if (btn) btn.addEventListener('click', toggleCard);
+      if (clickArea) clickArea.addEventListener('click', toggleCard);
+    });
+});
+
+// Проверка наличия отзывов
+
+document.addEventListener("DOMContentLoaded", function() {
+    const reviewsContainer = document.querySelector(".product-desc-card-reviews");
+    const noReviewsText = reviewsContainer.querySelector(".no-reviews-text");
+    const reviews = reviewsContainer.querySelectorAll(".product-desc-card-review");
+
+    if (reviews.length > 0) {
+        // Если есть отзывы — скрываем текст
+        noReviewsText.style.display = "none";
+    } else {
+        // Если нет отзывов — показываем текст
+        noReviewsText.style.display = "block";
+    }
+});
 
 // Cкрытие кнопки читать весь отзыв
 
