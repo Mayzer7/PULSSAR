@@ -266,55 +266,123 @@ window.productMainSwiper = mainSwiper;
         const thumbsWrapper = document.querySelector('.swiper-thumbs .swiper-wrapper');
         const modalWrap = document.querySelector('#galleryModal .swiper-fullscreen .swiper-wrapper');
 
-        const newMainSlide = document.createElement('div');
-        newMainSlide.className = 'swiper-slide';
-        newMainSlide.innerHTML = `<img src="${url}" alt="">`;
-        if (mainWrap) {
-          mainWrap.appendChild(newMainSlide);
+        if (!mainWrap || !thumbsWrapper) {
+          console.warn('Основной или thumbs wrapper не найден, добавляем в конец');
         }
 
-        const newThumb = document.createElement('div');
-        newThumb.className = 'swiper-slide';
-        newThumb.innerHTML = `<div class="thumb-media"><img src="${url}" alt=""></div>`;
-        if (thumbsWrapper) thumbsWrapper.appendChild(newThumb);
-
-        if (modalWrap) {
-          const modalSlide = document.createElement('div');
-          modalSlide.className = 'swiper-slide';
-          const cloneImg = document.createElement('img');
-          cloneImg.src = url;
-          modalSlide.appendChild(cloneImg);
-
-          const newIndex = (mainSwiper.slides && mainSwiper.slides.length) ? mainSwiper.slides.length : -1;
-
-          const insertBeforeEl = modalWrap.children[newIndex] || null;
-          if (insertBeforeEl) modalWrap.insertBefore(modalSlide, insertBeforeEl);
-          else modalWrap.appendChild(modalSlide);
+        let preferredIndex = 0;
+        const existingMainSlides = mainWrap ? Array.from(mainWrap.children) : [];
+        if (existingMainSlides[0] && existingMainSlides[0].querySelector('video')) {
+          preferredIndex = 1;
         }
 
-        try { thumbsSwiper.update(); } catch(e) {}
-        try { mainSwiper.update(); } catch(e) {}
-        try { if (typeof fullscreenSwiper !== 'undefined' && fullscreenSwiper) fullscreenSwiper.update(); } catch(e) {}
-
-        const newIndex = mainSwiper.slides.length - 1;
-
-        try {
-          const imgInNew = newMainSlide.querySelector('img') || newMainSlide;
-          if (imgInNew) {
-            imgInNew.style.cursor = 'pointer';
-            imgInNew.addEventListener('click', (ev) => {
-              ev.preventDefault();
-              markUserInteraction();
-              pauseAllVideosInDocument();
-              openModal(newIndex);
-            });
+        let replaceIndex = -1;
+        for (let i = preferredIndex; i < existingMainSlides.length; i++) {
+          const s = existingMainSlides[i];
+          if (!s.querySelector('video')) {
+            replaceIndex = i;
+            break;
           }
-        } catch(e) {}
+        }
 
-        try { if (typeof markUserInteraction === 'function') markUserInteraction(); } catch(e){}
-        mainSwiper.slideTo(newIndex, speed);
-        try { thumbsSwiper.slideTo(newIndex, Math.max(speed/2, 300)); } catch(e){}
-        return true;
+        if (replaceIndex === -1 && existingMainSlides.length > 0) {
+          if (!existingMainSlides[0].querySelector('video')) replaceIndex = 0;
+        }
+
+        function attachClickToMainSlideElement(slideEl, idx) {
+          try {
+            const imgInSlide = slideEl.querySelector('img') || slideEl;
+            if (imgInSlide) {
+              imgInSlide.style.cursor = 'pointer';
+              imgInSlide.addEventListener('click', (ev) => {
+                ev.preventDefault();
+                markUserInteraction();
+                pauseAllVideosInDocument();
+                openModal(idx);
+              });
+            }
+          } catch (e) {}
+        }
+
+        if (replaceIndex >= 0) {
+          const slideToReplace = existingMainSlides[replaceIndex];
+
+          slideToReplace.innerHTML = `<img src="${url}" alt="">`;
+
+          const thumbSlides = Array.from(thumbsWrapper.children);
+          if (thumbSlides[replaceIndex]) {
+            thumbSlides[replaceIndex].innerHTML = `<div class="thumb-media"><img src="${url}" alt=""></div>`;
+            delete thumbSlides[replaceIndex].dataset.type;
+          }
+
+          if (modalWrap && modalWrap.children[replaceIndex]) {
+            const modalChild = modalWrap.children[replaceIndex];
+            modalChild.innerHTML = '';
+            const cloneImg = document.createElement('img');
+            cloneImg.src = url;
+            cloneImg.removeAttribute('width');
+            cloneImg.removeAttribute('height');
+            modalChild.appendChild(cloneImg);
+          }
+
+          try { thumbsSwiper.update(); } catch(e) {}
+          try { mainSwiper.update(); } catch(e) {}
+          try { if (typeof fullscreenSwiper !== 'undefined' && fullscreenSwiper) fullscreenSwiper.update(); } catch(e) {}
+
+          try { attachClickToMainSlideElement(slideToReplace, replaceIndex); } catch(e) {}
+
+          try { if (typeof markUserInteraction === 'function') markUserInteraction(); } catch(e){}
+          mainSwiper.slideTo(replaceIndex, speed);
+          try { thumbsSwiper.slideTo(replaceIndex, Math.max(speed/2, 300)); } catch(e){}
+
+          return true;
+        } else {
+          const newMainSlide = document.createElement('div');
+          newMainSlide.className = 'swiper-slide';
+          newMainSlide.innerHTML = `<img src="${url}" alt="">`;
+          if (mainWrap) {
+            mainWrap.appendChild(newMainSlide);
+          }
+
+          const newThumb = document.createElement('div');
+          newThumb.className = 'swiper-slide';
+          newThumb.innerHTML = `<div class="thumb-media"><img src="${url}" alt=""></div>`;
+          if (thumbsWrapper) thumbsWrapper.appendChild(newThumb);
+
+          if (modalWrap) {
+            const modalSlide = document.createElement('div');
+            modalSlide.className = 'swiper-slide';
+            const cloneImg = document.createElement('img');
+            cloneImg.src = url;
+            modalSlide.appendChild(cloneImg);
+
+            modalWrap.appendChild(modalSlide);
+          }
+
+          try { thumbsSwiper.update(); } catch(e) {}
+          try { mainSwiper.update(); } catch(e) {}
+          try { if (typeof fullscreenSwiper !== 'undefined' && fullscreenSwiper) fullscreenSwiper.update(); } catch(e) {}
+
+          const newIndex = mainSwiper.slides.length - 1;
+
+          try {
+            const imgInNew = newMainSlide.querySelector('img') || newMainSlide;
+            if (imgInNew) {
+              imgInNew.style.cursor = 'pointer';
+              imgInNew.addEventListener('click', (ev) => {
+                ev.preventDefault();
+                markUserInteraction();
+                pauseAllVideosInDocument();
+                openModal(newIndex);
+              });
+            }
+          } catch(e) {}
+
+          try { if (typeof markUserInteraction === 'function') markUserInteraction(); } catch(e){}
+          mainSwiper.slideTo(newIndex, speed);
+          try { thumbsSwiper.slideTo(newIndex, Math.max(speed/2, 300)); } catch(e){}
+          return true;
+        }
       } catch (err) {
         console.error('Не удалось добавить/переключиться на новый слайд', err);
         return false;
@@ -901,20 +969,19 @@ function smoothScrollTo(card) {
 });
 
 // Проверка наличия отзывов
+const reviewsContainer = document.querySelector(".product-desc-card-reviews");
 
-document.addEventListener("DOMContentLoaded", function() {
-    const reviewsContainer = document.querySelector(".product-desc-card-reviews");
-    const noReviewsText = reviewsContainer.querySelector(".no-reviews-text");
-    const reviews = reviewsContainer.querySelectorAll(".product-desc-card-review");
+if (reviewsContainer) {
+  const noReviewsText = reviewsContainer.querySelector(".no-reviews-text");
+  const reviews = reviewsContainer.querySelectorAll(".product-desc-card-review");
 
-    if (reviews.length > 0) {
-        // Если есть отзывы — скрываем текст
-        noReviewsText.style.display = "none";
-    } else {
-        // Если нет отзывов — показываем текст
-        noReviewsText.style.display = "block";
-    }
-});
+  if (reviews.length > 0) {
+      noReviewsText.style.display = "none";
+  } else {
+      noReviewsText.style.display = "block";
+  }
+}
+
 
 // Cкрытие кнопки читать весь отзыв
 
