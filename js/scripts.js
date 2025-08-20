@@ -23,15 +23,6 @@ if (headerTest) {
 }
 
 
-
-
-
-
-
-
-
-
-
 // Слайдер товара
 
 const thumbsSwiper = new Swiper('.swiper-thumbs', {
@@ -750,23 +741,35 @@ function deleteFavorite(productId) {
 }
 
 document.addEventListener('click', function(event) {
-    const btn = event.target.closest(
-      '.add-to-favorites-btn, .add-to-favorite-related-products-btn, .favorite-btn'
-    );
-    if (!btn) return;  
-    const container = btn.closest('[data-product-id]');
-    if (!container) {
-      console.warn('Кнопка без data-product-id:', btn);
-      return;
-    }
-    const productId = container.dataset.productId;
+  const btn = event.target.closest(
+    '.add-to-favorites-btn, .add-to-favorite-related-products-btn, .favorite-btn'
+  );
 
-    const isActive = btn.classList.toggle('active');
-    if (isActive) {
-      addToFavorite(productId);
-    } else {
-      deleteFavorite(productId);
-    }
+  if (!btn) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const container = btn.closest('[data-product-id]');
+  if (!container) {
+    console.warn('Кнопка без data-product-id:', btn);
+    return;
+  }
+  const productId = container.dataset.productId;
+
+  const isActive = btn.classList.toggle('active');
+
+  btn.setAttribute('aria-pressed', String(isActive));
+
+  if (isActive) {
+    addToFavorite(productId);
+    const icon = btn.querySelector('svg');
+    if (icon) icon.classList.add('filled');
+  } else {
+    deleteFavorite(productId);
+    const icon = btn.querySelector('svg');
+    if (icon) icon.classList.remove('filled');
+  }
 });
 
 const favoriteBtn = document.querySelector('.favorite-btn');
@@ -931,39 +934,38 @@ if (productDescCardReviewTexts) {
 // Функция переключения картинок при наведении в секции "С этим товаром покупают"
 
 function initInteractiveCards() {
-  const imageHoverCard = document.querySelector('.image-hover-card');
+  document.querySelectorAll('.image-hover-card').forEach(card => {
+    const frames = Array.from(card.querySelectorAll('.image-container img'));
 
-  if (imageHoverCard) {
-    document.querySelectorAll('.image-hover-card').forEach(card => {
-      const frames = Array.from(card.querySelectorAll('img'));
-      const segments = Array.from(card.querySelectorAll('.segment'));
-      const count = frames.length;
+    const segments = Array.from(card.querySelectorAll('.progress-bar .segment'));
+    const count = frames.length;
 
-      card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const relX = (e.clientX - rect.left) / rect.width;
-        let idx = Math.floor(relX * count);
-        idx = Math.max(0, Math.min(count - 1, idx));
+    if (count === 0) return;
 
-        frames.forEach((img, i) => {
-          img.style.opacity = (i === idx ? '1' : '0');
-        });
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const relX = (e.clientX - rect.left) / rect.width;
+      let idx = Math.floor(relX * count);
+      idx = Math.max(0, Math.min(count - 1, idx));
 
-        segments.forEach((seg, i) => {
-          seg.classList.toggle('active', i === idx);
-        });
+      frames.forEach((img, i) => {
+        img.style.opacity = (i === idx ? '1' : '0');
       });
 
-      card.addEventListener('mouseleave', () => {
-        frames.forEach((img, i) => {
-          img.style.opacity = (i === 0 ? '1' : '0');
-        });
-        segments.forEach((seg, i) => {
-          seg.classList.toggle('active', i === 0);
-        });
+      segments.forEach((seg, i) => {
+        seg.classList.toggle('active', i === idx);
       });
     });
-  }
+
+    card.addEventListener('mouseleave', () => {
+      frames.forEach((img, i) => {
+        img.style.opacity = (i === 0 ? '1' : '0');
+      });
+      segments.forEach((seg, i) => {
+        seg.classList.toggle('active', i === 0);
+      });
+    });
+  });
 }
 
 initInteractiveCards();
@@ -1117,21 +1119,6 @@ function sendFile() {
 function sendFormReview(data) {
   console.log('Отзыв:', data);
   clearReviewForm();
-
-  const banner = document.querySelector('.review-sent');
-  if (!banner) return;
-  banner.style.display = 'block';
-
-  requestAnimationFrame(() => {
-    banner.classList.add('show');
-  });
-
-  setTimeout(() => {
-    banner.classList.remove('show');
-    setTimeout(() => {
-      banner.style.display = 'none';
-    }, 500);
-  }, 5000);
 }
 
 // Сброс формы и ошибок
@@ -1195,6 +1182,7 @@ function ValidateReviewForm() {
   const reviewField      = form.querySelector('textarea');
   const politicsWrapper  = form.querySelector('.accept-politics');
   const politicsCheckbox = politicsWrapper.querySelector('input[type="checkbox"]');
+  let reviewBtnTimeout = null;
 
   form.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -1253,7 +1241,41 @@ function ValidateReviewForm() {
       file:    document.getElementById('file-input').files[0]?.name || null
     };
 
+    const btn = form.querySelector('.send-review-btn');
+    if (!btn) {
+      console.warn('Кнопка отправки не найдена');
+      sendFormReview(formData);
+      return;
+    }
+
+    if (!btn.querySelector('.btn-label.default')) {
+      const orig = btn.textContent.trim() || 'Отправить';
+      btn.innerHTML = `<span class="btn-label default">${orig}</span><span class="btn-label sent">Ваш отзыв отправлен</span>`;
+    }
+
+    if (btn.classList.contains('sent')) {
+      console.log('Кнопка уже в состоянии sent — игнорируем');
+      return;
+    }
+
+    console.log('Switch to sent state');
+    btn.classList.add('sent');
+    btn.disabled = true;
+    btn.setAttribute('aria-disabled', 'true');
+
     sendFormReview(formData);
+
+    if (reviewBtnTimeout) {
+      clearTimeout(reviewBtnTimeout);
+    }
+
+    reviewBtnTimeout = setTimeout(() => {
+      console.log('Reverting button to normal state');
+      btn.classList.remove('sent');
+      btn.disabled = false;
+      btn.removeAttribute('aria-disabled');
+      reviewBtnTimeout = null;
+    }, 5000);
   });
 
   // Сброс ошибок при вводе
@@ -1284,6 +1306,19 @@ function ValidateReviewForm() {
 
 sendFile();
 ValidateReviewForm();
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Добавление товара в корзину
