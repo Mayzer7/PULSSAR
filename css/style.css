@@ -8759,6 +8759,9 @@ p.send-review-title {
   opacity: 1;
 }
 
+.related-products-card:hover {
+  text-decoration: none;
+}
 
 p.related-products-card-title {
   margin-top: 20px;
@@ -9028,6 +9031,11 @@ p.footer-navigation-title {
 
 .footer-navigation-list-item:hover {
   text-decoration: none;
+  color: #fff;
+}
+
+.footer-navigation-list a:hover {
+  color: #fff;
 }
 
 .footer-navigation-list-item::after {
