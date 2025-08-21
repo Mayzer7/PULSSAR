@@ -10869,6 +10869,29 @@ p.cart-item-remove-banner-text {
 
 @media (max-width: 800px) {
   .header-test {
-    height: auto; /* чтобы не ломалось */
+    height: auto; 
   }
 }
+
+
+
+
+
+
+/* Анимация шапки */
+
+.header__catalog-nav-container {
+  position: absolute;
+  top: 60px;
+  z-index: 1000;
+  background: white;
+  transition: top 300ms ease, box-shadow 300ms ease;
+  will-change: top, left, width;
+}
+
+.header__catalog-nav-container.is-fixed {
+  position: fixed;
+  top: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+

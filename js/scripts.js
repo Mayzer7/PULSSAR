@@ -2247,3 +2247,95 @@ document.addEventListener('click', function(e) {
     e.stopPropagation(); 
   }
 });
+
+
+
+
+// Анимация шапки
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  const el = document.querySelector('.header__catalog-nav-container');
+  if (!el) return;
+
+  const firstChild = el.parentNode.firstElementChild;
+  if (firstChild && firstChild !== el) {
+    const fcStyle = firstChild.getAttribute('style') || '';
+    if ((/width\s*:\s*100%/i.test(fcStyle) || /height\s*:\s*\d+px/i.test(fcStyle)) && !firstChild.classList.length) {
+      firstChild.remove();
+    }
+  }
+
+  const cs = getComputedStyle(el);
+  const initialTop = parseFloat(cs.top) || 65;
+
+  let lastScrollY = window.pageYOffset;
+  let isFixed = false;
+
+  function applyFixedGeometry() {
+    const rect = el.getBoundingClientRect();
+    el.style.left = rect.left + 'px';
+    el.style.width = rect.width + 'px';
+  }
+
+  function setParentOffset(add) {
+    const parent = el.parentNode;
+    if (!parent) return;
+    if (add) {
+      if (!parent.dataset._origPaddingTop) parent.dataset._origPaddingTop = parent.style.paddingTop || '';
+      parent.style.paddingTop = '0px'; 
+    } else {
+      parent.style.paddingTop = parent.dataset._origPaddingTop || '';
+      delete parent.dataset._origPaddingTop;
+    }
+  }
+
+  function setFixed(on) {
+    if (on === isFixed) return;
+
+    if (on) {
+      applyFixedGeometry();
+      el.style.top = initialTop + 'px';
+      void el.offsetWidth; 
+      el.classList.add('is-fixed');
+      setParentOffset(true);
+      el.style.top = '0px';
+      isFixed = true;
+    } else {
+      el.style.top = initialTop + 'px';
+
+      const onTransitionEnd = function (e) {
+        if (e.propertyName === 'top') {
+          el.classList.remove('is-fixed');
+          el.style.left = '';
+          el.style.width = '';
+          setParentOffset(false);
+          el.removeEventListener('transitionend', onTransitionEnd);
+        }
+      };
+      el.addEventListener('transitionend', onTransitionEnd);
+      isFixed = false;
+    }
+  }
+
+  function onScroll() {
+    const currentY = window.pageYOffset;
+    const delta = currentY - lastScrollY;
+
+    if (delta > 0 && currentY > 0) {
+      setFixed(true);
+    } else if (delta < 0) {
+      setFixed(false);
+    }
+    lastScrollY = currentY;
+  }
+
+  function onResize() {
+    if (isFixed) {
+      applyFixedGeometry();
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onResize);
+});
