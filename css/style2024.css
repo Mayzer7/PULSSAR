@@ -534,6 +534,7 @@ video {
 .design2024 .header__menu-mobile-item-common {
 	flex: 1;
 	justify-content: flex-end;
+	padding-right: 20px;
 }
 .design2024 .header__catalog-nav-item,
 .design2024 .header__menu-mobile-item {
@@ -592,10 +593,10 @@ video {
 
 @media (min-width: 640px) {
 	.design2024 .logoFixed {
-		display: none!important;
+		display: none !important;
 	}
 	.design2024 .headerSticky.uk-sticky-fixed .logoLink {
-		display: flex!important;
+		display: flex;
 	}
 
 	.design2024 .header__logo {
@@ -671,7 +672,8 @@ video {
 		min-width: 275px;
 	}
 }
-@media (min-width: 1650px) {
+
+@media (min-width: 1730px) {
 	.design2024 .header__catalog-nav-item-main,
 	.design2024 .header__catalog-nav-item-common {
 		gap: 30px;

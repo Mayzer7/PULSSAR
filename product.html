@@ -16,7 +16,11 @@
     <link rel="stylesheet" href="css/style.css">
     <title>Pulssar - Карточка товара (в наличии)</title>
 </head>
-<body>
+<body>  
+    <div id="preloader">
+        <img src="img/puff.svg" alt="Загрузка...">
+    </div>
+
     <!-- Шапка -->
     <header class="header-test">
         <div class="header-test-bottom">
@@ -135,8 +139,13 @@
                     </a>
 
                     <div class="product-reviews-container-right-side">
-                        <img src="img/quality-certificate.svg" alt="Сертификат качества">
-                        <img src="img/official-warranty.svg" alt="Официальная гарантия">
+                        <img src="img/quality-certificate.svg" 
+                            alt="Сертификат качества"
+                            title="Сертификат качества">
+                            
+                        <img src="img/official-warranty.svg" 
+                            alt="Официальная гарантия"
+                            title="Официальная гарантия на товар">
                     </div>
                 </div>
 
@@ -598,10 +607,6 @@
                                     </div>
 
                                     <div class="product-desc-card-reviews">
-                                        <p class="no-reviews-text">
-                                            Отзывов пока что нет
-                                        </p>
-
                                         <div class="product-desc-card-review">
                                             <div class="product-desc-card-review-head">
                                                 <p class="product-desc-card-review-author">
@@ -634,14 +639,6 @@
                                                 <svg width="28" height="26" viewBox="0 0 28 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M14 0L17.1432 9.67376H27.3148L19.0858 15.6525L22.229 25.3262L14 19.3475L5.77101 25.3262L8.9142 15.6525L0.685208 9.67376H10.8568L14 0Z" fill="#CFA567"/>
                                                 </svg>
-                                            </div>
-
-                                            <div class="product-desc-card-review-images">
-                                                <img src="img/product/1.png" alt="">
-                                                <img src="img/product/2.png" alt="">
-                                                <img src="img/product/3.png" alt="">
-                                                <img src="img/product/4.png" alt="">
-                                                <img src="img/product/1.png" alt="">
                                             </div>
 
                                             <div class="product-desc-card-review-texts">
@@ -737,11 +734,6 @@
                                                 <svg width="28" height="26" viewBox="0 0 28 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M14 0L17.1432 9.67376H27.3148L19.0858 15.6525L22.229 25.3262L14 19.3475L5.77101 25.3262L8.9142 15.6525L0.685208 9.67376H10.8568L14 0Z" fill="#CFA567"/>
                                                 </svg>
-                                            </div>
-
-                                            <div class="product-desc-card-review-images">
-                                                <img src="img/product/4.png" alt="">
-                                                <img src="img/product/1.png" alt="">
                                             </div>
 
                                             <div class="product-desc-card-review-texts">
@@ -822,10 +814,10 @@
                                                         </button>
                                                     </div>
                                                 </div>
+                                                
 
-                                                <button class="send-review-btn" type="submit">
-                                                    <span class="btn-label default">Отправить</span>
-                                                    <span class="btn-label sent">Ваш отзыв отправлен</span>
+                                                <button class="send-review-btn">
+                                                    Отправить
                                                 </button>
 
                                                 <div class="accept-politics">
@@ -955,10 +947,10 @@
                                 </div>
 
                                 <div class="image-container">
-                                    <img src="img/related-products/1.png" alt="" class="frame-0">
-                                    <img src="img/related-products/2.png" alt="" class="frame-1">
-                                    <img src="img/related-products/3.png" alt="" class="frame-2">
-                                    <img src="img/related-products/1.png" alt="" class="frame-3">
+                                    <img src="test-images/1.jpg" alt="" class="frame-0">
+                                    <img src="test-images/2.jpg" alt="" class="frame-1">
+                                    <img src="test-images/3.jpg" alt="" class="frame-2">
+                                    <img src="test-images/4.jpg" alt="" class="frame-3">
 
                                     <!-- кнопка избранного -->
                                     <button class="add-to-favorite-related-products-btn">
@@ -1010,9 +1002,21 @@
 
                                 <div class="related-products-card-price-container">
                                     <div class="related-products-card-price-left-side">
-                                        <p class="related-products-card-price">
-                                            49 900 ₽
-                                        </p>
+                                        <div class="related-products-card-prices">
+                                            <p class="related-products-card-price">
+                                                49 900 ₽
+                                            </p>
+
+                                            <div class="related-products-card-price-discount">
+                                                <p class="related-products-card-old-price">
+                                                    59 900 ₽
+                                                </p>
+
+                                                <p class="related-products-card-discount-banner">
+                                                    − 20%
+                                                </p>
+                                            </div>
+                                        </div>
 
                                         <div>сплит</div>
                                     </div>
