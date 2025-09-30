@@ -33,16 +33,54 @@ window.addEventListener("load", function() {
 
 const thumbsSwiper = new Swiper('.swiper-thumbs', {
   spaceBetween: 11,
-  slidesPerView: 4,
+  slidesPerView: 7,
   watchSlidesProgress: true,
   freeMode: false,
+  
 });
 
 const mainSwiper = new Swiper('.swiper-main', {
   spaceBetween: 10,
   pagination: { el: '.swiper-pagination', clickable: true },
+  navigation: {
+    nextEl: '.swiper-button-next-item',
+    prevEl: '.swiper-button-prev-item',
+  },
   thumbs: { swiper: thumbsSwiper },
 });
+
+function updateNavButtons(swiper) {
+  const prevBtn = document.querySelector('.swiper-button-prev-item');
+  const nextBtn = document.querySelector('.swiper-button-next-item');
+  if (!prevBtn || !nextBtn) return;
+
+  if (swiper.isBeginning) {
+    prevBtn.classList.add('disabled');
+    prevBtn.disabled = true;
+    prevBtn.setAttribute('aria-disabled', 'true');
+  } else {
+    prevBtn.classList.remove('disabled');
+    prevBtn.disabled = false;
+    prevBtn.setAttribute('aria-disabled', 'false');
+  }
+
+  // конец
+  if (swiper.isEnd) {
+    nextBtn.classList.add('disabled');
+    nextBtn.disabled = true;
+    nextBtn.setAttribute('aria-disabled', 'true');
+  } else {
+    nextBtn.classList.remove('disabled');
+    nextBtn.disabled = false;
+    nextBtn.setAttribute('aria-disabled', 'false');
+  }
+}
+
+mainSwiper.on('init', () => updateNavButtons(mainSwiper));
+mainSwiper.on('slideChange transitionEnd update resize', () => updateNavButtons(mainSwiper));
+
+updateNavButtons(mainSwiper);
+
 
 window.productThumbsSwiper = thumbsSwiper;
 window.productMainSwiper = mainSwiper;
@@ -1637,7 +1675,7 @@ addButtons.forEach(btn =>
     showSelectors();
     currentCount = 1;
     renderCount();
-    addToCart(true, currentCount);
+    // addToCart(true, currentCount);
   })
 );
 
@@ -1655,12 +1693,12 @@ minusButtons.forEach(btn =>
     lastQtyChangeTime = now;
 
     if (currentCount <= 1) {
-      addToCart(false, 0);
+      // addToCart(false, 0);
       hideSelectors();
       currentCount = 1;
     } else {
       currentCount--;
-      addToCart(true, currentCount);
+      // addToCart(true, currentCount);
     }
     renderCount();
   })
@@ -1680,7 +1718,7 @@ plusButtons.forEach(btn =>
 
     currentCount++;
     renderCount();
-    addToCart(true, currentCount);
+    // addToCart(true, currentCount);
   })
 );
 
@@ -1879,7 +1917,7 @@ function setupAddToCart(container) {
     addBtn.style.display      = 'none';
     qtySelector.style.display = 'inline-flex';
     setTimeout(() => qtySelector.classList.add('show'), 10);
-    addToCart(true, currentCount);
+    // addToCart(true, currentCount);
   });
 
   function reset() {
@@ -1887,7 +1925,7 @@ function setupAddToCart(container) {
     setTimeout(() => {
       qtySelector.style.display = 'none';
       addBtn.style.display      = 'inline-block';
-      addToCart(false, 0);
+      // addToCart(false, 0);
       currentCount = 1;
       valueEl.textContent = currentCount;
     }, 300);
@@ -1900,7 +1938,7 @@ function setupAddToCart(container) {
     } else {
       currentCount--;
       valueEl.textContent = currentCount;
-      addToCart(true, currentCount);
+      // addToCart(true, currentCount);
     }
   });
 
@@ -1908,7 +1946,7 @@ function setupAddToCart(container) {
     e.stopPropagation();
     currentCount++;
     valueEl.textContent = currentCount;
-    addToCart(true, currentCount);
+    // addToCart(true, currentCount);
   });
 }
 
@@ -3008,11 +3046,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// Отображениее шапки
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelector('.header').classList.add('js-ready');
-});
 
 // Показываем меню каталога только при нажатии
 
