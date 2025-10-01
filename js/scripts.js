@@ -1268,55 +1268,49 @@ function initInteractiveCards() {
 initInteractiveCards();
 
 function initRelatedProductsSwiper() {
-  const relatedProductsSwiper = document.querySelector('.related-products-swiper');
+  const relatedProductsSwiperEl = document.querySelector('.related-products-swiper');
+  const nextBtn = document.querySelector('.related-products-right-arrow');
+  const prevBtn = document.querySelector('.related-products-left-arrow');
 
-  if (relatedProductsSwiper) {
+  if (relatedProductsSwiperEl) {
     const swiper = new Swiper('.related-products-swiper', {
       slidesPerView: 3,
       spaceBetween: 40,
       slidesPerGroup: 1,
       loop: false,
       navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
+        nextEl: '.related-products-right-arrow',
+        prevEl: '.related-products-left-arrow',
       },
       breakpoints: {
-        0: {
-          slidesPerView: 1.05,
-          spaceBetween: 10
-        },
-        670: { 
-          slidesPerView: 1.5, 
-          spaceBetween: 10 
-        },
-        769: { 
-          slidesPerView: 1.5, 
-          spaceBetween: 10
-        },
-        950: { 
-          slidesPerView: 2.1, 
-          spaceBetween: 20 
-        },
-        1130: {
-          slidesPerView: 2.5, 
-          spaceBetween: 20
-        },
-        1380: { 
-          slidesPerView: 3, 
-          spaceBetween: 40 
-        },
-        1380: { 
-          slidesPerView: 3, 
-          spaceBetween: 40 
-        },
-        1751: { 
-          slidesPerView: 3, 
-          spaceBetween: 40 
-        },
+        0: { slidesPerView: 1.05, spaceBetween: 10 },
+        670: { slidesPerView: 1.5, spaceBetween: 10 },
+        769: { slidesPerView: 1.5, spaceBetween: 10 },
+        950: { slidesPerView: 2.1, spaceBetween: 20 },
+        1130: { slidesPerView: 2.5, spaceBetween: 20 },
+        1380: { slidesPerView: 3, spaceBetween: 40 },
+        1751: { slidesPerView: 3, spaceBetween: 40 },
       },
+      on: {
+        slideChange: function () {
+          if (swiper.isEnd) {
+            nextBtn.classList.add('arrow-disabled');
+          } else {
+            nextBtn.classList.remove('arrow-disabled');
+          }
+
+          if (swiper.isBeginning) {
+            prevBtn.classList.add('arrow-disabled');
+          } else {
+            prevBtn.classList.remove('arrow-disabled');
+          }
+        }
+      }
     });
   }
 }
+
+
 
 initRelatedProductsSwiper();
 

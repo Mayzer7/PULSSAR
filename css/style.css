@@ -7267,8 +7267,13 @@ p.product-item-price {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 156px;
+  padding: 18px 156px;
+  padding-top: 20px;
 }
+
+.fixed-product-info-container:has(.fixed-product-price-first-line) {
+    padding: 16px 156px;
+  }
 
 .fixed-product-info-left-side {
   display: flex;
@@ -7356,7 +7361,7 @@ p.fixed-product-price {
 }
 
 .fixed-product-info-left-side p {
-  margin: 0;
+  margin: 0px !important;
 }
 
 .fixed-product-info-left-side-title {
@@ -7962,6 +7967,20 @@ p.fixed-product-price {
   max-height: 720px; 
   overflow-y: auto;
   scroll-behavior: smooth;
+  position: relative; 
+}
+
+/* Затемнение снизу */
+.select-configuration-cards::after {
+  content: "";
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 150px; 
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 90%);
+  pointer-events: none;
+  grid-column: 1 / -1;
 }
 
 .select-configuration-cards::-webkit-scrollbar {
@@ -9169,6 +9188,52 @@ p.send-review-title {
   font-weight: 400;
   font-size: 36px;
   color: #000000;
+  margin-bottom: 0px !important;
+}
+
+.related-products-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.related-products-head-right {
+  display: flex;
+  gap: 19px;
+}
+
+.related-products-left-arrow {
+  border: none;
+  background-color: #CFA567;
+  border-radius: 100%;
+  padding: 15px 12px 15px 11px;
+  cursor: pointer;
+}
+
+.related-products-right-arrow {
+  border: none;
+  background-color: #CFA567;
+  border-radius: 100%;
+  padding: 15px 13px 15px 10px;
+  cursor: pointer;
+}
+
+.related-products-left-arrow,
+.related-products-right-arrow {
+  box-sizing: border-box; 
+  width: 49px;  
+  height: 49px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.arrow-disabled {
+  background-color: transparent !important;
+  border: 1px solid #CCCCCC !important;
+  color: #CCCCCC !important; 
 }
 
 .related-products-cards {
@@ -9293,13 +9358,6 @@ p.send-review-title {
 
 
 
-
-
-
-
-
-
-
 .image-hover-card .progress-bar {
   position: absolute;
   bottom: 5px;
@@ -9394,7 +9452,7 @@ p.related-products-card-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 10px;
   white-space: nowrap;
 }
 
@@ -9415,6 +9473,7 @@ p.related-products-card-discount-banner {
   font-family: 'Prata', serif;
   font-weight: 400;
   font-size: 36px;
+  line-height: 36px;
   color: #000000;
   margin-bottom: 0px;
 }
@@ -9506,10 +9565,6 @@ p.related-products-card-discount-banner {
 /* Адаптив "С этим товаром покупают" */
 
 @media (max-width: 1750px) {
-  .related-products-title {
-    font-size: 32px;
-  }
-
   .related-products-card-title {
     font-size: 18px;
   }
@@ -9520,6 +9575,7 @@ p.related-products-card-discount-banner {
 
   .related-products-card-price {
     font-size: 30px;
+    line-height: 30px;
   }
 
   .related-products-card-in-stock span,
@@ -9539,7 +9595,7 @@ p.related-products-card-discount-banner {
   }
 
   .related-products-card-price-container {
-    margin-top: 14px;
+    margin-top: 10px;
   }
 
   .add-to-favorite-related-products-btn {
@@ -9552,6 +9608,22 @@ p.related-products-card-discount-banner {
   }
 }
 
+@media (max-width: 1350px) {
+  .related-products-title {
+    font-size: 32px;
+  }
+
+  .related-products-left-arrow,
+  .related-products-right-arrow {
+    width: 44px;
+    height: 44px;
+  }
+
+  .related-products-head {
+    margin-bottom: 24px;
+  }
+}
+
 @media (max-width: 900px) {
   .related-products-cards {
     margin-bottom: 70px;
@@ -9561,6 +9633,7 @@ p.related-products-card-discount-banner {
 @media (max-width: 830px) {
   .related-products-card-price {
     font-size: 28px;
+    line-height: 28px;
   }
 
   .order-btn {
@@ -9571,6 +9644,14 @@ p.related-products-card-discount-banner {
 @media (max-width: 700px) {
   .related-products-title {
     font-size: 26px;
+  }
+
+  .related-products-head-right {
+    display: none;
+  }
+
+  .related-products-head {
+    margin-bottom: 20px;
   }
 }
 
