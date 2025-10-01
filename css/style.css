@@ -6305,7 +6305,7 @@ hr.white {
 .product-item {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(0px, 656px) minmax(0px, 1145px));
-  gap: 40px;
+  gap: 50px;
   position: relative;
   padding: 0px 116px;
   margin-top: 30px;
@@ -7209,7 +7209,7 @@ p.product-item-price {
   }
 }
 
-@media (max-width: 1750px) {
+@media (max-width: 1800px) {
   .item-price-container {
     flex-direction: column;
     align-items: unset;
@@ -7488,15 +7488,17 @@ p.fixed-product-price {
 
 @media (max-width: 1750px) {
   .product-item {
-    gap: 20px;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 1700px) {
+  .product-item {
+    padding: 0px;
   }
 }
 
 @media (max-width: 1590px) {
-  .product-item {
-    padding: 0px;
-  }
-
   .fixed-product-info-container {
     padding: 15px 40px; 
   }
@@ -7741,6 +7743,7 @@ p.fixed-product-price {
 
   .product-item {
     grid-template-columns: repeat(1, minmax(0px, 1fr));
+    gap: 16px;
   }
 
   .product-item-left-side {
@@ -8064,7 +8067,7 @@ p.fixed-product-price {
 
 /* Адаптив "Выбрать комплектацию" */
 
-@media (max-width: 1800px) {
+@media (max-width: 1900px) {
   .select-configuration-card-info p {
     font-size: 12px;
   }
@@ -11494,7 +11497,7 @@ p.cart-item-remove-banner-text {
   display: flex;
   flex-direction: column; 
   align-items: stretch; 
-  font-size: 20px;
+  font-size: 24px;
   color: #fff;
   font-family: 'Prata', serif;
   font-weight: 400;
