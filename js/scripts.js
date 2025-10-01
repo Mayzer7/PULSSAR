@@ -8,25 +8,25 @@ window.addEventListener("load", function() {
 
 // Тестовая шапка
 
-// const headerTest = document.querySelector('.header-test');
+const headerTest = document.querySelector('.header-test');
 
-// if (headerTest) {
-//   let lastScrollY = window.pageYOffset;
-//   const threshold = 100;
+if (headerTest) {
+  let lastScrollY = window.pageYOffset;
+  const threshold = 100;
 
-//   window.addEventListener('scroll', () => {
-//     const currentScrollY = window.pageYOffset;
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.pageYOffset;
 
-//     if (currentScrollY > lastScrollY && currentScrollY > threshold) {
-//       headerTest.classList.add('scroll-down');
-//     }
-//     if (currentScrollY === 0) {
-//       headerTest.classList.remove('scroll-down');
-//     }
+    if (currentScrollY > lastScrollY && currentScrollY > threshold) {
+      headerTest.classList.add('scroll-down');
+    }
+    if (currentScrollY === 0) {
+      headerTest.classList.remove('scroll-down');
+    }
 
-//     lastScrollY = currentScrollY;
-//   });
-// }
+    lastScrollY = currentScrollY;
+  });
+}
 
 
 // Слайдер товара
@@ -36,7 +36,17 @@ const thumbsSwiper = new Swiper('.swiper-thumbs', {
   slidesPerView: 7,
   watchSlidesProgress: true,
   freeMode: false,
-  
+  breakpoints: {
+    0: {
+      slidesPerView: 4
+    },
+    640: {
+      slidesPerView: 5
+    },
+    1031: {
+      slidesPerView: 7
+    }
+  }
 });
 
 const mainSwiper = new Swiper('.swiper-main', {
