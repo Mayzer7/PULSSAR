@@ -6405,6 +6405,12 @@ hr.white {
 
 /* Адаптив бейджеков */
 
+@media (max-width: 1450px) {
+  .swiper-main {
+    max-width: 550px;
+  }
+}
+
 @media (max-width: 1350px) {
   .product-item-badge {
     max-width: 149px;
@@ -6419,10 +6425,6 @@ hr.white {
     max-width: 131px;
     min-width: 131px;
     width: 100%;
-  }
-
-  .swiper-main {
-    max-width: 550px;
   }
 }
 
@@ -7575,6 +7577,12 @@ p.fixed-product-price {
   }
 }
 
+@media (max-width: 1450px) {
+  .product-item {
+    gap: 0px;
+  }
+}
+
 @media (max-width: 1350px) {
   .product-item-discount-price {
     font-size: 14px;
@@ -7630,16 +7638,6 @@ p.fixed-product-price {
   .item-price-container-right button {
     font-size: 14px;
   }
-
-  .product-item {
-    gap: 0px;
-  }
-}
-
-@media (max-width: 1300px) {
-  .product-item {
-    gap: 0px;
-  }  
 }
 
 @media (max-width: 1280px) {
