@@ -6420,6 +6420,10 @@ hr.white {
     min-width: 131px;
     width: 100%;
   }
+
+  .swiper-main {
+    max-width: 550px;
+  }
 }
 
 @media (max-width: 900px) {
@@ -7314,6 +7318,7 @@ p.product-item-price {
   line-height: 1;      
   color: #939393;
   transform: translateY(3px);
+  text-decoration: line-through;
 }
 
 .fixed-product-discount-banner {
@@ -7625,6 +7630,16 @@ p.fixed-product-price {
   .item-price-container-right button {
     font-size: 14px;
   }
+
+  .product-item {
+    gap: 0px;
+  }
+}
+
+@media (max-width: 1300px) {
+  .product-item {
+    gap: 0px;
+  }  
 }
 
 @media (max-width: 1280px) {
@@ -7673,6 +7688,16 @@ p.fixed-product-price {
   .product-item-discount {
     gap: 10px;
   }
+
+  .product-item {
+    gap: 30px;
+  }  
+}
+
+@media (max-width: 1200px) {
+  .product-item {
+    gap: 40px;
+  }  
 }
 
 @media (max-width: 1120px) {
@@ -7782,6 +7807,10 @@ p.fixed-product-price {
 
   .item-price-container-right .favorite-btn {
     display: none !important;
+  }
+
+  .swiper-main {
+    max-width: 655px;
   }
 }
 
