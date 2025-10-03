@@ -6407,7 +6407,7 @@ hr.white {
 
 @media (max-width: 1450px) {
   .swiper-main {
-    max-width: 550px;
+    max-width: 500px;
   }
 }
 
@@ -7688,13 +7688,13 @@ p.fixed-product-price {
   }
 
   .product-item {
-    gap: 30px;
+    gap: 0px;
   }  
 }
 
 @media (max-width: 1200px) {
   .product-item {
-    gap: 40px;
+    gap: 20px;
   }  
 }
 
