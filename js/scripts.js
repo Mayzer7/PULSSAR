@@ -8,25 +8,25 @@ window.addEventListener("load", function() {
 
 // Тестовая шапка
 
-const headerTest = document.querySelector('.header-test');
+// const headerTest = document.querySelector('.header-test');
 
-if (headerTest) {
-  let lastScrollY = window.pageYOffset;
-  const threshold = 100;
+// if (headerTest) {
+//   let lastScrollY = window.pageYOffset;
+//   const threshold = 100;
 
-  window.addEventListener('scroll', () => {
-    const currentScrollY = window.pageYOffset;
+//   window.addEventListener('scroll', () => {
+//     const currentScrollY = window.pageYOffset;
 
-    if (currentScrollY > lastScrollY && currentScrollY > threshold) {
-      headerTest.classList.add('scroll-down');
-    }
-    if (currentScrollY === 0) {
-      headerTest.classList.remove('scroll-down');
-    }
+//     if (currentScrollY > lastScrollY && currentScrollY > threshold) {
+//       headerTest.classList.add('scroll-down');
+//     }
+//     if (currentScrollY === 0) {
+//       headerTest.classList.remove('scroll-down');
+//     }
 
-    lastScrollY = currentScrollY;
-  });
-}
+//     lastScrollY = currentScrollY;
+//   });
+// }
 
 
 // Слайдер товара
@@ -3065,3 +3065,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+const cardsContainer = document.querySelector('.select-configuration-cards');
+
+if (cardsContainer) {
+  cardsContainer.addEventListener('scroll', () => {
+    const scrollTop = cardsContainer.scrollTop;
+    const scrollHeight = cardsContainer.scrollHeight;
+    const clientHeight = cardsContainer.clientHeight;
+
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      cardsContainer.style.webkitMaskImage = 'none';
+      cardsContainer.style.maskImage = 'none';
+    } else {
+      cardsContainer.style.webkitMaskImage = 'linear-gradient(to bottom, black 80%, transparent 100%)';
+      cardsContainer.style.maskImage = 'linear-gradient(to bottom, black 80%, transparent 100%)';
+    }
+  });
+}
