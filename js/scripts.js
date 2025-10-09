@@ -2434,7 +2434,6 @@ document.addEventListener('click', function(e) {
 
 
 
-
 // Анимация шапки
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -2508,8 +2507,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!parent) return;
     if (add) {
       if (!parent.dataset._origPaddingTop) parent.dataset._origPaddingTop = parent.style.paddingTop || '';
-      const h = el.getBoundingClientRect().height || 0;
-      parent.style.paddingTop = (h > 0 ? `${h}px` : '0px');
+      parent.style.paddingTop = '0px';
     } else {
       parent.style.paddingTop = parent.dataset._origPaddingTop || '';
       delete parent.dataset._origPaddingTop;
@@ -2615,12 +2613,12 @@ document.addEventListener('DOMContentLoaded', function () {
           const rect = el.getBoundingClientRect();
           const hdRect = headerDesign ? headerDesign.getBoundingClientRect() : null;
 
-          const headerLooksMissing = (rect.height === 0) || (rect.top > 5 && rect.top < window.innerHeight) ||
-            (headerDesign && headerDesign.classList.contains('small-hidden') && hdRect && hdRect.top > 5);
+          const headerLooksMissing = (rect.height > 0 && rect.top > 5 && rect.top < window.innerHeight)
+            || (headerDesign && headerDesign.classList.contains('small-hidden') && hdRect && hdRect.top > 5);
 
-          if (headerLooksMissing || !hasTransform) {
+          if (headerLooksMissing) {
             smallForced = false;
-            applyFixedAndTransparent(true, false, (mqVerySmall.matches ? smallOffset : 0), true);
+            applyFixedAndTransparent(true, false, 0, true);
             if (headerDesign) {
               headerDesign.classList.remove('small-hidden');
               headerDesign.style.transform = '';
@@ -2659,7 +2657,7 @@ document.addEventListener('DOMContentLoaded', function () {
       applyFixedGeometry();
       if (!isFixed) {
         el.classList.add('is-fixed');
-        setParentOffset(true); 
+        setParentOffset(true);
       }
 
       const targetTop = (overrideTop !== null) ? overrideTop : (mqVerySmall.matches ? smallOffset : 0);
@@ -2685,7 +2683,6 @@ document.addEventListener('DOMContentLoaded', function () {
       void el.offsetWidth;
       requestAnimationFrame(() => { el.style.transition = prevTransition || FAST_TRANS; });
       if (headerDesign) updateHeaderTransparency(false);
-
       requestAnimationFrame(() => {
         el.classList.remove('is-fixed');
         el.style.left = '';
@@ -2859,7 +2856,6 @@ document.addEventListener('DOMContentLoaded', function () {
   let touchStartY = null;
   let touchStartTime = null;
   function onTouchStart(e) {
-    cancelInertiaCheck(); 
     if (!e.touches || e.touches.length === 0) return;
     touchStartY = e.touches[0].clientY;
     touchStartTime = performance.now();
