@@ -6949,7 +6949,7 @@ p.product-item-price {
 }
 
 .product-item-discount p {
-  margin: 0px;
+  margin: 0px !important;
 }
 
 .product-item-discount-price {
@@ -7301,7 +7301,7 @@ p.product-item-price {
   position: fixed;
   bottom: 0;
   right: 0;
-  z-index: 99999;
+  z-index: 9000;
   width: 100%;
   background-color: #fff;
   border-top-left-radius: 16px;
@@ -7353,8 +7353,8 @@ p.product-item-price {
 }
 
 .fixed-product-price-first-line p {
-  margin-bottom: 0;
-  margin-top: 0;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
 }
 
 .fixed-product-discount {
@@ -8036,7 +8036,7 @@ p.fixed-product-price {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
-  max-height: 460px; 
+  max-height: 462px; 
   overflow-y: auto;
   scroll-behavior: smooth;
   position: relative; 
@@ -8161,7 +8161,7 @@ p.fixed-product-price {
 
   .select-configuration-cards {
     gap: 15px;
-    max-height: 350px;
+    max-height: 355px;
   }
 
   .select-configuration-card-img {
@@ -8205,7 +8205,7 @@ p.fixed-product-price {
   }
 
   .select-configuration-cards {
-    max-height: 260px;
+    max-height: 270px;
   }
 }
 
@@ -9299,7 +9299,8 @@ p.send-review-title {
   color: #fff;
 }
 
-.arrow-disabled {
+
+.swiper-button-disabled {
   background-color: transparent !important;
   border: 1px solid #CCCCCC !important;
   color: #CCCCCC !important; 
@@ -9521,7 +9522,7 @@ p.related-products-card-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10px;
+  /* margin-top: 10px; */
   white-space: nowrap;
 }
 
@@ -9663,9 +9664,9 @@ p.related-products-card-discount-banner {
     margin-bottom: 6px;
   }
 
-  .related-products-card-price-container {
+  /* .related-products-card-price-container {
     margin-top: 10px;
-  }
+  } */
 
   .add-to-favorite-related-products-btn {
     width: 44px;
