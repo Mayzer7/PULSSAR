@@ -832,6 +832,8 @@ window.productMainSwiper = mainSwiper;
         });
       });
     }
+
+    
 });
 
 
@@ -842,10 +844,264 @@ window.productMainSwiper = mainSwiper;
 
 
 
+// Пагинация точками в один ряд
 
+(function() {
+  const pagEl = document.querySelector('.swiper-pagination');
+  if (!pagEl) return;
+  const bulletsWrap = pagEl.querySelector('.swiper-pagination-bullets') || pagEl;
+  bulletsWrap.style.display = 'flex';
+  bulletsWrap.style.flexWrap = 'nowrap';
+  const CSS_TRANSITION = 'transform 320ms cubic-bezier(.2,.9,.2,1)';
+  bulletsWrap.style.transition = CSS_TRANSITION;
+  bulletsWrap.style.willChange = 'transform';
 
+  let measurements = {
+    bullets: [],
+    bulletWidths: [],
+    cum: [],
+    totalWidth: 0,
+    viewport: pagEl.clientWidth || 0,
+    maxTranslate: 0
+  };
+  let currentTranslate = 0;
+  let debT = null;
 
+  function debounce(fn, ms = 80) {
+    return function(...args) {
+      clearTimeout(debT);
+      debT = setTimeout(() => fn(...args), ms);
+    };
+  }
 
+  function getBullets() {
+    return Array.from(bulletsWrap.querySelectorAll('.swiper-pagination-bullet'));
+  }
+
+  function bulletFullWidth(b) {
+    const r = b.getBoundingClientRect();
+    const cs = getComputedStyle(b);
+    const ml = parseFloat(cs.marginLeft || 0);
+    const mr = parseFloat(cs.marginRight || 0);
+    return r.width + ml + mr;
+  }
+
+  function applyTransform() {
+    bulletsWrap.style.transform = `translate3d(${-Math.round(currentTranslate)}px, 0, 0)`;
+  }
+
+  function applyTransformImmediate() {
+    if (rafAnim) {
+      cancelAnimationFrame(rafAnim);
+      rafAnim = null;
+      animating = false;
+    }
+
+    const prev = bulletsWrap.style.transition;
+    bulletsWrap.style.transition = 'none';
+    applyTransform();
+    updatePaginationButtons();
+
+    setTimeout(() => {
+      bulletsWrap.style.transition = prev || CSS_TRANSITION;
+    }, 20);
+  }
+
+  function updatePaginationButtons() {
+    const prevBtn = document.querySelector('.swiper-button-prev-item');
+    const nextBtn = document.querySelector('.swiper-button-next-item');
+    if (prevBtn) {
+      if (currentTranslate <= 0) prevBtn.classList.add('pagination-scroll-disabled');
+      else prevBtn.classList.remove('pagination-scroll-disabled');
+    }
+    if (nextBtn) {
+      if (currentTranslate >= measurements.maxTranslate) nextBtn.classList.add('pagination-scroll-disabled');
+      else nextBtn.classList.remove('pagination-scroll-disabled');
+    }
+  }
+
+  function recalc() {
+    const bullets = getBullets();
+    measurements.bullets = bullets;
+    measurements.bulletWidths = bullets.map(b => Math.round(bulletFullWidth(b)));
+    measurements.cum = [];
+    let acc = 0;
+    for (let w of measurements.bulletWidths) {
+      measurements.cum.push(acc);
+      acc += w;
+    }
+    measurements.totalWidth = acc;
+
+    const csPag = getComputedStyle(pagEl);
+    const padL = parseFloat(csPag.paddingLeft || 0);
+    const padR = parseFloat(csPag.paddingRight || 0);
+
+    measurements.viewport = Math.max(0, (pagEl.clientWidth || pagEl.getBoundingClientRect().width || 0) - padL - padR);
+    measurements.paddingLeft = padL;
+    measurements.paddingRight = padR;
+
+    measurements.maxTranslate = Math.max(0, measurements.totalWidth - measurements.viewport);
+
+    if (currentTranslate > measurements.maxTranslate) currentTranslate = measurements.maxTranslate;
+    if (currentTranslate < 0) currentTranslate = 0;
+
+    applyTransformImmediate();
+    updatePaginationButtons();
+  }
+
+  const debouncedRecalc = debounce(recalc, 60);
+
+  let rafAnim = null;
+  let animating = false;
+
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+  function animateTo(target, duration = 360) {
+    if (rafAnim) {
+      cancelAnimationFrame(rafAnim);
+      rafAnim = null;
+    }
+    const start = currentTranslate;
+    const delta = target - start;
+    if (Math.abs(delta) < 0.5) {
+      currentTranslate = target;
+      applyTransform();
+      updatePaginationButtons();
+      return;
+    }
+
+    const startTransition = bulletsWrap.style.transition || '';
+
+    bulletsWrap.style.transition = 'none';
+    animating = true;
+    const t0 = performance && performance.now ? performance.now() : Date.now();
+
+    function step(now) {
+      const elapsed = (now - t0);
+      const p = Math.min(1, Math.max(0, elapsed / duration));
+      const eased = easeOutCubic(p);
+      currentTranslate = start + delta * eased;
+      applyTransform();
+      updatePaginationButtons();
+
+      if (p < 1) {
+        rafAnim = requestAnimationFrame(step);
+      } else {
+        rafAnim = null;
+        animating = false;
+        currentTranslate = target;
+        applyTransform();
+        updatePaginationButtons();
+        setTimeout(() => {
+          bulletsWrap.style.transition = startTransition || CSS_TRANSITION;
+        }, 20);
+      }
+    }
+
+    rafAnim = requestAnimationFrame(step);
+  }
+
+  function ensureActiveVisible(centerIfPossible = true, animate = true) {
+    const bullets = measurements.bullets;
+    if (!bullets || bullets.length === 0) return;
+    const activeIndex = bullets.findIndex(b => b.classList.contains('swiper-pagination-bullet-active'));
+    if (activeIndex < 0) return;
+
+    const left = measurements.cum[activeIndex] || 0;
+    const w = measurements.bulletWidths[activeIndex] || (bullets[activeIndex].getBoundingClientRect().width || 0);
+    const activeLeft = left;
+    const activeRight = left + w;
+
+    const viewLeft = currentTranslate;
+    const viewRight = currentTranslate + measurements.viewport;
+
+    let desired = currentTranslate;
+
+    if (centerIfPossible) {
+      const activeCenter = activeLeft + w / 2;
+      desired = activeCenter - measurements.viewport / 2;
+    } else {
+      if (activeLeft < viewLeft) desired = activeLeft;
+      else if (activeRight > viewRight) desired = activeRight - measurements.viewport;
+    }
+
+    desired = Math.max(0, Math.min(desired, measurements.maxTranslate));
+
+    if (Math.abs(desired - currentTranslate) <= 1) {
+      currentTranslate = desired;
+      applyTransform();
+      updatePaginationButtons();
+      return;
+    }
+
+    if (animate) animateTo(desired, 360);
+    else {
+      currentTranslate = desired;
+      applyTransform();
+      updatePaginationButtons();
+    }
+  }
+
+  const prevNav = document.querySelector('.swiper-button-prev-item');
+  const nextNav = document.querySelector('.swiper-button-next-item');
+
+  function pageStep(direction) {
+    const step = measurements.viewport || pagEl.clientWidth || 200;
+    const desired = Math.max(0, Math.min(measurements.maxTranslate, currentTranslate + direction * step));
+    animateTo(desired, 360);
+  }
+
+  if (nextNav) {
+    nextNav.addEventListener('click', (e) => {
+      pageStep(1);
+    }, { passive: true });
+  }
+  if (prevNav) {
+    prevNav.addEventListener('click', (e) => {
+      pageStep(-1);
+    }, { passive: true });
+  }
+
+  const mo = new MutationObserver(debounce(() => {
+    recalc();
+    requestAnimationFrame(() => ensureActiveVisible());
+  }, 40));
+  mo.observe(bulletsWrap, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+
+  let ro;
+  try {
+    ro = new ResizeObserver(debouncedRecalc);
+    ro.observe(pagEl);
+    ro.observe(bulletsWrap);
+  } catch (e) {
+    window.addEventListener('resize', debouncedRecalc);
+  }
+
+  function attachSwiperEvents(sw) {
+    if (!sw) return;
+    ['init', 'slideChange', 'transitionStart', 'transitionEnd', 'update', 'resize'].forEach(ev => {
+      sw.on(ev, () => {
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          recalc();
+          ensureActiveVisible();
+        }));
+      });
+    });
+  }
+
+  if (window.productMainSwiper) attachSwiperEvents(productMainSwiper);
+  setTimeout(() => {
+    recalc();
+    ensureActiveVisible();
+  }, 60);
+
+  window.__paginationScroller = {
+    recalc,
+    ensureActiveVisible,
+    animateTo,
+    getState: () => ({ currentTranslate, measurements })
+  };
+})();
 
 
 
