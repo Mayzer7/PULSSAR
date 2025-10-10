@@ -51,13 +51,162 @@ const thumbsSwiper = new Swiper('.swiper-thumbs', {
 
 const mainSwiper = new Swiper('.swiper-main', {
   spaceBetween: 10,
-  pagination: { el: '.swiper-pagination', clickable: true },
+  // pagination: { el: '.swiper-pagination', clickable: true },
   navigation: {
     nextEl: '.swiper-button-next-item',
     prevEl: '.swiper-button-prev-item',
   },
   thumbs: { swiper: thumbsSwiper },
 });
+
+createLimitedPagination(mainSwiper, { maxVisible: 7 })
+
+function createLimitedPagination(swiper, opts = {}) {
+  const maxVisible = typeof opts.maxVisible === 'number' ? opts.maxVisible : 7;
+  const paginationRootSelector = opts.rootSelector || '.swiper-pagination';
+  const root = document.querySelector(paginationRootSelector);
+
+  if (!root) {
+    console.warn('Пагинация: root не найдена:', paginationRootSelector);
+    return;
+  }
+
+  root.innerHTML = '';
+
+  const viewport = document.createElement('div');
+  viewport.className = 'custom-pagination-viewport';
+  // инлайн-стили, чтобы не трогать CSS-файлы
+  Object.assign(viewport.style, {
+    display: 'block',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    width: '100%',
+    boxSizing: 'border-box',
+    position: 'relative'
+  });
+
+  const track = document.createElement('div');
+  track.className = 'custom-pagination-track';
+  Object.assign(track.style, {
+    display: 'inline-block',
+    transition: 'transform 280ms ease',
+    willChange: 'transform',
+    padding: '6px 0'
+  });
+
+  viewport.appendChild(track);
+  root.appendChild(viewport);
+
+  function makeDot(i) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'custom-pagination-bullet';
+    btn.dataset.index = i;
+    Object.assign(btn.style, {
+      display: 'inline-block',
+      width: '10px',
+      height: '10px',
+      borderRadius: '50%',
+      margin: '0 6px',
+      padding: '0',
+      border: 'none',
+      background: 'rgba(0,0,0,0.2)',
+      cursor: 'pointer',
+      verticalAlign: 'middle'
+    });
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const idx = Number(btn.dataset.index);
+      if (Number.isFinite(idx)) {
+        try { if (typeof markUserInteraction === 'function') markUserInteraction(); } catch(e){}
+        swiper.slideTo(idx);
+      }
+    });
+    return btn;
+  }
+
+  function renderDots() {
+    track.innerHTML = '';
+    const slidesCount = swiper.slides ? swiper.slides.length : 0;
+    for (let i = 0; i < slidesCount; i++) {
+      track.appendChild(makeDot(i));
+    }
+
+    requestAnimationFrame(() => {
+      updateLayout();
+      updateActive(swiper.activeIndex || 0);
+    });
+  }
+
+  function getDotMetrics() {
+    const first = track.querySelector('.custom-pagination-bullet');
+    if (!first) return { dotWidth: 22, visibleCount: maxVisible };
+    const style = getComputedStyle(first);
+    const marginLeft = parseFloat(style.marginLeft) || 0;
+    const marginRight = parseFloat(style.marginRight) || 0;
+    const w = first.getBoundingClientRect().width + marginLeft + marginRight;
+    const viewportWidth = viewport.getBoundingClientRect().width || root.getBoundingClientRect().width || window.innerWidth;
+    const visibleByWidth = Math.floor(viewportWidth / w) || 1;
+    const visibleCount = Math.min(maxVisible, visibleByWidth);
+    return { dotWidth: w, visibleCount };
+  }
+
+  function updateActive(activeIndex) {
+    const bullets = Array.from(track.querySelectorAll('.custom-pagination-bullet'));
+    bullets.forEach((b, i) => {
+      if (i === activeIndex) {
+        b.style.background = '#cfa567'; 
+        b.setAttribute('aria-current', 'true');
+      } else {
+        b.style.background = 'rgba(0,0,0,0.2)'; 
+        b.removeAttribute('aria-current');
+      }
+    });
+
+    if (!bullets.length) return;
+    const { dotWidth, visibleCount } = getDotMetrics();
+    const total = bullets.length;
+
+    const half = Math.floor(visibleCount / 2);
+    let startIndex = Math.max(0, activeIndex - half);
+    startIndex = Math.min(startIndex, Math.max(0, total - visibleCount));
+    const offset = startIndex * dotWidth;
+
+    track.style.transform = `translate3d(${-offset}px,0,0)`;
+  }
+
+  function updateLayout() {
+    const bullets = Array.from(track.querySelectorAll('.custom-pagination-bullet'));
+    const { dotWidth, visibleCount } = getDotMetrics();
+
+    track.style.width = `${bullets.length * dotWidth}px`;
+
+    updateActive(swiper.activeIndex || 0);
+  }
+
+
+  swiper.on('init slideChange transitionEnd resize update', () => {
+    if (!track.querySelector('.custom-pagination-bullet')) {
+      renderDots();
+    } else {
+      updateLayout();
+      updateActive(swiper.activeIndex || 0);
+    }
+  });
+
+  renderDots();
+
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      updateLayout();
+    }, 120);
+  });
+
+  return { root, viewport, track, updateActive, renderDots };
+}
+
 
 function updateNavButtons(swiper) {
   const prevBtn = document.querySelector('.swiper-button-prev-item');
@@ -74,7 +223,6 @@ function updateNavButtons(swiper) {
     prevBtn.setAttribute('aria-disabled', 'false');
   }
 
-  // конец
   if (swiper.isEnd) {
     nextBtn.classList.add('disabled');
     nextBtn.disabled = true;
@@ -832,8 +980,6 @@ window.productMainSwiper = mainSwiper;
         });
       });
     }
-
-    
 });
 
 
@@ -844,264 +990,9 @@ window.productMainSwiper = mainSwiper;
 
 
 
-// Пагинация точками в один ряд
 
-(function() {
-  const pagEl = document.querySelector('.swiper-pagination');
-  if (!pagEl) return;
-  const bulletsWrap = pagEl.querySelector('.swiper-pagination-bullets') || pagEl;
-  bulletsWrap.style.display = 'flex';
-  bulletsWrap.style.flexWrap = 'nowrap';
-  const CSS_TRANSITION = 'transform 320ms cubic-bezier(.2,.9,.2,1)';
-  bulletsWrap.style.transition = CSS_TRANSITION;
-  bulletsWrap.style.willChange = 'transform';
 
-  let measurements = {
-    bullets: [],
-    bulletWidths: [],
-    cum: [],
-    totalWidth: 0,
-    viewport: pagEl.clientWidth || 0,
-    maxTranslate: 0
-  };
-  let currentTranslate = 0;
-  let debT = null;
 
-  function debounce(fn, ms = 80) {
-    return function(...args) {
-      clearTimeout(debT);
-      debT = setTimeout(() => fn(...args), ms);
-    };
-  }
-
-  function getBullets() {
-    return Array.from(bulletsWrap.querySelectorAll('.swiper-pagination-bullet'));
-  }
-
-  function bulletFullWidth(b) {
-    const r = b.getBoundingClientRect();
-    const cs = getComputedStyle(b);
-    const ml = parseFloat(cs.marginLeft || 0);
-    const mr = parseFloat(cs.marginRight || 0);
-    return r.width + ml + mr;
-  }
-
-  function applyTransform() {
-    bulletsWrap.style.transform = `translate3d(${-Math.round(currentTranslate)}px, 0, 0)`;
-  }
-
-  function applyTransformImmediate() {
-    if (rafAnim) {
-      cancelAnimationFrame(rafAnim);
-      rafAnim = null;
-      animating = false;
-    }
-
-    const prev = bulletsWrap.style.transition;
-    bulletsWrap.style.transition = 'none';
-    applyTransform();
-    updatePaginationButtons();
-
-    setTimeout(() => {
-      bulletsWrap.style.transition = prev || CSS_TRANSITION;
-    }, 20);
-  }
-
-  function updatePaginationButtons() {
-    const prevBtn = document.querySelector('.swiper-button-prev-item');
-    const nextBtn = document.querySelector('.swiper-button-next-item');
-    if (prevBtn) {
-      if (currentTranslate <= 0) prevBtn.classList.add('pagination-scroll-disabled');
-      else prevBtn.classList.remove('pagination-scroll-disabled');
-    }
-    if (nextBtn) {
-      if (currentTranslate >= measurements.maxTranslate) nextBtn.classList.add('pagination-scroll-disabled');
-      else nextBtn.classList.remove('pagination-scroll-disabled');
-    }
-  }
-
-  function recalc() {
-    const bullets = getBullets();
-    measurements.bullets = bullets;
-    measurements.bulletWidths = bullets.map(b => Math.round(bulletFullWidth(b)));
-    measurements.cum = [];
-    let acc = 0;
-    for (let w of measurements.bulletWidths) {
-      measurements.cum.push(acc);
-      acc += w;
-    }
-    measurements.totalWidth = acc;
-
-    const csPag = getComputedStyle(pagEl);
-    const padL = parseFloat(csPag.paddingLeft || 0);
-    const padR = parseFloat(csPag.paddingRight || 0);
-
-    measurements.viewport = Math.max(0, (pagEl.clientWidth || pagEl.getBoundingClientRect().width || 0) - padL - padR);
-    measurements.paddingLeft = padL;
-    measurements.paddingRight = padR;
-
-    measurements.maxTranslate = Math.max(0, measurements.totalWidth - measurements.viewport);
-
-    if (currentTranslate > measurements.maxTranslate) currentTranslate = measurements.maxTranslate;
-    if (currentTranslate < 0) currentTranslate = 0;
-
-    applyTransformImmediate();
-    updatePaginationButtons();
-  }
-
-  const debouncedRecalc = debounce(recalc, 60);
-
-  let rafAnim = null;
-  let animating = false;
-
-  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
-
-  function animateTo(target, duration = 360) {
-    if (rafAnim) {
-      cancelAnimationFrame(rafAnim);
-      rafAnim = null;
-    }
-    const start = currentTranslate;
-    const delta = target - start;
-    if (Math.abs(delta) < 0.5) {
-      currentTranslate = target;
-      applyTransform();
-      updatePaginationButtons();
-      return;
-    }
-
-    const startTransition = bulletsWrap.style.transition || '';
-
-    bulletsWrap.style.transition = 'none';
-    animating = true;
-    const t0 = performance && performance.now ? performance.now() : Date.now();
-
-    function step(now) {
-      const elapsed = (now - t0);
-      const p = Math.min(1, Math.max(0, elapsed / duration));
-      const eased = easeOutCubic(p);
-      currentTranslate = start + delta * eased;
-      applyTransform();
-      updatePaginationButtons();
-
-      if (p < 1) {
-        rafAnim = requestAnimationFrame(step);
-      } else {
-        rafAnim = null;
-        animating = false;
-        currentTranslate = target;
-        applyTransform();
-        updatePaginationButtons();
-        setTimeout(() => {
-          bulletsWrap.style.transition = startTransition || CSS_TRANSITION;
-        }, 20);
-      }
-    }
-
-    rafAnim = requestAnimationFrame(step);
-  }
-
-  function ensureActiveVisible(centerIfPossible = true, animate = true) {
-    const bullets = measurements.bullets;
-    if (!bullets || bullets.length === 0) return;
-    const activeIndex = bullets.findIndex(b => b.classList.contains('swiper-pagination-bullet-active'));
-    if (activeIndex < 0) return;
-
-    const left = measurements.cum[activeIndex] || 0;
-    const w = measurements.bulletWidths[activeIndex] || (bullets[activeIndex].getBoundingClientRect().width || 0);
-    const activeLeft = left;
-    const activeRight = left + w;
-
-    const viewLeft = currentTranslate;
-    const viewRight = currentTranslate + measurements.viewport;
-
-    let desired = currentTranslate;
-
-    if (centerIfPossible) {
-      const activeCenter = activeLeft + w / 2;
-      desired = activeCenter - measurements.viewport / 2;
-    } else {
-      if (activeLeft < viewLeft) desired = activeLeft;
-      else if (activeRight > viewRight) desired = activeRight - measurements.viewport;
-    }
-
-    desired = Math.max(0, Math.min(desired, measurements.maxTranslate));
-
-    if (Math.abs(desired - currentTranslate) <= 1) {
-      currentTranslate = desired;
-      applyTransform();
-      updatePaginationButtons();
-      return;
-    }
-
-    if (animate) animateTo(desired, 360);
-    else {
-      currentTranslate = desired;
-      applyTransform();
-      updatePaginationButtons();
-    }
-  }
-
-  const prevNav = document.querySelector('.swiper-button-prev-item');
-  const nextNav = document.querySelector('.swiper-button-next-item');
-
-  function pageStep(direction) {
-    const step = measurements.viewport || pagEl.clientWidth || 200;
-    const desired = Math.max(0, Math.min(measurements.maxTranslate, currentTranslate + direction * step));
-    animateTo(desired, 360);
-  }
-
-  if (nextNav) {
-    nextNav.addEventListener('click', (e) => {
-      pageStep(1);
-    }, { passive: true });
-  }
-  if (prevNav) {
-    prevNav.addEventListener('click', (e) => {
-      pageStep(-1);
-    }, { passive: true });
-  }
-
-  const mo = new MutationObserver(debounce(() => {
-    recalc();
-    requestAnimationFrame(() => ensureActiveVisible());
-  }, 40));
-  mo.observe(bulletsWrap, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
-
-  let ro;
-  try {
-    ro = new ResizeObserver(debouncedRecalc);
-    ro.observe(pagEl);
-    ro.observe(bulletsWrap);
-  } catch (e) {
-    window.addEventListener('resize', debouncedRecalc);
-  }
-
-  function attachSwiperEvents(sw) {
-    if (!sw) return;
-    ['init', 'slideChange', 'transitionStart', 'transitionEnd', 'update', 'resize'].forEach(ev => {
-      sw.on(ev, () => {
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          recalc();
-          ensureActiveVisible();
-        }));
-      });
-    });
-  }
-
-  if (window.productMainSwiper) attachSwiperEvents(productMainSwiper);
-  setTimeout(() => {
-    recalc();
-    ensureActiveVisible();
-  }, 60);
-
-  window.__paginationScroller = {
-    recalc,
-    ensureActiveVisible,
-    animateTo,
-    getState: () => ({ currentTranslate, measurements })
-  };
-})();
 
 
 
@@ -1937,7 +1828,7 @@ addButtons.forEach(btn =>
     showSelectors();
     currentCount = 1;
     renderCount();
-    // addToCart(true, currentCount);
+    addToCart(true, currentCount);
   })
 );
 
@@ -1955,12 +1846,12 @@ minusButtons.forEach(btn =>
     lastQtyChangeTime = now;
 
     if (currentCount <= 1) {
-      // addToCart(false, 0);
+      addToCart(false, 0);
       hideSelectors();
       currentCount = 1;
     } else {
       currentCount--;
-      // addToCart(true, currentCount);
+      addToCart(true, currentCount);
     }
     renderCount();
   })
@@ -1980,7 +1871,7 @@ plusButtons.forEach(btn =>
 
     currentCount++;
     renderCount();
-    // addToCart(true, currentCount);
+    addToCart(true, currentCount);
   })
 );
 
@@ -2179,7 +2070,7 @@ function setupAddToCart(container) {
     addBtn.style.display      = 'none';
     qtySelector.style.display = 'inline-flex';
     setTimeout(() => qtySelector.classList.add('show'), 10);
-    // addToCart(true, currentCount);
+    addToCart(true, currentCount);
   });
 
   function reset() {
@@ -2187,7 +2078,7 @@ function setupAddToCart(container) {
     setTimeout(() => {
       qtySelector.style.display = 'none';
       addBtn.style.display      = 'inline-block';
-      // addToCart(false, 0);
+      addToCart(false, 0);
       currentCount = 1;
       valueEl.textContent = currentCount;
     }, 300);
@@ -2200,7 +2091,7 @@ function setupAddToCart(container) {
     } else {
       currentCount--;
       valueEl.textContent = currentCount;
-      // addToCart(true, currentCount);
+      addToCart(true, currentCount);
     }
   });
 
@@ -2208,7 +2099,7 @@ function setupAddToCart(container) {
     e.stopPropagation();
     currentCount++;
     valueEl.textContent = currentCount;
-    // addToCart(true, currentCount);
+    addToCart(true, currentCount);
   });
 }
 
@@ -3388,34 +3279,47 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+
 // Блюр снизу карточек в секции "Выбрать комплектацию"
 
 const cardsContainer = document.querySelector('.select-configuration-cards');
-
 if (cardsContainer) {
   const cards = cardsContainer.querySelectorAll('.select-configuration-card');
+  const arrow = cardsContainer.querySelector('.arrow-7');
+
+  const updateMaskAndArrow = () => {
+    const scrollTop = cardsContainer.scrollTop;
+    const scrollHeight = cardsContainer.scrollHeight;
+    const clientHeight = cardsContainer.clientHeight;
+
+    const atBottom = (scrollTop + clientHeight >= scrollHeight - 10);
+
+    if (atBottom) {
+      cardsContainer.style.webkitMaskImage = 'none';
+      cardsContainer.style.maskImage = 'none';
+    } else {
+      cardsContainer.style.webkitMaskImage = 'linear-gradient(to bottom, black 80%, transparent 100%)';
+      cardsContainer.style.maskImage = 'linear-gradient(to bottom, black 80%, transparent 100%)';
+    }
+
+    if (arrow) {
+      if (atBottom) {
+        arrow.classList.add('hidden');
+        arrow.style.display = 'none';
+      } else {
+        arrow.classList.remove('hidden');
+        arrow.style.display = '';
+      }
+    }
+  };
 
   if (cards.length > 4) {
-    const updateMask = () => {
-      const scrollTop = cardsContainer.scrollTop;
-      const scrollHeight = cardsContainer.scrollHeight;
-      const clientHeight = cardsContainer.clientHeight;
-
-      if (scrollTop + clientHeight >= scrollHeight - 10) {
-        cardsContainer.style.webkitMaskImage = 'none';
-        cardsContainer.style.maskImage = 'none';
-      } else {
-        cardsContainer.style.webkitMaskImage = 'linear-gradient(to bottom, black 80%, transparent 100%)';
-        cardsContainer.style.maskImage = 'linear-gradient(to bottom, black 80%, transparent 100%)';
-      }
-    };
-
-    updateMask();
-
-    cardsContainer.addEventListener('scroll', updateMask);
+    updateMaskAndArrow();
+    cardsContainer.addEventListener('scroll', updateMaskAndArrow);
+    window.addEventListener('resize', updateMaskAndArrow);
   } else {
-    // Если карточек 4 или меньше — убираем блюр
     cardsContainer.style.webkitMaskImage = 'none';
     cardsContainer.style.maskImage = 'none';
+    if (arrow) arrow.classList.add('hidden');
   }
 }

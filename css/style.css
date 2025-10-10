@@ -3998,7 +3998,6 @@ html, body {
   background: #FAF8F5;
   min-width: 340px;
 }
-
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
@@ -6481,15 +6480,11 @@ hr.white {
 .swiper-pagination {
   position: relative !important;  
   bottom: auto !important;       
-  left: 0px !important;          
+  left: 55px !important;          
   margin-top: 25px;
   margin-bottom: 20px;        
   width: auto;          
-  white-space: nowrap !important;
-  box-sizing: border-box;
-  /* padding: 0 8px;        */
-  padding-left: 60px;
-  max-width: 590px;
+  max-width: 530px;          
 }
 
 /* Адаптив пагинации */
@@ -6515,24 +6510,26 @@ hr.white {
 @media (max-width: 720px) {
   .swiper-pagination {
     max-width: 74vw; 
+    left:55px !important;
   }
 }
 
 @media (max-width: 550px) {
   .swiper-pagination {
-    max-width: 70vw; 
+    max-width: 75vw; 
+    left: 40px !important;
   }
 }
 
 @media (max-width: 450px) {
   .swiper-pagination {
-    max-width: 60vw; 
+    max-width: 72vw; 
   }
 }
 
-@media (max-width: 340px) {
+@media (max-width: 390px) {
   .swiper-pagination {
-    max-width: 220px; 
+    max-width: 68vw; 
   }
 }
 
@@ -6633,18 +6630,8 @@ hr.white {
   align-self: start; 
 }
 
-.swiper-pagination .swiper-pagination-bullets {
-  display: flex !important;
-  align-items: center;
-  gap: 0 !important;                  
-  transition: transform 320ms cubic-bezier(.2,.9,.2,1);
-  will-change: transform;
-  transform: translateX(0);
-}
 
 .swiper-pagination-bullet {
-  display: inline-block !important;
-  flex: 0 0 auto !important;
   width: 14px !important;
   height: 14px !important;
   margin: 0 7px !important;
@@ -7169,6 +7156,10 @@ p.product-item-price {
   padding: 0; 
 }
 
+.swiper-controls {
+  position: relative; 
+}
+
 .swiper-button-prev-item::after,
 .swiper-button-next-item::after {
   content: none !important;
@@ -7187,43 +7178,6 @@ p.product-item-price {
   position: relative;
   width: 100%;
   height: 100%;
-}
-
-.swiper-controls::before {
-  content: "";
-  position: absolute;
-  left: 40px;
-  top: 0;
-  bottom: 0;
-  width: 20px;
-  background: #faf8f5;
-  z-index: 100;
-}
-
-/* Правая белая полоса */
-.swiper-controls::after {
-  content: "";
-  position: absolute;
-  right: 40px;
-  top: 0;
-  bottom: 0;
-  width: 20px;
-  background: #faf8f5;
-  z-index: 10;
-}
-
-@media (max-width: 1030px) {
-  .swiper-controls::after {
-    right: 20px;
-  }
-
-  .swiper-controls::before {
-    left: 25px;
-  }
-
-  .swiper-pagination {
-    padding-left: 40px;
-  }
 }
 
 .swiper-button-prev-item,
@@ -7273,7 +7227,6 @@ p.product-item-price {
   border-radius: 50%;
   background: #CFA567;
   box-sizing: border-box;
-  
 }
 
 .swiper-controls .swiper-button-prev-item.disabled,
@@ -7293,7 +7246,6 @@ p.product-item-price {
   pointer-events: none; 
   opacity: 0.95;
 }
-
 
 
 
@@ -7698,11 +7650,6 @@ p.fixed-product-price {
     line-height: 34px;
   }
 
-  .ya-split {
-    max-width: 205px;
-    width: 100%;
-  }
-
   .question-btn span {
     font-size: 14px;
   }
@@ -8080,6 +8027,10 @@ p.fixed-product-price {
 
 /* Выбрать комплектацию */
 
+.select-configuration {
+  position: relative;
+}
+
 .select-configuration-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -8196,6 +8147,65 @@ p.fixed-product-price {
   color: #000000;
 }
 
+.arrow-7 {
+  /* займёт всю строку грида — будет в отдельном ряду независимо от количества карточек */
+  grid-column: 1 / -1;
+  justify-self: center;
+
+  width: 20px;
+  height: 60px;
+  /* убираем margin, left и translate — центровка делается через justify-self */
+  margin: 0  auto 10px auto;
+  position: sticky;
+  bottom: 12px;
+  /* left/transform можно удалить, если оставлять justify-self */
+  /* left: 50%; */
+  /* transform: translateX(-50%); */
+  z-index: 10;
+  transition: opacity .36s ease, transform .36s ease;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.arrow-7.hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
+  pointer-events: none;
+}
+
+.arrow-7 span {
+    display: block;
+    width: 15px;  
+    height: 15px;
+    border-bottom: 3px solid #CFA567;  
+    border-right: 3px solid #CFA567;  
+    transform: rotate(45deg);
+    margin: -8px 0; 
+    animation: arrow-7 2s infinite;
+}
+
+.arrow-7 span:nth-child(2){
+    animation-delay: -0.2s;
+}
+.arrow-7 span:nth-child(3){
+    animation-delay: -0.4s;
+}
+
+@keyframes arrow-7 {
+    0%{
+        opacity: 0;
+        transform: translate(0,-20px) rotate(45deg);
+    }
+    50%{
+        opacity: 1;
+    }
+    100%{
+        opacity: 0;
+        transform: translate(0,20px) rotate(45deg);
+    }
+}
+
+
 /* Адаптив "Выбрать комплектацию" */
 
 @media (max-width: 1900px) {
@@ -8232,6 +8242,16 @@ p.fixed-product-price {
 }
 
 @media (max-width: 1450px) {
+  .arrow-7 {
+    width: 16px;
+    height: 50px
+  }
+  
+  .arrow-7 span {
+    width: 12px;
+    height: 12px;
+  }
+
   .select-configuration-card-img {
     max-width: 118px;
     max-height: 118px;
@@ -8277,6 +8297,16 @@ p.fixed-product-price {
     max-height: 167px;
     width: 100%;
     height: 100%;
+  }
+
+  .arrow-7 {
+    width: 20px;
+    height: 60px
+  }
+  
+  .arrow-7 span {
+    width: 15px;
+    height: 15px;
   }
 }
 
@@ -9530,6 +9560,7 @@ p.related-products-card-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 10px;
 }
 
 .related-products-card-rating {
@@ -9574,11 +9605,11 @@ p.related-products-card-title {
   white-space: nowrap;
 }
 
-@media (max-width: 1700px) {
+/* @media (max-width: 1700px) {
   .related-products-card-price-container {
     min-height: 100px;
   }
-}
+} */
 
 p.related-products-card-price,
 p.related-products-card-old-price,
@@ -11739,10 +11770,9 @@ p.cart-item-remove-banner-text {
 /* Адаптив Яндекс сплит */
 
 @media (max-width: 460px) {
-  .split,
+  .split yandex-pay-badge,
   .split img {
     max-width: 150px;
-    margin-top: 10px;
   }
 
   .image {
@@ -11900,12 +11930,6 @@ p.cart-item-remove-banner-text {
   margin-top: 0px !important;
 }
 
-.split {
-  position: absolute;
-  bottom: 0;  
-  left: 0;
-}
-
 @media (max-width: 1300px) {
   .catalog-cards {
     grid-template-columns: repeat(2, 1fr);
@@ -11972,6 +11996,4 @@ p.cart-item-remove-banner-text {
 #app {
   display: none;
 }
-
-
 
