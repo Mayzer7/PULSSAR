@@ -3320,6 +3320,9 @@ if (cardsContainer) {
   } else {
     cardsContainer.style.webkitMaskImage = 'none';
     cardsContainer.style.maskImage = 'none';
-    if (arrow) arrow.classList.add('hidden');
+    if (arrow) {
+      arrow.classList.add('hidden');
+      arrow.style.display = 'none'; 
+    }
   }
 }
