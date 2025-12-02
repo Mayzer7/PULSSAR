@@ -2504,20 +2504,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const banner          = document.querySelector('.fixed-product-info');
   const footer          = document.querySelector('footer');
 
-  if (!buyButtonsBlock || !relatedSection || !banner || !footer) return;
+  if (!buyButtonsBlock || !banner || !footer) return;
 
   let isBuyButtonsVisible = true;
   let isRelatedVisible = false;
   let isFooterVisible = false;
-  let hasSeenRelated = false; 
+  let hasSeenRelated = !relatedSection;
 
   const updateBannerVisibility = () => {
-    const relatedRect = relatedSection.getBoundingClientRect();
-    const relatedBottomAbs = relatedRect.bottom + window.scrollY;
+    if (relatedSection && hasSeenRelated) {
+      const relatedRect = relatedSection.getBoundingClientRect();
+      const relatedBottomAbs = relatedRect.bottom + window.scrollY;
 
-    if (hasSeenRelated && window.scrollY >= relatedBottomAbs) {
-      banner.classList.remove('visible');
-      return;
+      if (window.scrollY >= relatedBottomAbs) {
+        banner.classList.remove('visible');
+        return;
+      }
     }
 
     if (!isBuyButtonsVisible && !isRelatedVisible && !isFooterVisible) {
@@ -2534,17 +2536,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, { threshold: 0 });
 
-  const relatedObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) hasSeenRelated = true;
-      isRelatedVisible = entry.isIntersecting;
-      updateBannerVisibility();
+  let relatedObserver = null;
+  if (relatedSection) {
+    relatedObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) hasSeenRelated = true;
+        isRelatedVisible = entry.isIntersecting;
+        updateBannerVisibility();
+      });
+    }, {
+      root: null,
+      rootMargin: `0px 0px -${banner.offsetHeight}px 0px`,
+      threshold: 0,
     });
-  }, {
-    root: null,
-    rootMargin: `0px 0px -${banner.offsetHeight}px 0px`,
-    threshold: 0,
-  });
+
+    relatedObserver.observe(relatedSection);
+  }
 
   const footerObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -2558,11 +2565,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   buyButtonsObserver.observe(buyButtonsBlock);
-  relatedObserver.observe(relatedSection);
   footerObserver.observe(footer);
+
+  updateBannerVisibility();
 
   window.addEventListener('scroll', updateBannerVisibility, { passive: true });
   window.addEventListener('resize', updateBannerVisibility);
+});
+
+// Скрытие линии если нету ТП
+
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = document.querySelector('.select-configuration-cards');
+  const line = document.querySelector('.line-product');
+  if (!cards && line) line.style.display = 'none';
 });
 
 
